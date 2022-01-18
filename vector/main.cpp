@@ -6,17 +6,18 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/13 18:39:16 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/18 01:15:13 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector>
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <memory>
 #include <algorithm>
 #include "ft_vector.hpp"
+#include "main.hpp"
+#include "ITester.hpp"
 
 void	print_state(std::vector<std::string> const &target) {
 
@@ -30,6 +31,10 @@ int		main(int ac, char **av) {
 
 	(void)av;
 
+	ITester	*test = new VectorTester<int>;
+	test->init_files();
+	test->get_status();
+	/*
 
 	// FtVector<std::string>	test;
 	// FtVector<std::string>	test2(test);
@@ -37,6 +42,30 @@ int		main(int ac, char **av) {
 	std::cout << " /////////////////////////////////////////////////// " << std::endl;
 	std::cout << " -------------- N = " << ac << std::endl;
 	std::cout << " /////////////////////////////////////////////////// " << std::endl;
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Test constructors :
+	
+	{
+		int limit = 100;
+		//// Default:
+		//
+		for (int i = 0 ; i < limit ; i++) {
+			std::vector<std::string>		fill(i, "manger des frites");
+		}
+
+		//// Fill :
+		//
+		for (int i = 0 ; i < limit ; i++) {
+			std::vector<std::string>		fill(i, "manger des frites");
+		}
+
+
+	}
+
+
+
 
 
 	std::vector<std::string>		args(200, "manger des frites");
@@ -50,6 +79,8 @@ int		main(int ac, char **av) {
 
 	print_state(testCopy);
 
+	std::cout << "//////////////// Test accessors " << std::endl;
+	std::cout << " //////////////////        out of range :" << std::endl;
 
 
 
@@ -120,7 +151,7 @@ int		main(int ac, char **av) {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////
 
-
+*/
 
 
 }
