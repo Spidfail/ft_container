@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/18 01:06:02 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/18 20:01:57 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "ITester.hpp"
 
 #include <iostream>
-#include <fstream>
 #include <filesystem>
 
 #include <algorithm>
@@ -29,9 +28,9 @@ class VectorTester : public ITester {
 	public:
 		typedef		typename std::vector< T, Allocator >				vector_original;
 		typedef		typename ft::vector< T, Allocator >					vector_custom;
+		typedef		typename ITester::Folder							type_folder;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 		VectorTester() : ITester() {
 		}
 
@@ -41,8 +40,10 @@ class VectorTester : public ITester {
 
 		VectorTester		&operator=(const VectorTester &source) {
 			this->_test_nb = source._test_nb;
-			this->_files = source._files;
-			this->_files_names = source._files_names;
+			this->_files_org = source._files_org;
+			this->_files_cust = source._files_cust;
+			this->_files_names_org = source._files_names_org;
+			this->_files_names_cust = source._files_names_cust;
 			this->_exec_time = source._exec_time;
 			this->_turn_in_directory = source._turn_in_directory;
 			return *this;
@@ -52,31 +53,12 @@ class VectorTester : public ITester {
 		}
 
 		void		init_files() {
-
-			this->_files_names["constructor"]="_vector_constructor_results_";
-			this->_files_names["accessors"]="_vector_accessors_results_";
-			this->_files_names["iterators"]="_vector_iterators_results_";
-			this->_files_names["capacity"]="_vector_capacity_results_";
-			this->_files_names["modifiers"]="_vector_modifiers_results_";
-
-			for (iterator_files_names it = this->_files_names.begin() ; it != this->_files_names.end() ; it++) {
-
-				std::string		test_filename = it->second;
-				test_filename.append(std::to_string(0));
-				std::ifstream	test_file(this->_turn_in_directory + test_filename);
-
-				for (int end_id = 0 ; test_file.is_open() ; ++end_id) {
-					test_file.close();
-					test_filename = it->second;
-					test_filename.append(std::to_string(end_id));
-					test_file.open(this->_turn_in_directory + test_filename);
-				}
-				it->second = test_filename;
-
-				this->_files[it->first]= new std::ofstream(this->_turn_in_directory + it->second);
-
-				this->_exec_time[it->first]=duration_type();
-			}
+			if (_folder_std || _folder_ft)
+				return ;
+			_folder_std = new type_folder("vector", "std", "details_std");
+			_folder_ft = new type_folder("vector", "ft", "details_ft");
+			_folder_std->_init_folder();
+			_folder_ft->_init_folder();
 		}
 		//
 		////////////////////////////////////////////////////////////////////////////////////
@@ -97,12 +79,10 @@ class VectorTester : public ITester {
 			return this->_test_nb;
 		}
 
-		std::ofstream					&get_file(const std::string &key) {
-			return this->_files[key];
+		std::ofstream					&get_folder_std(const std::string &key) {
 		}
 
-		std::string						&get_file_name(const std::string &key) {
-			return this->_files_names[key];
+		std::ofstream					&get_folder_ft(const std::string &key) {
 		}
 
 		std::chrono::duration<int>		&get_exec_time(const std::string &key) {
@@ -110,28 +90,32 @@ class VectorTester : public ITester {
 		}
 
 		void							get_status() {
-
-			iterator_files itf = this->_files.begin();
-			iterator_files_names it = this->_files_names.begin();
-			iterator_exec_time itt = this->_exec_time.begin();
-
-			std::cout << " Available files :" << std::endl;
-			for (; it != this->_files_names.end() ; it++, itf++) {
-				std::cout << "	" << it->second;
-				std::cout << "	||	IS_OPEN   " << itf->second->is_open();
-				std::cout << "	||	EXEC_TIME   " << itt->second.count() << std::endl;
-			}
-			std::cout << " Number of tests passed : " << get_test_nb() << std::endl;
+//             TO REFACTO
+//
+			// iterator_files itf = this->_files.begin();
+			// iterator_files_names it = this->_files_names.begin();
+			// iterator_exec_time itt = this->_exec_time.begin();
+//
+			// std::cout << " Available files :" << std::endl;
+			// for (; it != this->_files_names.end() ; it++, itf++) {
+				// std::cout << "	" << it->second;
+				// std::cout << "	||	IS_OPEN   " << itf->second->is_open();
+				// std::cout << "	||	EXEC_TIME   " << itt->second.count() << std::endl;
+			// }
+			// std::cout << " Number of tests passed : " << get_test_nb() << std::endl;
 		}
 
 		void				unitest_accessors_all() {
 			std::ofstream	&os = this->_files["accessors"];
 
-			unitest_size(os);
+			unitest_size<vector_custom>(os);
+			unitest_size<vector_original>(os);
 		}
 
+		template <class Ct>
 		void				unitest_size(std::ofstream &os) {
-
+			Ct		vec;
+			vec.size();
 		}
 		//
 		////////////////////////////////////////////////////////////////////////////////////
