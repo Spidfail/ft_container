@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/18 15:18:35 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/19 21:02:18 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,7 @@ namespace ft {
 
 
 				///////////////////////////////////////////////////////////////////////////////////////////////////
-				///////////////////////////////////////////////////////////////////////////////////////////////////
-				// //////////////////////////////////Member functions//////////////////////////////////////////////
-				//
-				///////////////////////////////////////////////////////////////////////////////////////////////////
+				/////////////////////////////////////Member functions//////////////////////////////////////////////
 				//
 				//// CONSTRUCTORS
 				//
@@ -58,7 +55,7 @@ namespace ft {
 					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc() {
 					}
 
-				explicit vector(const allocator_type &alloc = allocator_type()) :
+				explicit vector(const allocator_type &alloc) :
 					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) {
 					}
 
@@ -73,7 +70,7 @@ namespace ft {
 						while (--n) {
 							this->_alloc.construct(this->_start + n, val);
 						}
-						this->_last = this->start + n;
+						this->_last = this->_start + n;
 					}
 
 
@@ -93,11 +90,11 @@ namespace ft {
 				}
 
 				reference		operator[](size_type pos) {
-					return &(this->_start + pos);
+					return *(this->_start + pos);
 				}
 
 				const_reference	operator[](size_type pos) const {
-					return &(this->_start + pos);
+					return *(this->_start + pos);
 				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////
 				///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,30 +118,30 @@ namespace ft {
 				//
 				reference		at(size_type pos) {
 					if (pos < 0 || pos > _capacity)
-						throw(std::out_of_range("Out of range"));
-					return &(this->_start + pos);
+						throw(std::out_of_range("Out of range"));                                                  // Check how it works
+					return *(this->_start + pos);
 				}
 
 				const_reference	at(size_type pos) const {
 					if (pos < 0 || pos > _capacity)
 						throw(std::out_of_range("Out of range"));
-					return &this->_start + pos;
+					return *(this->_start + pos);
 				}
 
 				reference		front() {
-					return &this->_start;
+					return *this->_start;
 				}
 
 				const_reference	front() const {
-					return &this->_start;
+					return *this->_start;
 				}
 
 				reference		back() {
-					return &this->_last;
+					return *this->_last;
 				}
 
 				const_reference	back() const {
-					return &this->_last;
+					return *this->_last;
 				}
 
 				pointer			data() {
@@ -160,11 +157,11 @@ namespace ft {
 				//// CAPACITY : empty(), size(), max_size(), reserve(), capacity()
 
 				bool		empty() const {
-					return this->size;
+					return this->_size;
 				}
 
 				size_type	size() const {
-					return this->size;
+					return this->_size;
 				}
 
 				void		reserve(size_type new_cap) {
@@ -186,7 +183,6 @@ namespace ft {
 
 
 			private:
-
 				pointer			_start;
 				pointer			_last;
 				size_type		_size;

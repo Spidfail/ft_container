@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/18 01:15:13 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/19 16:09:08 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,12 @@ void	print_state(std::vector<std::string> const &target) {
 int		main(int ac, char **av) {
 
 	(void)av;
+	(void)ac;
 
-	ITester	*test = new VectorTester<int>;
-	test->init_files();
+	ft::ITester	*test = new VectorTester<int>;
+	test->init();
 	test->get_status();
+	test->unitest_accessors_all();
 	/*
 
 	// FtVector<std::string>	test;
