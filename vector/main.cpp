@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/19 16:09:08 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/20 19:51:14 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@
 #include "main.hpp"
 #include "ITester.hpp"
 
-void	print_state(std::vector<std::string> const &target) {
-
-	std::cout << " --- capacity = " << target.capacity() << std::endl;
-	std::cout << " --- size = " << target.size() << std::endl;
-	std::cout << " --- max size = " << target.max_size() << std::endl;
-
-}
-
 int		main(int ac, char **av) {
 
 	(void)av;
@@ -35,7 +27,14 @@ int		main(int ac, char **av) {
 	ft::ITester	*test = new VectorTester<int>;
 	test->init();
 	test->get_status();
-	test->unitest_accessors_all();
+	try {
+		test->unitest_capacity_all();
+	}
+	catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
+	}
+	delete test;
+
 	/*
 
 	// FtVector<std::string>	test;

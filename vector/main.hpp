@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/19 21:28:08 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/20 19:53:06 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,67 +155,100 @@ class VectorTester : public ft::ITester {
 			unitest_size<vector_original>(*os_ft);
 			unitest_capacity<vector_custom>(*os_std);
 			unitest_capacity<vector_original>(*os_ft);
+			unitest_reserve<vector_custom>(*os_std);
+			unitest_reserve<vector_original>(*os_ft);
 		}
 
 		template <class Ct>
 		void				unitest_max_size(std::ofstream &os) {
-				Ct	vec;
-				os << vec.max_size() << std::endl;
+			Ct	vec;
+			os << vec.max_size() << " ";
+			os << std::endl;
 		}
 
 		template <class Ct>
 		void				unitest_size(std::ofstream &os) {
 			{
 				Ct	vec;
-				os << vec.size() << std::endl;
+				os << vec.size() << " ";
 			}
 			{
 				Ct	vecfill(20, random_generator(type_value()));
-				os << vecfill.size() << std::endl;
+				os << vecfill.size() << " ";
 			}
+			os << std::endl;
 		}
 
 		template <class Ct>
 		void				unitest_capacity(std::ofstream &os) {
 			{
 				Ct	vec;
-				os << vec.capacity() << std::endl;
+				os << vec.capacity() << " ";
 			}
 			{
 				Ct	vecfill(20, random_generator(type_value()));
-				os << vecfill.capacity() << std::endl;
+				os << vecfill.capacity() << " ";
 			}
-			{
-				Ct	vec;
-				for (int i = 0 ; i < 100 ; i++) {
-					vec.push_back(random_generator(type_value()));
-					os << vec.capacity() << std::endl;
-				}
-				while (vec.empty()) {
-					vec.pop_back(random_generator(type_value()));
-					os << vec.capacity() << std::endl;
-				}
-			}
-			{
-				Ct	vec;
-				for (int i = 0 ; i < 100 ; i++) {
-					vec.push_back(random_generator(type_value()));
-					os << vec.capacity() << std::endl;
-					vec.pop_back(random_generator(type_value()));
-					os << vec.capacity() << std::endl;
-				}
-			}
+			// {
+				// Ct	vec;
+				// for (int i = 0 ; i < 100 ; i++) {
+					// vec.push_back(random_generator(type_value()));
+					// os << vec.capacity() << std::endl;
+				// }
+				// while (vec.empty()) {
+					// vec.pop_back(random_generator(type_value()));
+					// os << vec.capacity() << std::endl;
+				// }
+			// }
+			// {
+				// Ct	vec;
+				// for (int i = 0 ; i < 100 ; i++) {
+					// vec.push_back(random_generator(type_value()));
+					// os << vec.capacity() << std::endl;
+					// vec.pop_back(random_generator(type_value()));
+					// os << vec.capacity() << std::endl;
+				// }
+			// }
+			os << std::endl;
 		}
+
+		template <class Ct>
+		void				unitest_reserve(std::ofstream &os) {
+			{
+				Ct	vec;
+				vec.reserve(100);
+				os << vec.capacity() << " " ;
+			}
+			{
+				Ct	vecfill(20, random_generator(type_value()));
+				vecfill.reserve(100);
+				os << vecfill.capacity() << " " ;
+			}
+			{
+				Ct	vecfill(200, random_generator(type_value()));
+				vecfill.reserve(100);
+				os << vecfill.capacity() << " " ;
+			}
+			{
+				Ct	vecfill(20, random_generator(type_value()));
+				vecfill.reserve(vecfill.max_size() + 1);
+				os << vecfill.capacity() << " " ;
+			}
+			os << std::endl;
+		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////ACCESSORS/////////////////////////////////////
 		//
 		void				unitest_accessors_all() {
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////MODIFIERS/////////////////////////////////////
 		//
 		void				unitest_modifiers_all() {
 		}
+
 
 };
 

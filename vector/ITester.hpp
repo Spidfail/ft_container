@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:38:05 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/19 20:40:58 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/20 19:45:09 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,14 +184,14 @@ namespace ft {
 				_folder_std(NULL), _folder_ft(NULL) {
 				}
 
-			virtual ~ITester() {
-			}
-
 
 			virtual void		_init_files(std::string container_name = "vector", std::string dir_path = "./gunner_results/") = 0;
 			virtual void		_init_exec_time() = 0;
 
 		public:
+			virtual ~ITester() {
+			}
+
 			////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////INIT//////////////////////////////////////////
 			//

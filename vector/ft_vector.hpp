@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/19 21:02:18 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/20 19:41:30 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ namespace ft {
 				//// OPERATORS
 				//
 				vector		&operator=(const vector<value_type> &source) {
-					pointer		temp = _reallocate(source.size());
+					pointer		temp = _alloc.allocate(source.size());
 					_copy(source.data(), source.data() + source.size(), temp);
 					_erase_all();
 					_set_members(temp, source.size(), source.size());
@@ -110,7 +110,7 @@ namespace ft {
 					_set_members(temp, count, count);
 				}
 
-				// void	assign() {      \\ iterator version
+				// void	assign() {      \\ iterator range version
 				// }
 				///////////////////////////////////////////////////////////////////////////////////////////////////
 				//
@@ -166,7 +166,7 @@ namespace ft {
 
 				void		reserve(size_type new_cap) {
 					if (new_cap > _capacity) {
-						pointer	temp = _reallocate(new_cap);
+						pointer	temp = _alloc.allocate(new_cap);
 						_copy(_start, _last, temp);
 						_erase_all();
 						_set_members(temp, new_cap, new_cap);
@@ -189,14 +189,8 @@ namespace ft {
 				size_type		_capacity;
 				allocator_type	_alloc;
 
-				pointer			_reallocate(size_type n) const {
-					pointer		replace;
-					replace.allocate(n);
-					return replace;
-				}
-
 				void			_copy(const pointer start, const pointer end, pointer target) const {
-					for (int i = 0 ; start + i != end && i < target.capacity() ; i++)
+					for (size_type i = 0 ; start + i != end ; i++)
 						target[i] = start[i];
 				}
 
