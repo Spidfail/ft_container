@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:38:05 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/20 19:45:09 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/21 16:25:05 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,10 +199,7 @@ namespace ft {
 			////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////CONSTRUCTORS//////////////////////////////////
 			//
-			virtual void		unitest_constructor_empty() = 0;
-			virtual void		unitest_constructor_range() = 0;
-			virtual void		unitest_constructor_copy() = 0;
-			virtual void		unitest_constructor_all() = 0;
+			virtual void		launch_constructor() = 0;
 			////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////ACCESSORS/////////////////////////////////////
 			//
@@ -211,15 +208,15 @@ namespace ft {
 			virtual int					get_test_nb() = 0;
 			virtual void				get_status() = 0;
 
-			virtual void				unitest_accessors_all() = 0;
+			virtual void				launch_accessors() = 0;
 			////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////CAPACITY//////////////////////////////////////
 			//
-			virtual void							unitest_capacity_all() = 0;
+			virtual void							launch_capacity() = 0;
 			////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////MODIFIERS/////////////////////////////////////
 			//
-			virtual void							unitest_modifiers_all() = 0;
+			virtual void							launch_modifiers() = 0;
 	};
 
 }

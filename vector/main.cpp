@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/20 19:51:14 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/21 18:39:22 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,8 @@ int		main(int ac, char **av) {
 	ft::ITester	*test = new VectorTester<int>;
 	test->init();
 	test->get_status();
-	try {
-		test->unitest_capacity_all();
-	}
-	catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
-	}
+	test->launch_capacity();
+	test->launch_accessors();
 	delete test;
 
 	/*

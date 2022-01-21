@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/20 19:53:06 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/21 22:17:19 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 
 #include <algorithm>
 #include <vector>
+
+#include "ft_random.hpp"
 #include "ft_vector.hpp"
 
 #include <cstdlib>
@@ -36,8 +38,6 @@ class VectorTester : public ft::ITester {
 		typedef		T											type_value;
 
 	protected:
-			type_value		_rand_collection;
-
 		void		_init_files(std::string container_name = "vector", std::string dir_path = "./gunner_results/") {
 			this->_folder_std = new type_folder(container_name, "std", dir_path + "details_std/");
 			this->_folder_ft = new type_folder(container_name, "ft", dir_path + "details_ft/");
@@ -53,7 +53,6 @@ class VectorTester : public ft::ITester {
 			}
 		}
 
-		void				_init_collection_random(type_value);
 
 	public:
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +83,6 @@ class VectorTester : public ft::ITester {
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////UTILS/////////////////////////////////////////
 		//
-		type_value		random_generator( type_value, unsigned short int len = 0);
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////INITIALISATION////////////////////////////////
 		//
@@ -135,157 +133,267 @@ class VectorTester : public ft::ITester {
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CONSTRUCTORS//////////////////////////////////
 		//
-		void		unitest_constructor_empty() { }
+		void		launch_constructor() { }
 
-		void		unitest_constructor_range() { }
+		//
+		////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////MEMBERS///////////////////////////////////////
+		//
 
-		void		unitest_constructor_copy() { }
-
-		void		unitest_constructor_all() { }
+		
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CAPACITY//////////////////////////////////////
 		//
-		void				unitest_capacity_all() {
-			type_file		os_std = get_folder_std().get_file("capacity");
-			type_file		os_ft = get_folder_ft().get_file("capacity");
+		template <class Ct, typename Os>
+		struct UnitestCapacity {
 
-			unitest_max_size<vector_custom>(*os_std);
-			unitest_max_size<vector_original>(*os_ft);
-			unitest_size<vector_custom>(*os_std);
-			unitest_size<vector_original>(*os_ft);
-			unitest_capacity<vector_custom>(*os_std);
-			unitest_capacity<vector_original>(*os_ft);
-			unitest_reserve<vector_custom>(*os_std);
-			unitest_reserve<vector_original>(*os_ft);
-		}
+			typedef typename Ct::size_type	size_type;
 
-		template <class Ct>
-		void				unitest_max_size(std::ofstream &os) {
-			Ct	vec;
-			os << vec.max_size() << " ";
-			os << std::endl;
-		}
+				static void				empty(Os &os, type_value random_value) {
+					{
+						Ct	vec;
+						os << vec.empty() << " ";
+					}
+					{
+						Ct	vecfill(20, random_value);
+						os << vecfill.empty() << " ";
+						//
+						//// To implement with iterators
+						//
+						// vecfill.erase(vecfill.begin() + 5);
+						// os << vecfill.empty() << " ";
+						// vecfill.erase(vecfill.begin() + 5, vecfill.begin() + 9);
+						// os << vecfill.empty() << " ";
+						// vecfill.erase(vecfill.begin(), vecfill.end() + 9);
+						// os << vecfill.empty() << " ";
+					}
+				}
 
-		template <class Ct>
-		void				unitest_size(std::ofstream &os) {
-			{
-				Ct	vec;
-				os << vec.size() << " ";
-			}
-			{
-				Ct	vecfill(20, random_generator(type_value()));
-				os << vecfill.size() << " ";
-			}
-			os << std::endl;
-		}
+				static void				size(Os &os, type_value random_value) {
+					{
+						Ct	vec;
+						os << vec.size() << " ";
+					}
+					{
+						Ct	vecfill(20, random_value);
+						os << vecfill.size() << " ";
+					}
+					os << std::endl;
+				}
 
-		template <class Ct>
-		void				unitest_capacity(std::ofstream &os) {
-			{
-				Ct	vec;
-				os << vec.capacity() << " ";
-			}
-			{
-				Ct	vecfill(20, random_generator(type_value()));
-				os << vecfill.capacity() << " ";
-			}
-			// {
-				// Ct	vec;
-				// for (int i = 0 ; i < 100 ; i++) {
-					// vec.push_back(random_generator(type_value()));
+				static void				reserve(Os &os, type_value random_value) {
+					{
+						Ct	vec;
+						vec.reserve(100);
+						os << vec.capacity() << " " ;
+					}
+					{
+						Ct	vecfill(20, random_value);
+						vecfill.reserve(100);
+						os << vecfill.capacity() << " " ;
+					}
+					{
+						Ct	vecfill(200, random_value);
+						vecfill.reserve(100);
+						os << vecfill.capacity() << " " ;
+					}
+					try {
+						Ct	vecfill(20, random_value);
+						vecfill.reserve(vecfill.max_size() + 1);
+						os << vecfill.capacity() << " WRONG : AN EXCEPTION MUST BE THROWN " ;
+					}
+					catch (std::exception &e) {
+						os << e.what() << " ";
+					}
+					os << std::endl;
+				}
+
+				static void				max_size(Os &os) {
+					Ct	vec;
+					os << vec.max_size() << " ";
+					os << std::endl;
+				}
+
+				static void				capacity(Os &os, type_value random_value) {
+					{
+						Ct	vec;
+						os << vec.capacity() << " ";
+					}
+					{
+						Ct	vecfill(20, random_value);
+						os << vecfill.capacity() << " ";
+					}
+					//
+					//// To implement with iterators
+					//
+					// {
+					// Ct	vec;
+					// for (int i = 0 ; i < 100 ; i++) {
+					// vec.push_back(this->random_value);
 					// os << vec.capacity() << std::endl;
-				// }
-				// while (vec.empty()) {
-					// vec.pop_back(random_generator(type_value()));
+					// }
+					// while (vec.empty()) {
+					// vec.pop_back(this->random_value);
 					// os << vec.capacity() << std::endl;
-				// }
-			// }
-			// {
-				// Ct	vec;
-				// for (int i = 0 ; i < 100 ; i++) {
-					// vec.push_back(random_generator(type_value()));
+					// }
+					// }
+					// {
+					// Ct	vec;
+					// for (int i = 0 ; i < 100 ; i++) {
+					// vec.push_back(this->random_value);
 					// os << vec.capacity() << std::endl;
-					// vec.pop_back(random_generator(type_value()));
+					// vec.pop_back(this->random_value);
 					// os << vec.capacity() << std::endl;
-				// }
-			// }
-			os << std::endl;
-		}
+					// }
+					// }
+					os << std::endl;
+				}
+		};
 
-		template <class Ct>
-		void				unitest_reserve(std::ofstream &os) {
-			{
-				Ct	vec;
-				vec.reserve(100);
-				os << vec.capacity() << " " ;
-			}
-			{
-				Ct	vecfill(20, random_generator(type_value()));
-				vecfill.reserve(100);
-				os << vecfill.capacity() << " " ;
-			}
-			{
-				Ct	vecfill(200, random_generator(type_value()));
-				vecfill.reserve(100);
-				os << vecfill.capacity() << " " ;
-			}
-			{
-				Ct	vecfill(20, random_generator(type_value()));
-				vecfill.reserve(vecfill.max_size() + 1);
-				os << vecfill.capacity() << " " ;
-			}
-			os << std::endl;
+
+		void				launch_capacity() {
+
+			typedef		UnitestCapacity<vector_custom, std::ofstream>		capacity_custom;
+			typedef		UnitestCapacity<vector_original, std::ofstream>		capacity_original;
+
+			ft::Random<type_value>	random;
+			type_value		random_value = random.generate(type_value());
+			type_file		os_std = this->get_folder_std().get_file("capacity");
+			type_file		os_ft = this->get_folder_ft().get_file("capacity");
+
+			capacity_original::max_size(*os_std);
+			capacity_custom::max_size(*os_ft);
+			capacity_original::size(*os_std, random_value);
+			capacity_custom::size(*os_ft, random_value);
+			capacity_original::empty(*os_std, random_value);
+			capacity_custom::empty(*os_ft, random_value);
+			capacity_original::capacity(*os_std, random_value);
+			capacity_custom::capacity(*os_ft, random_value);
+			capacity_original::reserve(*os_std, random_value);
+			capacity_custom::reserve(*os_ft, random_value);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////ACCESSORS/////////////////////////////////////
 		//
-		void				unitest_accessors_all() {
+		template <class Ct, typename Os>
+
+
+			struct UnitestAccessors {
+
+			typedef typename Ct::size_type	size_type;
+
+				static void				operator_bracket(Os &os, type_value random_value) {
+					for (int j = 0 ; j < 100 ; j++) {
+						Ct	vecfill(j, random_value);
+						for (int i = 0 ; i < j ; i++) {os << vecfill[i] << " ";}
+					}
+					for (int j = 0 ; j < 10 ; j++) {
+						const Ct	vecfill(j, random_value);
+						for (int i = 0 ; i < j ; i++) {os << vecfill[i] << " ";}
+					}
+					os << std::endl;
+				}
+
+				static void				at(Os &os, type_value random_value) {
+					for (int j = 0 ; j < 100 ; j++) {
+						Ct	vecfill(j, random_value);
+						for (int i = 0 ; i < j ; i++) {os << vecfill.at(i) << " ";}
+					}
+					for (int j = 0 ; j < 10 ; j++) {
+						const Ct	vecfill(j, random_value);
+						for (int i = 0 ; i < j ; i++) {os << vecfill.at(i) << " ";}
+					}
+					os << std::endl;
+				}
+
+				static void				front(Os &os, type_value random_value) {
+					{
+						Ct	vecfill(100, random_value); os << vecfill.front() << " "; 
+					} {
+						Ct	const vecfill(100, random_value);
+						os << vecfill.front() << " ";
+					}
+					os << std::endl;
+				}
+
+				static void				back(Os &os, type_value random_value) {
+					{
+						Ct	vecfill(100, random_value); os << vecfill.back() << " "; 
+					} {
+						Ct	const vecfill(100, random_value);
+						os << vecfill.back() << " ";
+					}
+					os << std::endl;
+				}
+			};
+
+		void				launch_accessors() {
+
+			ft::Random<type_value>	random;
+			type_value		random_value = random.generate(type_value());
+			typedef		UnitestAccessors<vector_custom, std::ofstream>		accessors_custom;
+			typedef		UnitestAccessors<vector_original, std::ofstream>		accessors_original;
+
+			type_file		os_std = get_folder_std().get_file("accessors");
+			type_file		os_ft = get_folder_ft().get_file("accessors");
+
+			accessors_original::operator_bracket(*os_std, random_value);
+			accessors_custom::operator_bracket(*os_ft, random_value);
+			accessors_original::at(*os_std, random_value);
+			accessors_custom::at(*os_ft, random_value);
+			accessors_original::front(*os_std, random_value);
+			accessors_custom::front(*os_ft, random_value);
 		}
+
 
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////MODIFIERS/////////////////////////////////////
 		//
-		void				unitest_modifiers_all() {
-		}
 
+		template <class Ct, typename Os>
+		struct UnitestModifiers {
+
+			typedef typename Ct::size_type	size_type;
+
+			static void					assign(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vec;
+					vec.assign(20, random_value);
+					for (size_type i = 0 ; i < vec.size() ; i++) { os << vec[i] << " "; }
+					vec.assign(50, replacement);
+					for (size_type i = 0 ; i < vec.size() ; i++) { os << vec[i] << " "; }
+					vec.assign(10, random_value);
+					for (size_type i = 0 ; i < vec.size() ; i++) { os << vec[i] << " "; }
+				} {
+					Ct	vecfill(10, random_value);
+					vecfill.assign(10, random_value);
+					vecfill.assign(20, replacement);
+					for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vecfill[i] << " "; }
+				} {
+					Ct	vecfill(20, random_value);
+					vecfill.assign(20, replacement);
+					vecfill.assign(30, replacement);
+					for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vecfill[i] << " "; }
+				}
+				os << std::endl;
+			}
+		};
+
+		void				launch_modifiers() {
+			ft::Random<type_value>	random;
+			type_value		random_value = random.generate(type_value());
+			type_value		replacement = random.generate(type_value());
+			typedef		UnitestModifiers<vector_custom, std::ofstream>		modifiers_custom;
+			typedef		UnitestModifiers<vector_original, std::ofstream>		modifiers_original;
+
+			type_file		os_std = get_folder_std().get_file("modifiers");
+			type_file		os_ft = get_folder_ft().get_file("modifiers");
+			modifiers_original::assign(*os_std, random_value, replacement);
+			modifiers_custom::assign(*os_ft, random_value, replacement);
+		}
 
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////FUNCTION TEMPLATE SPECIALISATION/////////////////////////
-//
-/////////////////////////////////////////////RANDOMISATION//////////////////////////////////
-//
-template <> void			VectorTester<std::string>::_init_collection_random(std::string) {
-	_rand_collection.reserve(127 - 33);
-	std::string::iterator	it = _rand_collection.begin();
-
-	for (int c = 33 ; it != _rand_collection.end() && c < 127 ; it++, c++) {
-		*it = c;
-	}
-}
-
-template <> void			VectorTester<int>::_init_collection_random(int) {
-	_rand_collection = 100000;
-}
-
-template <> std::string		VectorTester<std::string>::random_generator(std::string, unsigned short int len) {
-			std::string		tmp;
-			tmp.reserve(len);
-
-			for (int i = 0; i < len; ++i) {
-				tmp += this->_rand_collection[std::rand() % (sizeof(_rand_collection) - 1)];
-			}
-			return tmp;
-		}
-
-template <> int				VectorTester<int>::random_generator(int, unsigned short int len) {
-	(void)len;
-	std::srand(time(NULL));
-
-	return rand() % _rand_collection + 1;
-}
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 
