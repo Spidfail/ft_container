@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 19:38:05 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/21 16:25:05 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/24 21:57:19 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ namespace ft {
 	class ITester {
 
 		public:
+			typedef		std::size_t											size_type;
 			typedef		typename std::ofstream	*							type_file;
 			typedef		typename std::map< std::string, type_file>			type_f_map;
 			typedef		typename std::map< std::string, std::string >		type_fnames_map;

@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/21 22:17:19 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/24 23:11:23 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,17 @@ class VectorTester : public ft::ITester {
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////UTILS/////////////////////////////////////////
 		//
+		template <typename Os, class Ct>
+		static void		print_state(Os &os, Ct vector) {
+			os << vector.size() << "|" << vector.capacity();
+		}
+
+		template <typename Os, class Ct>
+		static void		print_content(Os &os, Ct vector) {
+			for (size_type i = 0 ; i < vector.size() ; i++) {
+				os << vector[i] << " ";
+			}
+		}
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////INITIALISATION////////////////////////////////
 		//
@@ -105,11 +116,11 @@ class VectorTester : public ft::ITester {
 			return *this->_folder_ft;
 		}
 
-		type_exec_time		&get_exec_time() {
+		type_exec_time						&get_exec_time() {
 			return this->_exec_time;
 		}
 
-		type_duration		&get_exec_time(const std::string &key) {
+		type_duration						&get_exec_time(const std::string &key) {
 			return this->_exec_time[key];
 		}
 
@@ -378,12 +389,113 @@ class VectorTester : public ft::ITester {
 				}
 				os << std::endl;
 			}
+
+			static void					clear(Os &os, type_value random_value, type_value replacement) {
+				Ct	vecfill(10, random_value);
+				os << vecfill.capacity() << " ";
+				os << vecfill.size() << " ";
+				vecfill.clear();
+				os << vecfill.capacity() << " ";
+				os << vecfill.size() << " ";
+				(void)replacement;
+				for (size_type i = 0 ; i < vecfill.capacity(); i++) {
+					vecfill.push_back(replacement);
+				}
+				os << vecfill.capacity() << " ";
+				os << vecfill.size() << " ";
+				os << std::endl;
+			}
+
+			static void					push_back(Os &os, type_value random_value, type_value replacement) {
+				size_type	max_size;
+				{
+					Ct	vec;
+					max_size = vec.max_size();
+					for (size_type i = 0 ; i < 20 ; i++) {
+						if (i % 2 == 0)
+							vec.push_back(random_value);
+						else
+							vec.push_back(replacement);
+						os << vec[i] << "|" << vec.capacity() << "|" << vec.size() << " ";
+					}
+					vec.clear();
+					for (size_type i = 0 ; i < 30 ; i++) {
+						vec.push_back(replacement);
+						os << vec.capacity() << "|" << vec.size() << " ";
+					}
+				}
+				os << std::endl;
+			}
+
+			static void					pop_back(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vecfill(10, random_value);
+					for ( ; vecfill.size() ; vecfill.pop_back() ) {
+						os << vecfill.size() << "|" << vecfill.capacity() << " ";
+						for (typename Ct::size_type i = 0 ; i < vecfill.size() ; i++)
+							os << vecfill[i] << " ";
+					}
+					os << std::endl;
+					for ( ; vecfill.size() < 20 ; vecfill.push_back(replacement) ) {
+						os << vecfill.size() << "|" << vecfill.capacity() << " ";
+						for (typename Ct::size_type j = 0 ; j < vecfill.size() ; j++)
+							os << vecfill[j] << " ";
+					}
+				}
+				{
+					// test with iterators to check pointers
+					// w
+				}
+				os << std::endl;
+			}
+
+			static void					resize() {
+				// missing erase for the rest
+			}
+
+			static void					swap(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct vecfill(10, random_value);
+					Ct vecfill_other(10, replacement);
+					vecfill.swap(vecfill_other);
+					print_content(os, vecfill);
+					std::swap(vecfill_other, vecfill);
+					print_content(os, vecfill);
+				}
+				{
+					Ct vecfill(10, random_value);
+					Ct vecfill_other(20, replacement);
+					vecfill.swap(vecfill_other);
+					print_content(os, vecfill);
+					std::swap(vecfill_other, vecfill);
+					print_content(os, vecfill);
+				}
+				{
+					Ct vecfill(30, random_value);
+					Ct vecfill_other(20, replacement);
+					vecfill.swap(vecfill_other);
+					print_content(os, vecfill);
+					std::swap(vecfill_other, vecfill);
+					print_content(os, vecfill);
+				}
+			}
+
+			// static void					erase(Os &os, type_value random_value) {
+				// {
+					// Ct	vecfill(10, random_value);
+					// typename Ct::iterator it = vecfill.begin();
+					// std::advance(it, 4);
+					// vecfill.erase(it);
+					// print_content(os, vecfill);
+				// }
+			// }
+
 		};
 
 		void				launch_modifiers() {
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
-			type_value		replacement = random.generate(type_value());
+			type_value		replacement = random.generate(type_value()) / 2;
 			typedef		UnitestModifiers<vector_custom, std::ofstream>		modifiers_custom;
 			typedef		UnitestModifiers<vector_original, std::ofstream>		modifiers_original;
 
@@ -391,6 +503,16 @@ class VectorTester : public ft::ITester {
 			type_file		os_ft = get_folder_ft().get_file("modifiers");
 			modifiers_original::assign(*os_std, random_value, replacement);
 			modifiers_custom::assign(*os_ft, random_value, replacement);
+			modifiers_original::clear(*os_std, random_value, replacement);
+			modifiers_custom::clear(*os_ft, random_value, replacement);
+			modifiers_original::push_back(*os_std, random_value, replacement);
+			modifiers_custom::push_back(*os_ft, random_value, replacement);
+			modifiers_original::pop_back(*os_std, random_value, replacement);
+			modifiers_custom::pop_back(*os_ft, random_value, replacement);
+			modifiers_original::swap(*os_std, random_value, replacement);
+			modifiers_custom::swap(*os_ft, random_value, replacement);
+			// modifiers_original::erase(*os_std, random_value);
+			// modifiers_custom::erase(*os_ft, random_value);
 		}
 
 };

@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/21 18:39:22 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/24 19:39:29 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int		main(int ac, char **av) {
 	test->get_status();
 	test->launch_capacity();
 	test->launch_accessors();
+	test->launch_modifiers();
+
 	delete test;
 
 	/*

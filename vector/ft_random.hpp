@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 17:02:30 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/21 21:23:19 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/21 22:50:57 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,9 @@ template <> std::string		ft::Random<std::string>::generate(std::string, unsigned
 template <> int				ft::Random<int>::generate(int, unsigned short int len) {
 	(void)len;
 	std::srand(time(NULL));
-	int rand_nb;
+	int rand_nb = rand();
 
-	for (rand_nb = rand() ; rand_nb == 0 ; rand_nb = rand()) { }
+	for ( ; rand_nb == 0 ; rand_nb = rand()) { }
 	return rand_nb % _rand_collection + 1;
 }
 
