@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.hpp                                           :+:      :+:    :+:   */
+/*   VectorTester.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/24 23:11:23 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/27 00:50:30 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "ft_random.hpp"
-#include "ft_vector.hpp"
+#include "Vector.hpp"
 
 #include <cstdlib>
 #include <time.h>
@@ -515,6 +515,169 @@ class VectorTester : public ft::ITester {
 			// modifiers_custom::erase(*os_ft, random_value);
 		}
 
+		////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////ITERATORS/////////////////////////////////////
+		//
+		template <class Ct, typename Os>
+		struct UnitestIterators {
+
+			typedef typename Ct::size_type	size_type;
+
+			static void		constructors(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vecfill(10, random_value);
+					typename Ct::iterator it;
+					it = vecfill.begin();
+					Ct	vecfill2(10, replacement);
+					vecfill = vecfill2;
+					typename Ct::iterator it2 = vecfill.begin();
+					os << std::boolalpha << (it == it2) << " ";
+				}
+				os << std::endl;
+			}
+
+			static void		accessors(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vecfill(1, random_value);
+					vecfill.push_back(replacement);
+					typename Ct::iterator it = vecfill.begin();
+					typename Ct::iterator it2 = it;
+					os << *it << "|" << *it2;
+				} {
+					Ct	vecfill(10, random_value);
+					typename Ct::iterator it = vecfill.begin();
+					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << it[i] << " "; }
+					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << (it[i] = replacement) << " "; }
+				}
+				os << std::endl;
+			}
+
+			static void		increment_decrement(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; ++it) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; ++it)
+						os << *it << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() ; it != vecfill.begin() ; --it) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::iterator it = vecfill.end() ; it != vecfill.begin() ; --it)
+						os << *it << " ";
+				} 
+				//{
+					// Ct	vecfill(10, random_value);
+					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++) {
+						// os << *it << " "; *it = replacement; }
+					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++)
+						// os << *it << " ";
+				// } {
+					// Ct	vecfill(10, random_value);
+					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it) {
+						// os << *it << " "; *it = replacement; }
+					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it)
+						// os << *it << " ";
+				// } {
+					// Ct	vecfill(10, random_value);
+					// for (typename Ct::iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--) {
+						// os << *it << " "; *it = replacement; }
+					// for (typename Ct::iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--)
+						// os << *it << " ";
+				// } {
+					// Ct	vecfill(10, random_value);
+					// for (typename Ct::iterator it = vecfill.rend() ; it != vecfill.rbegin() ; --it) {
+						// os << *it << " "; *it = replacement; }
+					// for (typename Ct::iterator it = vecfill.rend() ; it != vecfill.rbegin() ; --it)
+						// os << *it << " ";
+				// }
+				os << std::endl;
+			}
+
+			static void		comparison(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin(), it2 = it ; it != vecfill.end() && (it == it2) ; it++, it2++) {
+						os << *it << " "; *it = replacement; os << (it == it2) << " "; }
+					for (typename Ct::iterator it = vecfill.begin(), it2 = it + 1 ; it != vecfill.end() && it != it2 ; it++, it2++) {
+						os << *it << " " << (it != it2) << " ";
+					}
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin() ; it < vecfill.end() ; it++) {
+						os << *it << " ";
+					}
+				}
+				//{
+				// Ct	vecfill(10, random_value);
+				// for (typename Ct::iterator it = vecfill.rbegin() ; it < vecfill.rend() ; it++) {
+				// os << *it << " ";
+				// } }
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin() ; it <= vecfill.end() - 1 ; it++) {
+						os << *it << " ";
+					}
+				} 
+				// {
+				// Ct	vecfill(10, random_value);
+				// for (typename Ct::iterator it = vecfill.rbegin() ; it <= vecfill.rend() - 1 ; it++) {
+				// os << *it << " ";
+				// }
+				// }
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it > vecfill.begin() ; it--) {
+						os << *it << " ";
+					}
+				}
+				//{
+				// Ct	vecfill(10, random_value);
+				// for (typename Ct::iterator it = vecfill.rend() - 1 ; it > vecfill.rbegin() ; it++) {
+				// os << *it << " ";
+				// }
+				// }
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it >= vecfill.begin() ; it++) {
+						os << *it << " ";
+					}
+				} 
+				// {
+				// Ct	vecfill(10, random_value);
+				// for (typename Ct::iterator it = vecfill.rend() - 1 ; it >= vecfill.rbegin() - 1 ; it++) {
+				// os << *it << " ";
+				// }
+				// }
+				os << std::endl;
+			}
+		};
+
+		void				launch_iterators() {
+			ft::Random<type_value>	random;
+			type_value		random_value = random.generate(type_value());
+			type_value		replacement = random.generate(type_value()) / 2;
+			typedef		UnitestIterators<vector_custom, std::ofstream>		iterators_custom;
+			typedef		UnitestIterators<vector_original, std::ofstream>		iterators_original;
+
+			type_file		os_std = get_folder_std().get_file("iterators");
+			type_file		os_ft = get_folder_ft().get_file("iterators");
+
+			iterators_original::constructors(*os_std, random_value, replacement);
+			iterators_custom::constructors(*os_ft, random_value, replacement);
+			iterators_original::accessors(*os_std, random_value, replacement);
+			iterators_custom::accessors(*os_ft, random_value, replacement);
+			iterators_original::increment_decrement(*os_std, random_value, replacement);
+			iterators_custom::increment_decrement(*os_ft, random_value, replacement);
+			iterators_original::comparison(*os_std, random_value, replacement);
+			iterators_custom::comparison(*os_ft, random_value, replacement);
+		}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////
 //

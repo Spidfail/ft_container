@@ -6,25 +6,25 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 14:11:47 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/25 21:16:57 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/27 00:38:55 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef ITERATOR_HPP
 # define ITERATOR_HPP
 
 #include "IteratorTraits.hpp"
-#include "Vector.hpp"
 #include <iterator>
-
 
 namespace ft {
 
-	template < typename T  >
+	template < typename T, class Allocator >
+		class vector;
+
+	template < typename T, class Allocator = std::allocator<T> >
 		class IteratorVector {
 
-			typedef		typename	ft::vector< T >					container_type;
+			typedef		typename	ft::vector< T, Allocator >					container_type;
 
 			public :
 				typedef		typename	container_type::difference_type		difference_type;
@@ -35,27 +35,15 @@ namespace ft {
 
 			private:
 				pointer		_position;
-				friend bool					operator==(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-				friend bool					operator!=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-				friend bool					operator<(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-				friend bool					operator>(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-				friend bool					operator<=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-				friend bool					operator>=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
-
-				friend IteratorVector<T>	operator+(const IteratorVector<T> &lhs, const int &n);
-				friend IteratorVector<T>	operator+(const int &n, const IteratorVector<T> &lhs);
-				friend IteratorVector<T>	operator-(const IteratorVector<T> &lhs, const int &n);
-				friend IteratorVector<T>	operator-(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs);
 
 			public:
 				IteratorVector() : _position(NULL) { }
-
+				IteratorVector(const pointer &pt_source) : _position(pt_source) { }
 				IteratorVector(const IteratorVector &source) : _position(source._position) { }
-
 				~IteratorVector() { }
-
 				IteratorVector	&operator=(const IteratorVector &source) {
 					this->_position = source._position;
+					return *this;
 				}
 
 				/////////////////////////////////////////////////////////////////////////////////////////
@@ -63,117 +51,82 @@ namespace ft {
 				//
 				////////////////////////////////Member access////////////////////////////////////////////
 				//
-				reference		operator[](typename container_type::size_type index) {
-					return _position[index];
-				}
+				reference		operator[](typename container_type::size_type index) { return _position[index]; }
+				reference		operator*() { return *_position; }
+				pointer			operator->() { return _position; }
 
-				reference		operator*() {
-					return *_position;
-				}
-
-				pointer			operator->() {
-					return _position;
-				}
 				////////////////////////////////Increment/Decrement//////////////////////////////////////
 				//
 				IteratorVector	&operator++(int) {
 					_position++;
 					return *this;
 				}
-
 				IteratorVector	operator++() {
-					IteratorVector	new_it(this);
+					IteratorVector	new_it(*this);
 					_position++;
 					return new_it;
 				}
-
 				IteratorVector	&operator--(int) {
 					_position--;
 					return *this;
 				}
-
 				IteratorVector	operator--() {
-					IteratorVector	cp(this);
+					IteratorVector	cp(*this);
 					_position--;
 					return cp;
 				}
 
+				/////////////////////////////////Comparison Operators///////////////////////////////////////
+				//
+				friend bool	operator==(const IteratorVector &lhs, const IteratorVector &rhs) {
+					return (lhs._position == rhs._position);
+				}
+				friend bool	operator!=(const IteratorVector &lhs, const IteratorVector &rhs) {
+					return (lhs._position != rhs._position);
+				}
+				friend bool	operator<(const IteratorVector &lhs, const IteratorVector &rhs) {
+					return (lhs._position < rhs._position);
+				}
+				friend bool	operator>(const IteratorVector &lhs, const IteratorVector &rhs) {
+					return (lhs._position > rhs._position);
+				}
+				friend bool	operator<=(const IteratorVector &lhs, const IteratorVector &rhs){
+					return (lhs._position <= rhs._position);
+				}
+				friend bool	operator>=(const IteratorVector &lhs, const IteratorVector &rhs){
+					return (lhs._position >= rhs._position);
+				}
+
+				/////////////////////////////////Arithmetic Operators///////////////////////////////////////
+				//
+				friend IteratorVector	operator+(const IteratorVector &lhs, const int &n) {
+					IteratorVector	cp(lhs._position + n);
+					return cp;
+				}
+				friend IteratorVector	operator+(const int &n, const IteratorVector &lhs) {
+					IteratorVector	cp(lhs._position + n);
+					return cp;
+				}
+				friend IteratorVector	operator-(const IteratorVector &lhs, const int &n) {
+					IteratorVector	cp(lhs._position - n);
+					return cp;
+				}
+				friend IteratorVector	operator-(const IteratorVector &lhs, const IteratorVector &rhs) {
+					IteratorVector	cp(lhs._position - rhs._position);
+				}
+
+				/////////////////////////////////Assignation Operators//////////////////////////////////////
+				//
+				friend IteratorVector	&operator+=(IteratorVector &lhs, const int &n) {
+					lhs = lhs + n;
+					return lhs;
+				}
+				friend IteratorVector	&operator-=(IteratorVector &lhs, const int &n) {
+					lhs = lhs - n;
+					return lhs;
+				}
+
 		};
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////COMPARISON OPERATORS///////////////////////////////////////////////
-	//
-	template < typename T >
-	bool	operator==(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs) {
-		return (lhs._position == rhs._position);
-	}
-
-	template < typename T >
-	bool	operator!=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs) {
-		return (lhs._position != rhs._position);
-	}
-
-	template < typename T >
-	bool	operator<(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs) {
-		return (lhs._position < rhs._position);
-	}
-
-	template < typename T >
-	bool	operator>(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs) {
-		return (lhs._position > rhs._position);
-	}
-
-	template < typename T >
-	bool	operator<=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs){
-		return (lhs._position <= rhs._position);
-	}
-
-	template < typename T >
-	bool	operator>=(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs){
-		return (lhs._position >= rhs._position);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////COMPARISON OPERATORS///////////////////////////////////////////////
-	//
-	template < typename T >
-	IteratorVector<T>	operator+(const IteratorVector<T> &lhs, const int &n) {
-		IteratorVector<T>	cp(lhs._position + n);
-		return cp;
-	}
-
-	template < typename T >
-	IteratorVector<T>	operator+(const int &n, const IteratorVector<T> &lhs) {
-		IteratorVector<T>	cp(lhs._position + n);
-		return cp;
-	}
-
-	template < typename T >
-	IteratorVector<T>	operator-(const IteratorVector<T> &lhs, const int &n) {
-		IteratorVector<T>	cp(lhs._position - n);
-		return cp;
-	}
-
-	template < typename T >
-	IteratorVector<T>	operator-(const IteratorVector<T> &lhs, const IteratorVector<T> &rhs) {
-		IteratorVector<T>	cp(lhs._position - rhs._position);
-	}
-
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////ASSIGNATION OPERATORS///////////////////////////////////////////////
-	//
-	template < typename T >
-	IteratorVector<T>	&operator+=(IteratorVector<T> &lhs, const int &n) {
-		lhs = lhs + n;
-		return lhs;
-	}
-
-	template < typename T >
-	IteratorVector<T>	&operator-=(IteratorVector<T> &lhs, const int &n) {
-		lhs = lhs - n;
-		return lhs;
-	}
 }
 
 #endif

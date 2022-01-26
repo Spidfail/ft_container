@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/25 21:16:47 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/26 23:33:00 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,55 +20,102 @@
 #include <stdexcept>
 #include <algorithm>
 
-template < typename T >
-class IteratorVector;
-
+#include "IteratorVector.hpp"
 
 namespace ft {
 
 	template < typename T, class Allocator = std::allocator<T> >
 		class vector {
 
-			friend class IteratorVector< T >;
-
 			public:
-				////////////////////////////////////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////////////////////////////////////////////////
+				/////////////////////////////////////Member type////////////////////////////////////////////
 				// Member types of Vector
 
-				typedef				T													value_type;
-				typedef				Allocator											allocator_type;
-				typedef				std::size_t											size_type;
-				typedef				std::ptrdiff_t										difference_type;
+				typedef				T														value_type;
+				typedef				Allocator												allocator_type;
+				typedef				std::size_t												size_type;
+				typedef				std::ptrdiff_t											difference_type;
+				typedef				value_type&												reference;
+				typedef				const value_type&										const_reference;
+				typedef	typename	Allocator::pointer										pointer;
+				typedef	typename	Allocator::const_pointer								const_pointer;
+				typedef				ft::IteratorVector<value_type, allocator_type>			iterator;
+				typedef				const ft::IteratorVector<value_type, allocator_type>	const_iterator;
+				typedef				std::reverse_iterator<iterator>							reverse_iterator;
+				typedef				const std::reverse_iterator<iterator>					const_reverse_iterator;
 
-				typedef				value_type&											reference;
-				typedef				const value_type&									const_reference;
+			private:
+				pointer			_start;
+				pointer			_last;
+				pointer			_end;
+				size_type		_size;
+				size_type		_capacity;
+				allocator_type	_alloc;
 
-				typedef	typename	Allocator::pointer									pointer;
-				typedef	typename	Allocator::const_pointer							const_pointer;
+				//////////////////////////////Private Member Methods////////////////////////////////////////
 
-				typedef				std::iterator<value_type, allocator_type>			iterator;
-				typedef				const std::iterator<value_type, allocator_type>		const_iterator;
-				typedef				std::reverse_iterator<iterator>						reverse_iterator;
-				typedef				const std::reverse_iterator<iterator>				const_reverse_iterator;
+				void			_copy( const pointer start, const pointer end, pointer target ) const {
+					for (size_type i = 0 ; start + i != end ; i++)
+						target[i] = start[i];
+				}
 
-				////////////////////////////////////////////////////////////////////////////////////////////
+				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
+					this->_start = pointer;
+					this->_last = pointer + size;
+					this->_end = pointer + capacity;
+					this->_size = size;
+					this->_capacity = capacity;
+				}
+
+				void			_set_size( size_type new_size ) {
+					if (new_size <= _capacity)
+						_set_members(_start, new_size, _capacity);
+				}
+
+				void			_set_capacity( size_type new_capacity ) {
+					if (new_capacity >= _size)
+						_set_members(_start, _capacity, new_capacity);
+				}
+
+				void			_reset_members() {
+					this->_start = NULL;
+					this->_last = NULL;
+					this->_end = NULL;
+					this->_size = 0;
+					this->_capacity = 0;
+				}
+
+				void			_destroy(pointer pos, size_type n = 1) {
+					if (pos - _start + (n - 1) > _size)
+						return ;
+					while (pos != _start + n && pos != _last)
+						_alloc.destroy(pos++);
+				}
+
+				void			_destroy_all() {
+					for (pointer temp = _start ; temp != _end ; temp++)
+						_alloc.destroy(temp);
+				}
+
+				void			_erase_all() {
+					if (_start == NULL || _size == 0)
+						return ;
+					_destroy_all();
+					_alloc.deallocate(_start, _capacity);
+					_reset_members();
+				}
+
+			public:
 				/////////////////////////////////////Member functions///////////////////////////////////////
-				//
 				//// CONSTRUCTORS
-
 				 vector() :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc() {
-					}
+					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc() { }
 
 				explicit vector( const allocator_type &alloc ) :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) {
-					}
+					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) { }
 
 				vector( const vector<value_type> &target, const allocator_type &alloc = allocator_type() ) :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) {
-						*this = target;
-					}
+					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) { *this = target; }
 
 				vector( size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type() ) :
 					_start(NULL), _last(NULL), _size(n), _capacity(n), _alloc(alloc) {
@@ -85,7 +132,7 @@ namespace ft {
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// MEMBERS OPERATORS
-				//
+
 				vector		&operator=( const vector<value_type> &source ) {
 					pointer		temp = _alloc.allocate(source.size());
 					_copy(source._start, source._start + source.size(), temp);
@@ -97,84 +144,49 @@ namespace ft {
 				// See : Accessors for `operator[]`
 				//
 				////////////////////////////////////////////////////////////////////////////////////////////
-				//
 				//// ACCESSORS : operator[], at(), front(), back(), data()
-				//
-				reference		operator[]( size_type pos ) {
-					return *(this->_start + pos);
-				}
 
-				const_reference	operator[]( size_type pos ) const {
-					return *(this->_start + pos);
-				}
+				reference		operator[]( size_type pos ) { return *(this->_start + pos); }
+				const_reference	operator[]( size_type pos ) const { return *(this->_start + pos); }
 
 				reference		at( size_type pos ) {
 					if (pos < 0 || pos > _capacity)
 						throw(std::out_of_range("Out of range"));    // Need to test the exception message
 					return *(this->_start + pos);
 				}
-
 				const_reference	at( size_type pos ) const {
 					if (pos < 0 || pos > _capacity)
 						throw(std::out_of_range("Out of range"));
 					return *(this->_start + pos);
 				}
 
-				reference		front() {
-					return *this->_start;
-				}
+				reference		front() { return *this->_start; }
+				const_reference	front() const { return *this->_start; }
 
-				const_reference	front() const {
-					return *this->_start;
-				}
-
-				reference		back() {
-					return *this->_last;
-				}
-
-				const_reference	back() const {
-					return *this->_last;
-				}
+				reference		back() { return *this->_last; }
+				const_reference	back() const { return *this->_last; }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
-				//
 				//// ITERATOS : begin, end(), rbegin(), rend()
 				//
-				iterator begin() {
-				}
-
-				const iterator begin() const {
-				}
+				iterator begin() { return iterator(_start); }
+				const iterator begin() const { return iterator(_start); }
 				
-				iterator end() {
-				}
+				iterator end() { return iterator(_end); }
+				const iterator end() const { return iterator(_end); }
 
-				const iterator end() const {
-				}
+				reverse_iterator rbegin() { }
+				const iterator rbegin() const { }
 
-				iterator rbegin() {
-				}
-
-				const iterator rbegin() const {
-				}
-
-				iterator rend() {
-				}
-
-				const iterator rend() const {
-				}
+				reverse_iterator rend() { }
+				const iterator rend() const { }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
-				//
 				//// CAPACITY : empty(), size(), max_size(), reserve(), capacity()
 
-				bool		empty() const {
-					return !this->_size;
-				}
+				bool		empty() const { return !this->_size; }
 
-				size_type	size() const {
-					return this->_size;
-				}
+				size_type	size() const { return this->_size; }
 
 				void		reserve( size_type new_cap ) {
 					if (new_cap > this->max_size()) {
@@ -189,16 +201,11 @@ namespace ft {
 					}
 				}
 
-				size_type	max_size() const throw() {
-					return std::numeric_limits<size_type>::max() / sizeof(value_type);
-				}
+				size_type	max_size() const throw() { return std::numeric_limits<size_type>::max() / sizeof(value_type); }
 
-				size_type	capacity() const {
-					return this->_capacity;
-				}
+				size_type	capacity() const { return this->_capacity; }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
-				//
 				//// MODIFIERS: empty(), size(), max_size(), reserve(), capacity()
 
 				void	assign( size_type count, const value_type &value ) {
@@ -262,75 +269,10 @@ namespace ft {
 						// miss erase for the rest
 				}
 
-
 				////////////////////////////////////////////////////////////////////////////////////////////
-				//
 				//// ALLOCATOR: get_allocator
 
-				allocator_type get_allocator() const {
-					return _alloc;
-				}
-
-				////////////////////////////////////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////////////////////////////////////////////////
-			private:
-				pointer			_start;
-				pointer			_last;
-				pointer			_end;
-				size_type		_size;
-				size_type		_capacity;
-				allocator_type	_alloc;
-
-				void			_copy( const pointer start, const pointer end, pointer target ) const {
-					for (size_type i = 0 ; start + i != end ; i++)
-						target[i] = start[i];
-				}
-
-				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
-					this->_start = pointer;
-					this->_last = pointer + size;
-					this->_end = pointer + capacity;
-					this->_size = size;
-					this->_capacity = capacity;
-				}
-
-				void			_set_size( size_type new_size ) {
-					if (new_size <= _capacity)
-						_set_members(_start, new_size, _capacity);
-				}
-
-				void			_set_capacity( size_type new_capacity ) {
-					if (new_capacity >= _size)
-						_set_members(_start, _capacity, new_capacity);
-				}
-
-				void			_reset_members() {
-					this->_start = NULL;
-					this->_last = NULL;
-					this->_end = NULL;
-					this->_size = 0;
-					this->_capacity = 0;
-				}
-
-				void			_destroy(pointer pos, size_type n = 1) {
-					if (pos - _start + (n - 1) > _size)
-						return ;
-					while (pos != _start + n && pos != _last)
-						_alloc.destroy(pos++);
-				}
-
-				void			_destroy_all() {
-					for (pointer temp = _start ; temp != _end ; temp++)
-						_alloc.destroy(temp);
-				}
-
-				void			_erase_all() {
-					if (_start == NULL || _size == 0)
-						return ;
-					_destroy_all();
-					_alloc.deallocate(_start, _capacity);
-					_reset_members();
-				}
+				allocator_type get_allocator() const { return _alloc; }
 
 		};
 
