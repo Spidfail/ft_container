@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 14:11:47 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/27 00:38:55 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/31 11:48:17 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ namespace ft {
 					return *this;
 				}
 				IteratorVector	operator++() {
-					IteratorVector	new_it(*this);
+					IteratorVector	cp(*this);
 					_position++;
-					return new_it;
+					return cp;
 				}
 				IteratorVector	&operator--(int) {
 					_position--;
@@ -90,10 +90,10 @@ namespace ft {
 				friend bool	operator>(const IteratorVector &lhs, const IteratorVector &rhs) {
 					return (lhs._position > rhs._position);
 				}
-				friend bool	operator<=(const IteratorVector &lhs, const IteratorVector &rhs){
+				friend bool	operator<=(const IteratorVector &lhs, const IteratorVector &rhs) {
 					return (lhs._position <= rhs._position);
 				}
-				friend bool	operator>=(const IteratorVector &lhs, const IteratorVector &rhs){
+				friend bool	operator>=(const IteratorVector &lhs, const IteratorVector &rhs) {
 					return (lhs._position >= rhs._position);
 				}
 
@@ -111,8 +111,8 @@ namespace ft {
 					IteratorVector	cp(lhs._position - n);
 					return cp;
 				}
-				friend IteratorVector	operator-(const IteratorVector &lhs, const IteratorVector &rhs) {
-					IteratorVector	cp(lhs._position - rhs._position);
+				friend long				operator-(const IteratorVector &lhs, const IteratorVector &rhs) {
+					return lhs._position - rhs._position;
 				}
 
 				/////////////////////////////////Assignation Operators//////////////////////////////////////

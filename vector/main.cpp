@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/27 00:54:04 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/31 17:00:14 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "VectorTester.hpp"
 #include "ITester.hpp"
 #include "IteratorVector.hpp"
+#include <typeinfo>
 
 int		main(int ac, char **av) {
 
@@ -34,13 +35,15 @@ int		main(int ac, char **av) {
 	test->launch_iterators();
 
 	ft::vector<int>		newvec(10, 20);
+	std::vector<int>		newvec2(10, 20);
 	ft::vector<int>::iterator	it = newvec.begin();
-	ft::vector<int>::iterator	it2 = newvec.begin();
+	ft::vector<int>::iterator	it2 = newvec.end();
+	std::vector<int>::iterator	it3 = newvec2.begin();
+	std::vector<int>::iterator	it4 = newvec2.end();
 
+	std::cout << typeid(it3 - it4).name() << std::endl;
+	std::cout << *it3 << " " << ((it3 += 4) - newvec2.begin()) << std::endl;
 
-	for ( ; it != newvec.end() ; it++) {
-		std::cout << *it << std::endl;
-	}
 
 	delete test;
 

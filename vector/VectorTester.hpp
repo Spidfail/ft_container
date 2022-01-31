@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/27 00:50:30 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/31 19:26:23 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -528,9 +528,11 @@ class VectorTester : public ft::ITester {
 					Ct	vecfill(10, random_value);
 					typename Ct::iterator it;
 					it = vecfill.begin();
-					Ct	vecfill2(10, replacement);
+
+					Ct	vecfill2(20, replacement);
 					vecfill = vecfill2;
 					typename Ct::iterator it2 = vecfill.begin();
+
 					os << std::boolalpha << (it == it2) << " ";
 				}
 				os << std::endl;
@@ -559,44 +561,49 @@ class VectorTester : public ft::ITester {
 						os << *it << " "; *it = replacement; }
 					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
 						os << *it << " ";
+					os << std::endl;
 				} {
 					Ct	vecfill(10, random_value);
 					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; ++it) {
 						os << *it << " "; *it = replacement; }
 					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; ++it)
 						os << *it << " ";
+					os << std::endl;
+				} {
+					os << " DECREMENT : org_random [" << random_value << "] - replacement [" << replacement << std::endl;;
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it != vecfill.begin(); --it) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it != vecfill.begin(); --it)
+						os << *it << " ";
+					os << std::endl;
+				} 
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++)
+						os << *it << " ";
+				}
+				{
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it)
+						os << *it << " ";
 				} {
 					Ct	vecfill(10, random_value);
-					for (typename Ct::iterator it = vecfill.end() ; it != vecfill.begin() ; --it) {
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--) {
 						os << *it << " "; *it = replacement; }
-					for (typename Ct::iterator it = vecfill.end() ; it != vecfill.begin() ; --it)
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--)
 						os << *it << " ";
-				} 
-				//{
-					// Ct	vecfill(10, random_value);
-					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++) {
-						// os << *it << " "; *it = replacement; }
-					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++)
-						// os << *it << " ";
-				// } {
-					// Ct	vecfill(10, random_value);
-					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it) {
-						// os << *it << " "; *it = replacement; }
-					// for (typename Ct::iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it)
-						// os << *it << " ";
-				// } {
-					// Ct	vecfill(10, random_value);
-					// for (typename Ct::iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--) {
-						// os << *it << " "; *it = replacement; }
-					// for (typename Ct::iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; it--)
-						// os << *it << " ";
-				// } {
-					// Ct	vecfill(10, random_value);
-					// for (typename Ct::iterator it = vecfill.rend() ; it != vecfill.rbegin() ; --it) {
-						// os << *it << " "; *it = replacement; }
-					// for (typename Ct::iterator it = vecfill.rend() ; it != vecfill.rbegin() ; --it)
-						// os << *it << " ";
-				// }
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; --it) {
+						os << *it << " "; *it = replacement; }
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it != vecfill.rbegin() ; --it)
+						os << *it << " ";
+				}
 				os << std::endl;
 			}
 
@@ -606,58 +613,111 @@ class VectorTester : public ft::ITester {
 					for (typename Ct::iterator it = vecfill.begin(), it2 = it ; it != vecfill.end() && (it == it2) ; it++, it2++) {
 						os << *it << " "; *it = replacement; os << (it == it2) << " "; }
 					for (typename Ct::iterator it = vecfill.begin(), it2 = it + 1 ; it != vecfill.end() && it != it2 ; it++, it2++) {
-						os << *it << " " << (it != it2) << " ";
-					}
+						os << *it << " " << (it != it2) << " "; }
 				} {
 					Ct	vecfill(10, random_value);
-					for (typename Ct::iterator it = vecfill.begin() ; it < vecfill.end() ; it++) {
+					for (typename Ct::iterator it = vecfill.begin() ; it < vecfill.end() ; it++)
 						os << *it << " ";
-					}
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it < vecfill.rend() ; it++) {
+						os << *it << " "; } }
+				{
+
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.begin() ; it <= vecfill.end() - 1 ; it++)
+						os << *it << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it <= vecfill.rend() - 1 ; it++) {
+						os << *it << " "; }
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it > vecfill.begin() ; it--)
+						os << *it << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it > vecfill.rbegin() ; it--) {
+						os << *it << " "; }
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::iterator it = vecfill.end() - 1 ; it >= vecfill.begin() ; it--)
+						os << *it << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					for (typename Ct::reverse_iterator it = vecfill.rend() - 1 ; it >= vecfill.rbegin(); it--) {
+						os << *it << " "; }
 				}
-				//{
-				// Ct	vecfill(10, random_value);
-				// for (typename Ct::iterator it = vecfill.rbegin() ; it < vecfill.rend() ; it++) {
-				// os << *it << " ";
-				// } }
+				os << std::endl;
+			}
+
+			static void		arithmetic(Os &os, type_value random_value, type_value replacement) {
 				{
-					Ct	vecfill(10, random_value);
-					for (typename Ct::iterator it = vecfill.begin() ; it <= vecfill.end() - 1 ; it++) {
-						os << *it << " ";
-					}
-				} 
-				// {
-				// Ct	vecfill(10, random_value);
-				// for (typename Ct::iterator it = vecfill.rbegin() ; it <= vecfill.rend() - 1 ; it++) {
-				// os << *it << " ";
-				// }
-				// }
-				{
-					Ct	vecfill(10, random_value);
-					for (typename Ct::iterator it = vecfill.end() - 1 ; it > vecfill.begin() ; it--) {
-						os << *it << " ";
-					}
+					Ct	vecfill(20, random_value);
+					typename Ct::iterator	it = vecfill.begin();
+					for (size_type i = 0 ; (it + i) != vecfill.end() ; i++) {
+						os << *(it + i) << " "; os << (*(it + i) = replacement); os << *(it + i) << " ";
+						os << (it + i) - vecfill.begin() << " || " << typeid((it + i) - vecfill.begin()).name(); }
+				} {
+					Ct	vecfill(20, replacement);
+					typename Ct::iterator	it = vecfill.begin();
+					for (size_type i = vecfill.size() - 1 ; (i + it) >= vecfill.begin() ; i-- ) {
+						os << *(i + it) << " "; os << (*(i + it) = random_value); os << *(i + it) << " "; 
+						os << (it + i) - vecfill.begin() << " || " << typeid((it + i) - vecfill.begin()).name(); }
+				} {
+					Ct	vecfill(20, random_value);
+					typename Ct::iterator	it = vecfill.end() - 1;
+					for (size_type i = 0 ; i < vecfill.size() ; i++) {
+						os << *(it - i) << " "; os << (*(it - i) = replacement); os << *(it - i) << " ";
+						os << (it - i) - vecfill.begin() << " || " << typeid((it - i) - vecfill.begin()).name(); }
+				} {
+					Ct	vecfill(20, random_value);
+					typename Ct::reverse_iterator	it = vecfill.rbegin();
+					for (size_type i = 0 ; (it + i) != vecfill.rend() ; i++) {
+						os << *(it + i) << " "; os << (*(it + i) = replacement); os << *(it + i) << " ";
+						os << (it + i) - vecfill.rbegin() << " || " << typeid((it + i) - vecfill.rbegin()).name(); }
+				} {
+					Ct	vecfill(20, replacement);
+					typename Ct::reverse_iterator	it = vecfill.rbegin();
+					for (size_type i = vecfill.size() - 1 ; (i + it) >= vecfill.rbegin() ; i-- ) {
+						os << *(i + it) << " "; os << (*(i + it) = random_value); os << *(i + it) << " "; 
+						os << (it + i) - vecfill.rbegin() << " || " << typeid((it + i) - vecfill.rbegin()).name(); }
+				} {
+					Ct	vecfill(20, random_value);
+					typename Ct::reverse_iterator	it = vecfill.rend() - 1;
+					for (size_type i = 0 ; i < vecfill.size() ; i++) {
+						os << *(it - i) << " "; os << (*(it - i) = replacement); os << *(it - i) << " ";
+						os << (it - i) - vecfill.rbegin() << " || " << typeid((it - i) - vecfill.rbegin()).name(); }
 				}
-				//{
-				// Ct	vecfill(10, random_value);
-				// for (typename Ct::iterator it = vecfill.rend() - 1 ; it > vecfill.rbegin() ; it++) {
-				// os << *it << " ";
-				// }
-				// }
+				os << std::endl;
+			}
+
+			static void		assignation(Os &os, type_value random_value, type_value replacement) {
 				{
-					Ct	vecfill(10, random_value);
-					for (typename Ct::iterator it = vecfill.end() - 1 ; it >= vecfill.begin() ; it++) {
-						os << *it << " ";
-					}
-				} 
-				// {
-				// Ct	vecfill(10, random_value);
-				// for (typename Ct::iterator it = vecfill.rend() - 1 ; it >= vecfill.rbegin() - 1 ; it++) {
-				// os << *it << " ";
-				// }
-				// }
+					Ct	vecfill(21, random_value);
+					typename Ct::iterator	it = vecfill.begin();
+					for (int i = 2, j = 0, result = 0 ; j < 5 ; j++, i++, result = *it + (*(it - 1) + *(it - 2))) {
+						os << *(it += i) << " " ; *it = replacement ; os << *it << " i = " << i << " " << result ;}
+				} {
+					Ct	vecfill(21, random_value);
+					typename Ct::iterator	it = vecfill.end() - 1;
+					for (int i = 2, j = 0 ; j < 10 ; j++ ) {
+						os << *(it -= i) << " " ; *it = replacement ; os << *it << " i = " << i << " "; }
+				} {
+					Ct	vecfill(21, random_value);
+					typename Ct::reverse_iterator	it = vecfill.rbegin();
+					for (int i = 2, j = 0, result = 0 ; j < 5 ; j++, i++, result = *it + (*(it - 1) + *(it - 2))) {
+						os << *(it += i) << " " ; *it = replacement ; os << *it << " i = " << i << " " << result ;}
+				} {
+					Ct	vecfill(21, random_value);
+					typename Ct::reverse_iterator	it = vecfill.rend() - 1;
+					for (int i = 2, j = 0 ; j < 10 ; j++ ) {
+						os << *(it -= i) << " " ; *it = replacement ; os << *it << " i = " << i << " "; }
+				}
 				os << std::endl;
 			}
 		};
+
 
 		void				launch_iterators() {
 			ft::Random<type_value>	random;
@@ -677,6 +737,10 @@ class VectorTester : public ft::ITester {
 			iterators_custom::increment_decrement(*os_ft, random_value, replacement);
 			iterators_original::comparison(*os_std, random_value, replacement);
 			iterators_custom::comparison(*os_ft, random_value, replacement);
+			iterators_original::arithmetic(*os_std, random_value, replacement);
+			iterators_custom::arithmetic(*os_ft, random_value, replacement);
+			iterators_original::assignation(*os_std, random_value, replacement);
+			iterators_custom::assignation(*os_ft, random_value, replacement);
 		}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////

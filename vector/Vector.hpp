@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/26 23:33:00 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/01/31 18:36:57 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <algorithm>
 
 #include "IteratorVector.hpp"
+#include "ReverseIteratorVector.hpp"
 
 namespace ft {
 
@@ -31,18 +32,18 @@ namespace ft {
 				/////////////////////////////////////Member type////////////////////////////////////////////
 				// Member types of Vector
 
-				typedef				T														value_type;
-				typedef				Allocator												allocator_type;
-				typedef				std::size_t												size_type;
-				typedef				std::ptrdiff_t											difference_type;
-				typedef				value_type&												reference;
-				typedef				const value_type&										const_reference;
-				typedef	typename	Allocator::pointer										pointer;
-				typedef	typename	Allocator::const_pointer								const_pointer;
-				typedef				ft::IteratorVector<value_type, allocator_type>			iterator;
-				typedef				const ft::IteratorVector<value_type, allocator_type>	const_iterator;
-				typedef				std::reverse_iterator<iterator>							reverse_iterator;
-				typedef				const std::reverse_iterator<iterator>					const_reverse_iterator;
+				typedef				T																value_type;
+				typedef				Allocator														allocator_type;
+				typedef				std::size_t														size_type;
+				typedef				std::ptrdiff_t													difference_type;
+				typedef				value_type&														reference;
+				typedef				const value_type&												const_reference;
+				typedef	typename	Allocator::pointer												pointer;
+				typedef	typename	Allocator::const_pointer										const_pointer;
+				typedef				ft::IteratorVector<value_type, allocator_type>					iterator;
+				typedef				const ft::IteratorVector<value_type, allocator_type>			const_iterator;
+				typedef				ft::ReverseIteratorVector<value_type, allocator_type>			reverse_iterator;
+				typedef				const ft::ReverseIteratorVector<value_type, allocator_type>		const_reverse_iterator;
 
 			private:
 				pointer			_start;
@@ -175,11 +176,11 @@ namespace ft {
 				iterator end() { return iterator(_end); }
 				const iterator end() const { return iterator(_end); }
 
-				reverse_iterator rbegin() { }
-				const iterator rbegin() const { }
+				reverse_iterator rbegin() { return reverse_iterator(_end - 1); }
+				const iterator rbegin() const { return reverse_iterator(_end - 1); }
 
-				reverse_iterator rend() { }
-				const iterator rend() const { }
+				reverse_iterator rend() { return reverse_iterator(_start - 1); }
+				const iterator rend() const { return reverse_iterator(_start - 1); }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// CAPACITY : empty(), size(), max_size(), reserve(), capacity()
