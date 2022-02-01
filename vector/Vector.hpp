@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/31 18:36:57 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/01 14:40:02 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ namespace ft {
 				}
 
 				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
+					this->_size = size;
+					this->_capacity = capacity;
 					this->_start = pointer;
 					this->_last = pointer + size;
 					this->_end = pointer + capacity;
-					this->_size = size;
-					this->_capacity = capacity;
 				}
 
 				void			_set_size( size_type new_size ) {
@@ -110,21 +110,35 @@ namespace ft {
 				/////////////////////////////////////Member functions///////////////////////////////////////
 				//// CONSTRUCTORS
 				 vector() :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc() { }
+					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc() { }
 
 				explicit vector( const allocator_type &alloc ) :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) { }
+					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc) { }
 
 				vector( const vector<value_type> &target, const allocator_type &alloc = allocator_type() ) :
-					_start(NULL), _last(NULL), _size(0), _capacity(0), _alloc(alloc) { *this = target; }
+					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc)
+					{ *this = target; }
 
-				vector( size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type() ) :
-					_start(NULL), _last(NULL), _size(n), _capacity(n), _alloc(alloc) {
-						this->_start = this->_alloc.allocate(n);
-						for (size_type i = 0 ; i < n ; i++)
-							this->_alloc.construct(this->_start + i, val);
-						_set_members(_start, n, n);
-					}
+				vector( size_type n, const value_type &val = value_type(),
+						const allocator_type &alloc = allocator_type() ) :
+						_start(NULL), _last(NULL), _end(NULL), _size(n), _capacity(n), _alloc(alloc) {
+					this->_start = this->_alloc.allocate(n);
+
+					for (size_type i = 0 ; i < n ; i++)
+						this->_alloc.construct(this->_start + i, val);
+					_set_members(_start, n, n);
+				}
+
+				template <class InputIterator>
+				vector ( InputIterator first, InputIterator last,
+						const allocator_type& alloc = allocator_type() ) :
+						_start(NULL), _last(NULL), _end(NULL), _size(last - first),
+						_capacity(last - first), _alloc(alloc) {
+					size_type	new_size = last - first;
+					pointer		new_content = this->_alloc.allocate(new_size);
+					for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
+						_alloc.construct(new_content + i, *first);
+				}
 
 				~vector() {
 					this->_erase_all();
@@ -212,14 +226,21 @@ namespace ft {
 				void	assign( size_type count, const value_type &value ) {
 					pointer		temp = this->_alloc.allocate(count);
 					_erase_all();
-					for (size_type i = 0; i < count ; i++) {
+					for (size_type i = 0; i < count ; i++)
 						temp[i] = value;
-					}
 					_set_members(temp, count, count);
 				}
 
-				// template< class InputIt >								// Iterator form
-					// void assign( InputIt first, InputIt last );
+				template< class InputIt >								// Iterator form
+				void assign( InputIt first, InputIt last ) {
+					size_type	new_size = last - first;
+					pointer		new_content = this->_alloc.allocate(new_size);
+
+					for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
+						_alloc.construct(new_content + i, first);
+					this->_erase_all();
+					this->_set_members(new_content, new_size, new_size);
+				}
 
 				void	clear() {
 					_destroy_all();
@@ -228,12 +249,8 @@ namespace ft {
 
 				// insert ()
 
-				iterator erase( iterator pos ) {
-					_destroy(pos);
-					while (pos != _end)
-						pos = pos + 1;
-					_set_size(_size - 1);
-				}
+				// iterator erase( iterator pos ) {
+				// }
 
 				void	push_back( const T& value ) {
 					if (_capacity == 0)

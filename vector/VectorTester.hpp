@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/31 19:26:23 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/01 14:32:47 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,6 +386,30 @@ class VectorTester : public ft::ITester {
 					vecfill.assign(20, replacement);
 					vecfill.assign(30, replacement);
 					for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vecfill[i] << " "; }
+				} { // range form
+					Ct	vec;
+					Ct	vecfill(20, random_value);
+					for (size_type i = 2 ; i < vecfill.size() + 1 ; i++) {
+						vec.assign(vecfill.begin(), vecfill.begin() + i);
+						os << *(vecfill.begin() + i) << " "; }
+					for (typename Ct::iterator it = vecfill.begin() ;
+							it != vecfill.end(); it++)
+						os << *it << " ";
+				} {
+					Ct	vec;
+					Ct	vecfill(20, replacement);
+					for (size_type i = vecfill.size() - 1 ; i >= 0 ; i--) {
+						vec.assign(vecfill.begin(), vecfill.begin() + i);
+						os << *(vecfill.begin() + i) << " "; }
+					for (typename Ct::iterator it = vecfill.begin() ;
+							it != vecfill.end(); it++)
+						os << *it << " ";
+				} {
+					Ct	vecfill(20, random_value);
+					vecfill.assign(vecfill.begin(), vecfill.end());
+					for (typename Ct::iterator it = vecfill.begin() ;
+							it != vecfill.end(); it++)
+						os << *it << " ";
 				}
 				os << std::endl;
 			}

@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/31 17:00:14 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/01 20:11:34 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "VectorTester.hpp"
 #include "ITester.hpp"
 #include "IteratorVector.hpp"
+#include "IsIntegral.hpp"
 #include <typeinfo>
 
 int		main(int ac, char **av) {

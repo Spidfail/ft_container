@@ -1,28 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   little_tests.cpp                                   :+:      :+:    :+:   */
+/*   EnableIf.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/25 17:05:48 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/01 21:09:14 by guhernan         ###   ########.fr       */
+/*   Created: 2022/02/01 21:10:27 by guhernan          #+#    #+#             */
+/*   Updated: 2022/02/01 21:15:53 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector>
-#include <set>
-#include <algorithm>
-#include <iostream>
-#include "IsIntegral.hpp"
-#include <string>
+#ifndef ENABLE_IF_HPP
+# define ENABLE_IF_HPP
 
-int main() {
+namespace ft {
 
-	bool	b = true;
-	std::vector<int>	vec;
-	std::cout << std::boolalpha;
-	std::cout << ft::is_integral< std::vector<int> >::value << std::endl;
+	template <bool Cond, class T = void> struct enable_if;
+
+	template<> enable_if<>
 
 }
 
+#endif
