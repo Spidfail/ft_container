@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 17:05:48 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/02 18:38:36 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/02 21:57:07 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "IsIntegral.hpp"
 #include "EnableIf.hpp"
 #include <string>
+#include "Vector.hpp"
 
 int main() {
 
@@ -34,7 +35,11 @@ int main() {
 	std::cout << std::is_integral< int >::value << std::endl;
 	std::cout << std::is_integral< long int >::value << std::endl;
 
-	std::cout << ft::enable_if< ft::is_integral<int>::value , int >::type() << std::endl;
+	std::cout << ft::enable_if< ft::is_integral<int>::value, int >::type() << std::endl;
+	std::cout << std::enable_if< std::is_integral<int>::value, int >::type() << std::endl;
+
+	std::cout << ft::enable_if< ft::is_integral<bool>::value, int >::type() << std::endl;
+	std::cout << std::enable_if< std::is_integral<bool>::value, int >::type() << std::endl;
 
 }
 

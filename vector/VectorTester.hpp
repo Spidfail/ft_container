@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/01 14:32:47 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/02 23:08:34 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,16 +389,17 @@ class VectorTester : public ft::ITester {
 				} { // range form
 					Ct	vec;
 					Ct	vecfill(20, random_value);
-					for (size_type i = 2 ; i < vecfill.size() + 1 ; i++) {
+					for (size_type i = 2 ; i < vecfill.size() ; i++) {
 						vec.assign(vecfill.begin(), vecfill.begin() + i);
 						os << *(vecfill.begin() + i) << " "; }
+
 					for (typename Ct::iterator it = vecfill.begin() ;
 							it != vecfill.end(); it++)
 						os << *it << " ";
 				} {
 					Ct	vec;
 					Ct	vecfill(20, replacement);
-					for (size_type i = vecfill.size() - 1 ; i >= 0 ; i--) {
+					for (size_type i = vecfill.size() - 1 ; i > 0 ; i--) {
 						vec.assign(vecfill.begin(), vecfill.begin() + i);
 						os << *(vecfill.begin() + i) << " "; }
 					for (typename Ct::iterator it = vecfill.begin() ;
@@ -428,6 +429,20 @@ class VectorTester : public ft::ITester {
 				os << vecfill.capacity() << " ";
 				os << vecfill.size() << " ";
 				os << std::endl;
+			}
+
+			static void					insert(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct vecfill(10, random_value);
+					vecfill.reserve(20);
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.begin() + 10 ; it++) {
+						typename Ct::iterator it_tmp = vecfill.insert(it, replacement);
+						os << *it_tmp << " " << (vecfill.end() - it_tmp) << " ";
+					}
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << " ";
+					os << std::endl;
+				}
 			}
 
 			static void					push_back(Os &os, type_value random_value, type_value replacement) {
@@ -529,6 +544,8 @@ class VectorTester : public ft::ITester {
 			modifiers_custom::assign(*os_ft, random_value, replacement);
 			modifiers_original::clear(*os_std, random_value, replacement);
 			modifiers_custom::clear(*os_ft, random_value, replacement);
+			modifiers_original::insert(*os_std, random_value, replacement);
+			modifiers_custom::insert(*os_ft, random_value, replacement);
 			modifiers_original::push_back(*os_std, random_value, replacement);
 			modifiers_custom::push_back(*os_ft, random_value, replacement);
 			modifiers_original::pop_back(*os_std, random_value, replacement);
@@ -740,7 +757,21 @@ class VectorTester : public ft::ITester {
 				}
 				os << std::endl;
 			}
+
+			static void		methods(Os &os, type_value random_value, type_value replacement) {
+				{
+					Ct vec;
+					for (int i = 0 ; i < 20 ; i++) {
+						vec.reserve(i);
+						// ICI
+					}
+				}
+				{
+					Ct vec;
+				}
+			}
 		};
+
 
 
 		void				launch_iterators() {
@@ -753,6 +784,7 @@ class VectorTester : public ft::ITester {
 			type_file		os_std = get_folder_std().get_file("iterators");
 			type_file		os_ft = get_folder_ft().get_file("iterators");
 
+			try {
 			iterators_original::constructors(*os_std, random_value, replacement);
 			iterators_custom::constructors(*os_ft, random_value, replacement);
 			iterators_original::accessors(*os_std, random_value, replacement);
@@ -765,6 +797,10 @@ class VectorTester : public ft::ITester {
 			iterators_custom::arithmetic(*os_ft, random_value, replacement);
 			iterators_original::assignation(*os_std, random_value, replacement);
 			iterators_custom::assignation(*os_ft, random_value, replacement);
+			iterators_original::methods(*os_std, random_value, replacement);
+			iterators_custom::methods(*os_ft, random_value, replacement);
+			}
+			catch (std::exception &e) { std::cout << e.what() << std::endl; }
 		}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////

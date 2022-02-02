@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 14:11:47 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/31 11:48:17 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/02 23:00:45 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ namespace ft {
 					return cp;
 				}
 				friend IteratorVector	operator+(const int &n, const IteratorVector &lhs) {
-					IteratorVector	cp(lhs._position + n);
+					IteratorVector	cp(n + lhs._position);
 					return cp;
 				}
 				friend IteratorVector	operator-(const IteratorVector &lhs, const int &n) {

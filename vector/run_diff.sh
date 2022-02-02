@@ -6,7 +6,7 @@
 #    By: guhernan <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/21 15:29:11 by guhernan          #+#    #+#              #
-#    Updated: 2022/01/31 11:08:07 by guhernan         ###   ########.fr        #
+#    Updated: 2022/02/02 21:16:57 by guhernan         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,9 +33,9 @@ _MODIFIERS=_modifiers_
 _ITERATORS=_iterators_
 
 test_diff() {
-	if [ $(diff "${_DIR_STD_BEG}$1${_DIR_STD_END}${_NB}" "${_DIR_FT_BEG}$1${_DIR_FT_END}${_NB}") ]
+	if [ "$(diff ${_DIR_STD_BEG}$1${_DIR_STD_END}${_NB} ${_DIR_FT_BEG}$1${_DIR_FT_END}${_NB})" ]
 	then
-		vimdif "${_DIR_STD_BEG}$1${_DIR_STD_END}${_NB}" "${_DIR_FT_BEG}$1${_DIR_FT_END}${_NB}"
+		vimdiff "${_DIR_STD_BEG}$1${_DIR_STD_END}${_NB}" "${_DIR_FT_BEG}$1${_DIR_FT_END}${_NB}"
 	fi
 }
 

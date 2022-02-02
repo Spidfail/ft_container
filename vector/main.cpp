@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/01 20:11:34 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/02 21:52:27 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,22 @@ int		main(int ac, char **av) {
 	ft::ITester	*test = new VectorTester<int>;
 	test->init();
 	test->get_status();
-	test->launch_capacity();
-	test->launch_accessors();
-	test->launch_modifiers();
-	test->launch_iterators();
+	try {
+		test->launch_capacity();
+		test->launch_accessors();
+		test->launch_modifiers();
+		test->launch_iterators();
+	}
+	catch (std::exception &e) { std::cout << e.what() << std::endl; }
 
-	ft::vector<int>		newvec(10, 20);
-	std::vector<int>		newvec2(10, 20);
-	ft::vector<int>::iterator	it = newvec.begin();
-	ft::vector<int>::iterator	it2 = newvec.end();
-	std::vector<int>::iterator	it3 = newvec2.begin();
-	std::vector<int>::iterator	it4 = newvec2.end();
-
-	std::cout << typeid(it3 - it4).name() << std::endl;
-	std::cout << *it3 << " " << ((it3 += 4) - newvec2.begin()) << std::endl;
-
+	// ft::vector<int>		newvec(10, 20);
+	// std::vector<int>		newvec2(10, 20);
+	// ft::vector<int>::iterator	it = newvec.begin();
+	// ft::vector<int>::iterator	it2 = newvec.end();
+	// std::vector<int>::iterator	it3 = newvec2.begin();
+	// std::vector<int>::iterator	it4 = newvec2.end();
+	// std::cout << typeid(it3 - it4).name() << std::endl;
+	// std::cout << *it3 << " " << ((it3 += 4) - newvec2.begin()) << std::endl;
 
 	delete test;
 
