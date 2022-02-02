@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 21:10:27 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/01 21:15:53 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/02 18:33:02 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 
 namespace ft {
 
-	template <bool Cond, class T = void> struct enable_if;
+	template <bool B, class T = void> struct enable_if { };
 
-	template<> enable_if<>
+	template <class T> struct enable_if <true, T> {
+		typedef		T	type;
+	};
 
 }
 
