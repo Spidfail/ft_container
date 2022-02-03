@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/03 18:10:35 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/04 00:13:08 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -542,16 +542,14 @@ class VectorTester : public ft::ITester {
 					print_content(os, vecfill);
 					std::swap(vecfill_other, vecfill);
 					print_content(os, vecfill);
-				}
-				{
+				} {
 					Ct vecfill(10, random_value);
 					Ct vecfill_other(20, replacement);
 					vecfill.swap(vecfill_other);
 					print_content(os, vecfill);
 					std::swap(vecfill_other, vecfill);
 					print_content(os, vecfill);
-				}
-				{
+				} {
 					Ct vecfill(30, random_value);
 					Ct vecfill_other(20, replacement);
 					vecfill.swap(vecfill_other);
@@ -559,17 +557,53 @@ class VectorTester : public ft::ITester {
 					std::swap(vecfill_other, vecfill);
 					print_content(os, vecfill);
 				}
+				os << std::endl;
 			}
 
-			// static void					erase(Os &os, type_value random_value) {
-				// {
-					// Ct	vecfill(10, random_value);
-					// typename Ct::iterator it = vecfill.begin();
-					// std::advance(it, 4);
-					// vecfill.erase(it);
-					// print_content(os, vecfill);
-				// }
-			// }
+			static void					erase(Os &os, type_value random_value, type_value replacement) {
+				os << " ERASE " << std::endl;
+				{
+					Ct	vecfill(20, random_value);
+					int i = 0;
+					while (i < 20) {
+						vecfill.erase(vecfill.begin());
+						os << vecfill.size() << " ";
+						++i;
+					}
+					os << std::endl;
+				} {
+					Ct	vecfill(20, random_value);
+					size_type	pos_array[3] = {0, 5, 17};
+					for ( int i = 0 ; i < 3 ; ++i ) {
+						vecfill.erase(vecfill.begin() + pos_array[i]);
+						os << vecfill.size() << " ";
+					}
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+				} {
+					Ct	vecfill(20, random_value);
+					int i = 0;
+					while (i < 20) {
+						vecfill.erase(vecfill.end() - 1);
+						os << vecfill.size() << " ";
+						++i;
+					}
+					os << std::endl;
+				} {
+					os << "random_value : " <<  random_value << " replacement : " << replacement << std::endl;
+					Ct	vecfill(10, random_value);
+					vecfill.insert(vecfill.end(), 10, replacement);
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+					vecfill.erase(vecfill.begin(), vecfill.begin() + 10);
+					os << vecfill.size() << " ";
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+				}
+			}
 
 		};
 
@@ -594,8 +628,8 @@ class VectorTester : public ft::ITester {
 			modifiers_custom::pop_back(*os_ft, random_value, replacement);
 			modifiers_original::swap(*os_std, random_value, replacement);
 			modifiers_custom::swap(*os_ft, random_value, replacement);
-			// modifiers_original::erase(*os_std, random_value);
-			// modifiers_custom::erase(*os_ft, random_value);
+			modifiers_original::erase(*os_std, random_value, replacement);
+			modifiers_custom::erase(*os_ft, random_value, replacement);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////

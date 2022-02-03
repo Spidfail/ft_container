@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/03 18:30:05 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/04 00:04:16 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cstddef>
+#include <cassert>
 
 #include "IteratorVector.hpp"
 #include "ReverseIteratorVector.hpp"
@@ -57,7 +58,6 @@ namespace ft {
 				allocator_type	_alloc;
 
 				//////////////////////////////Private Member Methods////////////////////////////////////////
-
 				void			_copy( const pointer start, const pointer end, pointer target ) const {
 					for (size_type i = 0 ; start + i != end ; i++)
 						target[i] = start[i];
@@ -145,10 +145,7 @@ namespace ft {
 						_alloc.construct(new_content + i, *first);
 				}
 
-				~vector() {
-					this->_erase_all();
-					_reset_members();
-				}
+				~vector() { this->_erase_all(); _reset_members(); }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// MEMBERS OPERATORS
@@ -221,8 +218,8 @@ namespace ft {
 					}
 				}
 
-				size_type	max_size() const throw()
-				{ return std::numeric_limits<size_type>::max() / sizeof(value_type); }
+				size_type	max_size() const throw() {
+					return std::numeric_limits<size_type>::max() / sizeof(value_type); }
 
 				size_type	capacity() const { return this->_capacity; }
 
@@ -232,6 +229,7 @@ namespace ft {
 
 				void	assign( size_type count, const value_type &value ) {
 					pointer		temp = this->_alloc.allocate(count);
+
 					_erase_all();
 					_set_members(temp, count, count);
 					for (iterator it = this->begin() ; it != this->end() ; it++)
@@ -243,36 +241,58 @@ namespace ft {
 						typename ft::enable_if< !ft::is_integral<InputIt>::value , InputIt>::type * = nullptr ) {
 					size_type	new_size = last - first;
 					pointer		new_content = this->_alloc.allocate(new_size);
-
-					for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
+					for (size_type i = 0 ; first != last && i < new_size ; ++i, ++first)
 						_alloc.construct(new_content + i, *first);
 					this->_erase_all();
 					this->_set_members(new_content, new_size, new_size);
 				}
 
-				void	clear() {
-					_destroy_all();
-					_set_size(0);
-				}
+				void	clear() { _destroy_all(); _set_size(0); }
 
 				iterator erase( iterator pos ) {
-					size_type	it_pos = _last - &(*pos);
+					if ( !(&(*pos) >= _start && &(*pos) < _last) ) {
+						std::cout << "vector::erase(iterator) called with an iterator ";
+						std::cout << "not referring to this vector" << std::endl;
+						assert(0);
+					}
+
+					size_type	it_pos = &(*pos) - _start;
 					size_type	new_size = _size - 1;
-					for (size_type i = it_pos ; i < new_size - 1 ; i++)
-						_start[i] = _start[i + 1];
-					_alloc.destroy(new_size);
+					if (_size > 1)
+						for (size_type i = it_pos ; i < new_size - 1 ; ++i)
+							_start[i] = _start[i + 1];
+					_alloc.destroy(_start + new_size);
 					_set_size(new_size);
-					return iterator(it_pos);
+					return iterator(_start + it_pos);
 				}
 
 				iterator erase( iterator first, iterator last ) {
-					
+					if (!(&(*first) >= _start && &(*first) < _last) || last - first < 0
+							|| !(&(*last) >= _start && &(*last) < _last)) {
+						std::cout << "vector::erase(iterator, iterator) called with two iterator ";
+						std::cout << "not referring to this vector" << std::endl;
+						assert(0);
+					}
+
+					size_type	it_pos = &(*first) - _start;
+					size_type	count = last - first;
+					size_type	new_size = _size - count;
+					for ( size_type i = it_pos ; i + count < new_size ; ++i )
+						_start[i] = _start[i + count];
+					for ( size_type i = _size - 1 ; i >= new_size ; i-- )
+						_alloc.destroy(_start + i);
+					_set_size(new_size);
+					return iterator(_start + it_pos);
 				}
 
-
-				// insert ()
 				iterator insert( iterator pos, const T& value ) {
-					size_type	it_pos = pos - iterator(_start);
+					if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
+						std::cout << "vector::insert(iterator, value) called with an iterator ";
+						std::cout << "not referring to this vector" << std::endl;
+						assert(0);
+					}
+
+					size_type	it_pos = &(*pos) - _start;
 					size_type	new_size = _size + 1;
 					this->reserve(new_size);
 					_alloc.construct(_start + _size, _start[_size - 1]);
@@ -285,7 +305,13 @@ namespace ft {
 				}
 
 				void insert( iterator pos, size_type count, const T& value ) {
-					size_type	it_pos = pos - iterator(_start);
+					if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
+						std::cout << "vector::insert(iterator, count, value) called with an iterator ";
+						std::cout << "not referring to this vector" << std::endl;
+						assert(0);
+					}
+
+					size_type	it_pos = &(*pos) - _start;
 					size_type	new_size = _size + count;
 					size_type	end_count = it_pos + count;
 					this->reserve(new_size);
@@ -299,7 +325,13 @@ namespace ft {
 
 				template< class InputIt >
 					void insert( iterator pos, InputIt first, InputIt last, typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type * = nullptr ) {
-						size_type	it_pos = pos - iterator(_start);
+					if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
+						std::cout << "vector::insert(iterator, count, value) called with an iterator ";
+						std::cout << "not referring to this vector" << std::endl;
+						assert(0);
+					}
+
+						size_type	it_pos = &(*pos) - _start;
 						size_type	count = last - first;
 						size_type	end_count = it_pos + count;
 						size_type	new_size = _size + count;
@@ -320,10 +352,7 @@ namespace ft {
 					_set_size(_size + 1);
 				}
 
-				void	pop_back() {
-					_alloc.destroy(_last);
-					_set_size(_size - 1);
-				}
+				void	pop_back() { _alloc.destroy(_last); _set_size(_size - 1); }
 
 				void swap( vector& other ) {
 					std::swap(this->_start, other._start);
