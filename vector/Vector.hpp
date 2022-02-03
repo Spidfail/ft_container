@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/02 23:02:41 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/03 18:30:05 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,29 +255,61 @@ namespace ft {
 					_set_size(0);
 				}
 
-				// iterator erase( iterator pos ) {
-				// }
+				iterator erase( iterator pos ) {
+					size_type	it_pos = _last - &(*pos);
+					size_type	new_size = _size - 1;
+					for (size_type i = it_pos ; i < new_size - 1 ; i++)
+						_start[i] = _start[i + 1];
+					_alloc.destroy(new_size);
+					_set_size(new_size);
+					return iterator(it_pos);
+				}
+
+				iterator erase( iterator first, iterator last ) {
+					
+				}
 
 
 				// insert ()
 				iterator insert( iterator pos, const T& value ) {
-					size_type	it_pos = pos - this->begin();
-					this->reserve(_size + 1);
+					size_type	it_pos = pos - iterator(_start);
+					size_type	new_size = _size + 1;
+					this->reserve(new_size);
 					_alloc.construct(_start + _size, _start[_size - 1]);
 					for (size_type i = _size - 1 ; i > 0 && i > it_pos + 1 ; i--) {
 						_start[i] = _start[i - 1];
 					}
 					_start[it_pos] = value;
-					_set_size(_size + 1);
-					return this->begin() + it_pos;
+					_set_size(new_size);
+					return  iterator(_start + it_pos);
 				}
 
-				iterator insert( const_iterator pos, T&& value );
-
-				void insert( iterator pos, size_type count, const T& value );
+				void insert( iterator pos, size_type count, const T& value ) {
+					size_type	it_pos = pos - iterator(_start);
+					size_type	new_size = _size + count;
+					size_type	end_count = it_pos + count;
+					this->reserve(new_size);
+					for (size_type i = new_size - 1 ; i >= end_count ; i--)
+						_alloc.construct(_start + i, _start[i - count]);
+					for (size_type i = it_pos ; i < end_count ; i++) {
+						_start[i] = value;
+					}
+					_set_size(new_size);
+				}
 
 				template< class InputIt >
-					void insert( iterator pos, InputIt first, InputIt last );
+					void insert( iterator pos, InputIt first, InputIt last, typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type * = nullptr ) {
+						size_type	it_pos = pos - iterator(_start);
+						size_type	count = last - first;
+						size_type	end_count = it_pos + count;
+						size_type	new_size = _size + count;
+						this->reserve(new_size);
+						for (size_type i = new_size - 1 ; i >= end_count ; i--)
+							_alloc.construct(_start + i, _start[i - count]);
+						for (size_type i = it_pos ; first != last && i < end_count ; i++, first++)
+							_start[i] = *first;
+						_set_size(new_size);
+					}
 
 				void	push_back( const T& value ) {
 					if (_capacity == 0)
