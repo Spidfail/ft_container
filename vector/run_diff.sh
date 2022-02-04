@@ -6,7 +6,7 @@
 #    By: guhernan <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/21 15:29:11 by guhernan          #+#    #+#              #
-#    Updated: 2022/02/02 21:16:57 by guhernan         ###   ########lyon.fr    #
+#    Updated: 2022/02/04 17:04:58 by guhernan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ test_diff() {
 
 rm -f gunner_results/details_*/*
 
-clang++ -Wall -Werror -Wextra -Wshadow -fsanitize=address -g3 main.cpp VectorTester.hpp ITester.hpp IteratorVector.hpp  IteratorTraits.hpp && ./a.out \
+clang++ -Wall -Werror -Wextra -Wshadow -fsanitize=address -g3 main.cpp VectorTester.hpp ITester.hpp IteratorVector.hpp  IteratorTraits.hpp &&  ./a.out \
 && test_diff ${_CONSTRUCTOR} \
 && test_diff ${_CAPACITY} \
 && test_diff ${_ACCESSORS} \

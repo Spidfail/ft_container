@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/04 00:13:08 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/04 19:32:08 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,17 +193,16 @@ class VectorTester : public ft::ITester {
 				}
 
 				static void				reserve(Os &os, type_value random_value) {
+					(void) random_value;
 					{
 						Ct	vec;
 						vec.reserve(100);
 						os << vec.capacity() << " " ;
-					}
-					{
+					} {
 						Ct	vecfill(20, random_value);
 						vecfill.reserve(100);
 						os << vecfill.capacity() << " " ;
-					}
-					{
+					} {
 						Ct	vecfill(200, random_value);
 						vecfill.reserve(100);
 						os << vecfill.capacity() << " " ;
@@ -452,6 +451,22 @@ class VectorTester : public ft::ITester {
 					os << std::endl;
 				}
 				// insert with iterators
+				//
+				// {
+					// Ct vecfill(10, random_value);
+					// Ct rvecfill(10, replacement);
+					// typename Ct::iterator	fst_it = rvecfill.begin();
+					// typename Ct::iterator	end_it = rvecfill.begin();
+					// typename Ct::iterator	it_pos = vecfill.begin();
+					// for ( size_type i = 0 ; i < 10 ; ++i) {
+						// for ( size_type j = 0 ; j < 10 ; ++j) {
+							// for ( size_type k = 0 ; k < 10 ; ++k) {
+								// vecfill.insert(it_pos + i, fst_it + j, end_it + k);
+							// }
+						// }
+					// }
+					// os << std::endl;
+				// }
 				{
 					Ct vecfill(10, random_value);
 					Ct rvecfill(10, replacement);
@@ -598,6 +613,30 @@ class VectorTester : public ft::ITester {
 						os << *(vecfill.begin() + i) << " ";
 					os << std::endl;
 					vecfill.erase(vecfill.begin(), vecfill.begin() + 10);
+					os << vecfill.size() << " ";
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+				} {
+					os << "random_value : " <<  random_value << " replacement : " << replacement << std::endl;
+					Ct	vecfill(10, random_value);
+					vecfill.insert(vecfill.end(), 10, replacement);
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+					vecfill.erase(vecfill.begin() + 10, vecfill.end());
+					os << vecfill.size() << " ";
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+				} {
+					os << "random_value : " <<  random_value << " replacement : " << replacement << std::endl;
+					Ct	vecfill(10, random_value);
+					vecfill.insert(vecfill.end(), 10, replacement);
+					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
+						os << *(vecfill.begin() + i) << " ";
+					os << std::endl;
+					vecfill.erase(vecfill.begin() + 5, vecfill.end() - 5);
 					os << vecfill.size() << " ";
 					for ( size_type i = 0 ; i < vecfill.size() ; ++i )
 						os << *(vecfill.begin() + i) << " ";

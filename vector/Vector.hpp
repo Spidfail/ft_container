@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/04 00:04:16 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/04 19:25:40 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,15 +97,16 @@ namespace ft {
 				}
 
 				void			_destroy_all() {
-					for (pointer temp = _start ; temp != _end ; temp++)
-						_alloc.destroy(temp);
+					if (_size > 0)
+						for (pointer temp = _start ; temp != _last ; temp++)
+							_alloc.destroy(temp);
 				}
 
 				void			_erase_all() {
-					if (_start == NULL || _size == 0)
-						return ;
-					_destroy_all();
-					_alloc.deallocate(_start, _capacity);
+					if (_capacity > 0 && _start) {
+						_destroy_all();
+						_alloc.deallocate(_start, _capacity);
+					}
 					_reset_members();
 				}
 
@@ -125,8 +126,13 @@ namespace ft {
 				vector( size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type() ) :
 						_start(NULL), _last(NULL), _end(NULL), _size(n), _capacity(n), _alloc(alloc) {
+					if (n < 0) {
+						std::cout << "ft::vector(n, val) is called with negative 'n' value" << std::endl;
+						assert(0);
+					}
+					if (n == 0)
+						return;
 					this->_start = this->_alloc.allocate(n);
-
 					for (size_type i = 0 ; i < n ; i++)
 						this->_alloc.construct(this->_start + i, val);
 					_set_members(_start, n, n);
@@ -145,7 +151,7 @@ namespace ft {
 						_alloc.construct(new_content + i, *first);
 				}
 
-				~vector() { this->_erase_all(); _reset_members(); }
+				~vector() { this->_erase_all(); }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// MEMBERS OPERATORS
@@ -206,12 +212,11 @@ namespace ft {
 				size_type	size() const { return this->_size; }
 
 				void		reserve( size_type new_cap ) {
-					if (new_cap > this->max_size()) {
+					if (new_cap > this->max_size())
 						throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
-					}
 					if (new_cap > _capacity) {
 						size_type	tmp_size = _size;
-						pointer	temp = _alloc.allocate(new_cap);
+						pointer		temp = _alloc.allocate(new_cap);
 						_copy(_start, _last, temp);
 						_erase_all();
 						_set_members(temp, tmp_size, new_cap);
@@ -267,8 +272,8 @@ namespace ft {
 				}
 
 				iterator erase( iterator first, iterator last ) {
-					if (!(&(*first) >= _start && &(*first) < _last) || last - first < 0
-							|| !(&(*last) >= _start && &(*last) < _last)) {
+					if (!(&(*first) >= _start && &(*first) <= _last) || last - first < 0
+							|| !(&(*last) >= _start && &(*last) <= _last)) {
 						std::cout << "vector::erase(iterator, iterator) called with two iterator ";
 						std::cout << "not referring to this vector" << std::endl;
 						assert(0);
@@ -277,9 +282,9 @@ namespace ft {
 					size_type	it_pos = &(*first) - _start;
 					size_type	count = last - first;
 					size_type	new_size = _size - count;
-					for ( size_type i = it_pos ; i + count < new_size ; ++i )
+					for ( size_type i = it_pos ; i + count < _size ; ++i )
 						_start[i] = _start[i + count];
-					for ( size_type i = _size - 1 ; i >= new_size ; i-- )
+					for ( size_type i = new_size ; i < _size ; ++i )
 						_alloc.destroy(_start + i);
 					_set_size(new_size);
 					return iterator(_start + it_pos);
@@ -311,6 +316,8 @@ namespace ft {
 						assert(0);
 					}
 
+					if (count == 0)
+						return ;
 					size_type	it_pos = &(*pos) - _start;
 					size_type	new_size = _size + count;
 					size_type	end_count = it_pos + count;
@@ -331,8 +338,10 @@ namespace ft {
 						assert(0);
 					}
 
-						size_type	it_pos = &(*pos) - _start;
 						size_type	count = last - first;
+						if (count < 2)
+							return ;
+						size_type	it_pos = &(*pos) - _start;
 						size_type	end_count = it_pos + count;
 						size_type	new_size = _size + count;
 						this->reserve(new_size);
@@ -366,13 +375,10 @@ namespace ft {
 				}
 
 				void	resize( size_type count, T value = T() ) {
-					if (count > _size) {
-						if (count > _capacity)
-							this->reserve(count);
-						for (pointer pt = _last ; pt != _last + count ; pt++)
-							pt = value;
-					}
-						// miss erase for the rest
+					if (count > _size)
+						this->insert(_end, count - _size, value);
+					else if (count < _size)
+						this->erase(_end - (_size - count), _end);
 				}
 
 				////////////////////////////////////////////////////////////////////////////////////////////
