@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 19:21:21 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/04 16:39:35 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/06 23:58:39 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int		main(int ac, char **av) {
 		test->launch_accessors();
 		test->launch_modifiers();
 		test->launch_iterators();
+		test->launch_constructor();
 	}
 	catch (std::exception &e) { std::cout << e.what() << std::endl; }
 
