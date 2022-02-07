@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 13:26:33 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/25 14:05:10 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/07 20:43:11 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 namespace ft {
 
 	template < class Iter >
-		class iterator_traits {
+		struct iterator_traits {
 			typedef		typename	Iter::difference_type		difference_type;
 			typedef		typename	Iter::value_type			value_type;
 			typedef		typename	Iter::pointer				pointer;
@@ -28,7 +28,7 @@ namespace ft {
 		};
 
 	template < class T >
-		class iterator_traits< T* > {
+		struct iterator_traits< T* > {
 			typedef		std::ptrdiff_t						difference_type;
 			typedef		T									value_type;
 			typedef		T	*								pointer;
@@ -37,7 +37,7 @@ namespace ft {
 		};
 
 	template < class T >
-		class iterator_traits< const T* > {
+		struct iterator_traits< const T* > {
 			typedef		std::ptrdiff_t						difference_type;
 			typedef		T									value_type;
 			typedef		const T	*							pointer;

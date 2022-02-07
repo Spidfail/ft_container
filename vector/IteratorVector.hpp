@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 14:11:47 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/02 23:00:45 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/07 21:17:33 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,20 @@
 # define ITERATOR_HPP
 
 #include "IteratorTraits.hpp"
-#include <iterator>
 
 namespace ft {
 
-	template < typename T, class Allocator >
-		class vector;
-
-	template < typename T, class Allocator = std::allocator<T> >
+	template < typename Category, typename T >
 		class IteratorVector {
 
-			typedef		typename	ft::vector< T, Allocator >					container_type;
+			typedef		typename	ft::iterator_traits< typename std::iterator<Category, T> >	iterator_traits_type;
 
 			public :
-				typedef		typename	container_type::difference_type		difference_type;
-				typedef		typename	container_type::value_type			value_type;
-				typedef		typename	container_type::pointer				pointer;
-				typedef		typename	container_type::reference			reference;
-				typedef		typename	std::random_access_iterator_tag		iterator_category;
+				typedef		typename	iterator_traits_type::difference_type		difference_type;
+				typedef		typename	iterator_traits_type::value_type			value_type;
+				typedef		typename	iterator_traits_type::pointer				pointer;
+				typedef		typename	iterator_traits_type::reference				reference;
+				typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 			private:
 				pointer		_position;
@@ -51,7 +47,7 @@ namespace ft {
 				//
 				////////////////////////////////Member access////////////////////////////////////////////
 				//
-				reference		operator[](typename container_type::size_type index) { return _position[index]; }
+				reference		operator[](difference_type index) { return _position[index]; }
 				reference		operator*() { return *_position; }
 				pointer			operator->() { return _position; }
 

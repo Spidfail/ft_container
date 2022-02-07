@@ -6,43 +6,40 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 16:49:49 by guhernan          #+#    #+#             */
-/*   Updated: 2022/01/31 19:26:08 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/07 21:49:50 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REVERSE_ITERATOR_HPP
 # define REVERSE_ITERATOR_HPP
 
-#include "IteratorTraits.hpp"
-#include <iterator>
+#include "IteratorVector.hpp"
 
 namespace ft {
 
-	template < typename T, class Allocator >
-		class vector;
-
-	template < typename T, class Allocator = std::allocator<T> >
+	template < class Iter >
 		class ReverseIteratorVector {
 
-			typedef		typename	ft::vector< T, Allocator >					container_type;
+			typedef					iterator_traits< Iter >							iterator_traits_type;
 
 			public :
-				typedef		typename	container_type::difference_type		difference_type;
-				typedef		typename	container_type::value_type			value_type;
-				typedef		typename	container_type::pointer				pointer;
-				typedef		typename	container_type::reference			reference;
-				typedef		typename	std::random_access_iterator_tag		iterator_category;
+				typedef					Iter										iterator_type;
+				typedef		typename	iterator_traits_type::difference_type		difference_type;
+				typedef		typename	iterator_traits_type::value_type			value_type;
+				typedef		typename	iterator_traits_type::pointer				pointer;
+				typedef		typename	iterator_traits_type::reference				reference;
+				typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 			private:
-				pointer								_position;
+				Iter		_base_iterator;
 
 			public:
-				ReverseIteratorVector() : _position(NULL) { }
-				ReverseIteratorVector(const pointer &pt_source) : _position(pt_source) { }
-				ReverseIteratorVector(const ReverseIteratorVector &source) : _position(source._position) { }
+				ReverseIteratorVector() : _base_iterator(NULL) { }
+				ReverseIteratorVector(const iterator_type &it_source) : _base_iterator(it_source) { }
+				ReverseIteratorVector(const ReverseIteratorVector &source) : _base_iterator(source._base_iterator) { }
 				~ReverseIteratorVector() { }
 				ReverseIteratorVector	&operator=(const ReverseIteratorVector &source) {
-					this->_position = source._position;
+					this->_base_iterator = source._base_iterator;
 					return *this;
 				}
 
@@ -51,68 +48,69 @@ namespace ft {
 				//
 				////////////////////////////////Member access////////////////////////////////////////////
 				//
-				reference		operator[](typename container_type::size_type index) { return _position[-index - 1]; }
-				reference		operator*() { return *_position; }
-				pointer			operator->() { return _position; }
+				iterator_type	base() const { return _base_iterator; }
+				reference		operator[](difference_type index) { return _base_iterator[-index]; }
+				reference		operator*() { return *_base_iterator; }
+				pointer			operator->() { return _base_iterator; }
 
 				////////////////////////////////Increment/Decrement//////////////////////////////////////
 				//
 				ReverseIteratorVector	&operator++(int) {
-					_position--;
+					_base_iterator--;
 					return *this;
 				}
 				ReverseIteratorVector	operator++() {
 					ReverseIteratorVector	cp(*this);
-					_position--;
+					_base_iterator--;
 					return cp;
 				}
 				ReverseIteratorVector	&operator--(int) {
-					_position++;
+					_base_iterator++;
 					return *this;
 				}
 				ReverseIteratorVector	operator--() {
 					ReverseIteratorVector	cp(*this);
-					_position++;
+					_base_iterator++;
 					return cp;
 				}
 
 				/////////////////////////////////Comparison Operators///////////////////////////////////////
 				//
 				friend bool	operator==(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position == rhs._position);
+					return (lhs._base_iterator == rhs._base_iterator);
 				}
 				friend bool	operator!=(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position != rhs._position);
+					return (lhs._base_iterator != rhs._base_iterator);
 				}
 				friend bool	operator<(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position > rhs._position);
+					return (lhs._base_iterator > rhs._base_iterator);
 				}
 				friend bool	operator>(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position < rhs._position);
+					return (lhs._base_iterator < rhs._base_iterator);
 				}
 				friend bool	operator<=(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position >= rhs._position);
+					return (lhs._base_iterator >= rhs._base_iterator);
 				}
 				friend bool	operator>=(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return (lhs._position <= rhs._position);
+					return (lhs._base_iterator <= rhs._base_iterator);
 				}
 
 				/////////////////////////////////Arithmetic Operators///////////////////////////////////////
 				//
 				friend ReverseIteratorVector	operator+(const ReverseIteratorVector &lhs, const int &n) {
-					ReverseIteratorVector	cp(lhs._position - n);
+					ReverseIteratorVector	cp(lhs._base_iterator - n);
 					return cp;
 				}
 				friend ReverseIteratorVector	operator+(const int &n, const ReverseIteratorVector &lhs) {
-					ReverseIteratorVector	cp(lhs._position - n);
+					ReverseIteratorVector	cp(lhs._base_iterator - n);
 					return cp;
 				}
 				friend ReverseIteratorVector	operator-(const ReverseIteratorVector &lhs, const int &n) {
-					ReverseIteratorVector	cp(lhs._position + n);
+					ReverseIteratorVector	cp(lhs._base_iterator + n);
 					return cp;
 				}
 				friend long				operator-(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
-					return rhs._position - lhs._position;
+					return rhs._base_iterator - lhs._base_iterator;
 				}
 
 				/////////////////////////////////Assignation Operators//////////////////////////////////////

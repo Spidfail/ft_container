@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/07 00:32:20 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/07 22:14:53 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,17 @@
 #include <algorithm>
 #include <vector>
 
+#include <cstdlib>
+#include <time.h>
+
 #include "ft_random.hpp"
 #include "Vector.hpp"
 
-#include <cstdlib>
-#include <time.h>
+#include "VectorConstructorTests.hpp"
+#include "VectorCapacityTests.hpp"
+
+
+
 
 
 template < typename T = int, class Allocator = std::allocator<T> >
@@ -152,80 +158,10 @@ class VectorTester : public ft::ITester {
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CONSTRUCTORS//////////////////////////////////
 		//
-		template <class Ct, typename Os>
-		struct UnitestConstructor {
-
-			typedef typename Ct::size_type	size_type;
-
-				static void				vector_fill(Os &os, type_value random_value) {
-					{
-						Ct	vecfill(20, random_value);
-						os << vecfill.size() << std::endl;
-					} {
-						Ct	vecfill(0, random_value);
-						os << vecfill.size() << std::endl;
-					} {
-						try {
-							Ct	vec;
-							Ct	vecfill(vec.max_size() + 1, random_value);
-							os << vecfill.size() << std::endl;
-						} catch (std::exception &e) { os << e.what() << std::endl; }
-					} {
-						try {
-							Ct	vec;
-							Ct	vecfill(-1, random_value);
-							os << vecfill.size() << std::endl;
-						} catch (std::exception &e) { os << e.what() << std::endl; }
-					}
-				}
-
-				static void				vector_range(Os &os, type_value random_value) {
-					{
-						Ct	vectill(20, random_value);
-						Ct	vecrange(vectill.begin(), vectill.end());
-						for (size_type i = 0 ; i < vectill.size() ; i++) { os << vecrange[i] << " "; }
-						os << std::endl;
-					} {
-						Ct	vecfill(20, random_value);
-						Ct	vecrange(vecfill.begin(), vecfill.begin());
-						os << vecrange.size() << std::endl;
-					} {
-						Ct	vecfill(20, random_value);
-						Ct	vecrange(vecfill.begin(), vecfill.begin() + 1);
-						for (size_type i = 0 ; i < vecrange.size() ; i++) { os << vecrange[i] << " "; }
-						os << vecfill.size() << std::endl;
-					} {
-						Ct	vecfill(20, random_value);
-						Ct	vecrange(vecfill.rbegin(), vecfill.rend());
-						for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vecrange[i] << " "; }
-						os << std::endl;
-					} {
-						Ct	vecfill(20, random_value);
-						Ct	vecrange(vecfill.rbegin(), vecfill.rbegin() + 1);
-						for (size_type i = 0 ; i < vecrange.size() ; i++) { os << vecrange[i] << " "; }
-						os << vecfill.size() << std::endl;
-					} 
-				}
-				static void				operator_equal(Os &os, type_value random_value) {
-					{
-						Ct	vecfill(20, random_value);
-						Ct	vec;
-						vec = vecfill;
-						for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vec[i] << " "; }
-						os << vecfill.size() << std::endl;
-					} {
-						Ct	vecfill(20, random_value);
-						Ct	vec;
-						vecfill = vec;
-						for (size_type i = 0 ; i < vecfill.size() ; i++) { os << vecfill[i] << " "; }
-						os << vecfill.size() << std::endl;
-					}
-				}
-		};
 
 		void		launch_constructor() {
-			typedef		UnitestConstructor<vector_custom, std::ofstream>		constructor_custom;
-			typedef		UnitestConstructor<vector_original, std::ofstream>		constructor_original;
+			typedef		ft::UnitestConstructor<vector_custom, std::ofstream, type_value>		constructor_custom;
+			typedef		ft::UnitestConstructor<vector_original, std::ofstream, type_value>		constructor_original;
 
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
@@ -240,89 +176,14 @@ class VectorTester : public ft::ITester {
 			constructor_custom::operator_equal(*os_ft, random_value);
 		}
 
-		//
-		////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////MEMBERS///////////////////////////////////////
-		//
-
 		
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CAPACITY//////////////////////////////////////
 		//
-		template <class Ct, typename Os>
-		struct UnitestCapacity {
-
-			typedef typename Ct::size_type	size_type;
-
-				static void				empty(Os &os, type_value random_value) {
-					{
-						Ct	vec;
-						os << vec.empty() << " ";
-						vec.push_back(random_value);
-						os << vec.empty() << " ";
-					} {
-						Ct	vecfill(20, random_value);
-						os << vecfill.empty() << " ";
-					}
-				}
-
-				static void				size(Os &os, type_value random_value) {
-					{
-						Ct	vec;
-						os << vec.size() << " ";
-					} {
-						Ct	vecfill(20, random_value);
-						os << vecfill.size() << " ";
-					}
-					os << std::endl;
-				}
-
-				static void				reserve(Os &os, type_value random_value) {
-					(void) random_value;
-					{
-						Ct	vec;
-						vec.reserve(100);
-						os << vec.capacity() << " " ;
-					} {
-						Ct	vecfill(20, random_value);
-						vecfill.reserve(100);
-						os << vecfill.capacity() << " " ;
-					} {
-						Ct	vecfill(200, random_value);
-						vecfill.reserve(100);
-						os << vecfill.capacity() << " " ;
-					} try {
-						Ct	vecfill(20, random_value);
-						vecfill.reserve(vecfill.max_size() + 1);
-						os << vecfill.capacity() << " WRONG : AN EXCEPTION MUST BE THROWN " ;
-					} catch (std::exception &e) {
-						os << e.what() << " ";
-					}
-					os << std::endl;
-				}
-
-				static void				max_size(Os &os) {
-					Ct	vec;
-					os << vec.max_size() << " ";
-					os << std::endl;
-				}
-
-				static void				capacity(Os &os, type_value random_value) {
-					{
-						Ct	vec;
-						os << vec.capacity() << " ";
-					} {
-						Ct	vecfill(20, random_value);
-						os << vecfill.capacity() << " ";
-					}
-				}
-		};
-
-
 		void				launch_capacity() {
 
-			typedef		UnitestCapacity<vector_custom, std::ofstream>		capacity_custom;
-			typedef		UnitestCapacity<vector_original, std::ofstream>		capacity_original;
+			typedef		ft::UnitestCapacity<vector_custom, std::ofstream, type_value>		capacity_custom;
+			typedef		ft::UnitestCapacity<vector_original, std::ofstream, type_value>		capacity_original;
 
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
@@ -345,7 +206,6 @@ class VectorTester : public ft::ITester {
 		//////////////////////////////////////ACCESSORS/////////////////////////////////////
 		//
 		template <class Ct, typename Os>
-
 
 			struct UnitestAccessors {
 
@@ -414,11 +274,9 @@ class VectorTester : public ft::ITester {
 			accessors_custom::front(*os_ft, random_value);
 		}
 
-
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////MODIFIERS/////////////////////////////////////
 		//
-
 		template <class Ct, typename Os>
 		struct UnitestModifiers {
 
@@ -736,7 +594,6 @@ class VectorTester : public ft::ITester {
 					os << std::endl;
 				}
 			}
-
 		};
 
 		void				launch_modifiers() {
@@ -779,12 +636,20 @@ class VectorTester : public ft::ITester {
 					Ct	vecfill(10, random_value);
 					typename Ct::iterator it;
 					it = vecfill.begin();
-
 					Ct	vecfill2(20, replacement);
 					vecfill = vecfill2;
 					typename Ct::iterator it2 = vecfill.begin();
-
 					os << std::boolalpha << (it == it2) << " ";
+				} {
+					Ct	vecfill(10, random_value);
+					typename Ct::reverse_iterator it;
+					it = vecfill.rbegin();
+					Ct	vecfill2(20, replacement);
+					vecfill = vecfill2;
+					typename Ct::reverse_iterator it2 = vecfill.rbegin();
+					os << std::boolalpha << (it == it2) << " ";
+					typename Ct::reverse_iterator it3(vecfill2.begin());
+					os << std::boolalpha << (it3 == it2) << " ";
 				}
 				os << std::endl;
 			}
@@ -799,6 +664,17 @@ class VectorTester : public ft::ITester {
 				} {
 					Ct	vecfill(10, random_value);
 					typename Ct::iterator it = vecfill.begin();
+					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << it[i] << " "; }
+					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << (it[i] = replacement) << " "; }
+				} {
+					Ct	vecfill(1, random_value);
+					vecfill.push_back(replacement);
+					typename Ct::reverse_iterator it = vecfill.rbegin();
+					typename Ct::reverse_iterator it2 = it;
+					os << *it << "|" << *it2;
+				} {
+					Ct	vecfill(10, random_value);
+					typename Ct::reverse_iterator it = vecfill.rbegin();
 					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << it[i] << " "; }
 					for (size_type i = 0 ; i < vecfill.size() ; i++){ os << (it[i] = replacement) << " "; }
 				}
@@ -829,14 +705,14 @@ class VectorTester : public ft::ITester {
 						os << *it << " ";
 					os << std::endl;
 				} 
+				////	Reverse test
 				{
 					Ct	vecfill(10, random_value);
 					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++) {
 						os << *it << " "; *it = replacement; }
 					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; it++)
 						os << *it << " ";
-				}
-				{
+				} {
 					Ct	vecfill(10, random_value);
 					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it != vecfill.rend() ; ++it) {
 						os << *it << " "; *it = replacement; }
@@ -874,7 +750,6 @@ class VectorTester : public ft::ITester {
 					for (typename Ct::reverse_iterator it = vecfill.rbegin() ; it < vecfill.rend() ; it++) {
 						os << *it << " "; } }
 				{
-
 					Ct	vecfill(10, random_value);
 					for (typename Ct::iterator it = vecfill.begin() ; it <= vecfill.end() - 1 ; it++)
 						os << *it << " ";
@@ -978,8 +853,7 @@ class VectorTester : public ft::ITester {
 						vec.push_back(replacement);
 						os << *(vec.begin() + i) << " ";
 					}
-				}
-				{
+				} {
 					Ct vec;
 					vec.push_back(random_value);
 					os << *vec.begin() << " ";
@@ -990,8 +864,7 @@ class VectorTester : public ft::ITester {
 						os << vec.end() - vec.begin() << " ";
 						os << *vec.begin() + i << " ";
 					}
-				}
-				{
+				} {
 					Ct vec;
 					vec.push_back(random_value);
 					os << *vec.begin() << " ";
@@ -1005,8 +878,6 @@ class VectorTester : public ft::ITester {
 				}
 			}
 		};
-
-
 
 		void				launch_iterators() {
 			ft::Random<type_value>	random;

@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 17:05:48 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/02 21:57:07 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/07 18:42:22 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,18 @@ int main() {
 
 	std::cout << ft::enable_if< ft::is_integral<bool>::value, int >::type() << std::endl;
 	std::cout << std::enable_if< std::is_integral<bool>::value, int >::type() << std::endl;
+
+	std::vector<int>	vect(20, 100);
+	std::vector<int>	vect2(20, 100);
+	std::vector<int>	vect3(30, 100);
+	std::vector<int>	vect4(20, 200);
+	std::vector<int>	vect5(vect);
+
+	std::cout << " TEST OPERATORS " << std::endl;
+	std::cout << bool(vect < vect2) << std::endl;
+	std::cout << bool(vect < vect3) << std::endl;
+	std::cout << bool(vect < vect4) << std::endl;
+	std::cout << bool(vect < vect5) << std::endl;
 
 }
 
