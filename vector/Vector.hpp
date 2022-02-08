@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/07 21:26:09 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/08 12:29:48 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,18 @@ namespace ft {
 			public:
 				/////////////////////////////////////Member type////////////////////////////////////////////
 				// Member types of Vector
-
-				typedef				T																			value_type;
-				typedef				Allocator																	allocator_type;
-				typedef				std::size_t																	size_type;
-				typedef				std::ptrdiff_t																difference_type;
-				typedef				value_type&																	reference;
-				typedef				const value_type&															const_reference;
-				typedef	typename	Allocator::pointer															pointer;
-				typedef	typename	Allocator::const_pointer													const_pointer;
-				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, value_type>				iterator;
-				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, const value_type>		const_iterator;
-				typedef	typename	ft::ReverseIteratorVector<iterator>											reverse_iterator;
-				typedef	typename	ft::ReverseIteratorVector<const_iterator>									const_reverse_iterator;
+				typedef				T																		value_type;
+				typedef				Allocator																allocator_type;
+				typedef				std::size_t																size_type;
+				typedef				std::ptrdiff_t															difference_type;
+				typedef				value_type&																reference;
+				typedef				const value_type&														const_reference;
+				typedef	typename	Allocator::pointer														pointer;
+				typedef	typename	Allocator::const_pointer												const_pointer;
+				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, value_type>			iterator;
+				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, const value_type>	const_iterator;
+				typedef	typename	ft::ReverseIteratorVector<iterator>										reverse_iterator;
+				typedef	typename	ft::ReverseIteratorVector<const_iterator>								const_reverse_iterator;
 
 			private:
 				pointer			_start;
