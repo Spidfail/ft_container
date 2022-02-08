@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 12:16:25 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 13:06:32 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/08 20:19:36 by guhernan         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,11 @@ namespace ft {
 					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
 						os << *it << " ";
 					os << std::endl;
+				} {
+					Ct	vecfill(10, 50);
+					vecfill.insert(vecfill.end(), vecfill.begin(), vecfill.end());
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << std::endl;
 				}
 				os << std::endl;
 			}

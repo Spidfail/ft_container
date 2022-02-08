@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 11:17:28 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 13:08:23 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/08 20:22:51 by guhernan         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,14 +141,14 @@ class VectorTester : public ft::ITester {
 		}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////TESTS///////////////////////////////////////////////
-		//
+
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CONSTRUCTORS//////////////////////////////////
 		//
 		void		launch_constructor() {
-
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
+			type_value		replacement = random.generate(type_value()) / 2;
 			type_file		os_std = this->get_folder_std().get_file("constructor");
 			type_file		os_ft = this->get_folder_ft().get_file("constructor");
 
@@ -156,17 +156,16 @@ class VectorTester : public ft::ITester {
 			constructor_custom::vector_fill(*os_ft, random_value);
 			constructor_original::vector_range(*os_std, random_value);
 			constructor_custom::vector_range(*os_ft, random_value);
-			constructor_original::operator_equal(*os_std, random_value);
-			constructor_custom::operator_equal(*os_ft, random_value);
+			constructor_original::operator_assignation(*os_std, random_value);
+			constructor_custom::operator_assignation(*os_ft, random_value);
+			constructor_original::operator_comparison(*os_std, random_value, replacement);
+			constructor_custom::operator_comparison(*os_ft, random_value, replacement);
 		}
 
-		
 		////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////CAPACITY//////////////////////////////////////
 		//
 		void				launch_capacity() {
-
-
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
 			type_file		os_std = this->get_folder_std().get_file("capacity");
@@ -188,7 +187,6 @@ class VectorTester : public ft::ITester {
 		//////////////////////////////////////ACCESSORS/////////////////////////////////////
 		//
 		void				launch_accessors() {
-
 			ft::Random<type_value>	random;
 			type_value		random_value = random.generate(type_value());
 

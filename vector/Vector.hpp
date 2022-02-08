@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 12:29:48 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/08 22:05:56 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,9 +126,8 @@ namespace ft {
 				vector( size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type() ) :
 					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc) {
-						if (n < 0 || n > (std::numeric_limits<size_type>::max() / sizeof(value_type))) {
+						if (n < 0 || n > (std::numeric_limits<size_type>::max() / sizeof(value_type)))
 							throw std::length_error("vector");
-						}
 						this->_start = this->_alloc.allocate(n);
 						for (size_type i = 0 ; i < n ; i++)
 							this->_alloc.construct(this->_start + i, val);
@@ -189,10 +188,10 @@ namespace ft {
 				//// ITERATOS : begin, end(), rbegin(), rend()
 				//
 				iterator				begin() { return iterator(_start); }
-				const_iterator			begin() const { return iterator(_start); }
+				const_iterator			begin() const { return const_iterator(_start); }
 
 				iterator				end() { return iterator(_last); }
-				const_iterator 			end() const { return iterator(_last); }
+				const_iterator 			end() const { return const_iterator(_last); }
 
 				reverse_iterator		rbegin() { return reverse_iterator(end() - 1); }
 				const_reverse_iterator	rbegin() const { return const_reverse_iterator(end() - 1); }
@@ -341,7 +340,17 @@ namespace ft {
 						size_type	it_pos = &(*pos) - _start;
 						size_type	end_count = it_pos + count;
 						size_type	new_size = _size + count;
-						this->reserve(new_size);
+						ft::vector<value_type,allocator_type>		tmp;
+						if (&*first >= _start && &*first < _end) {
+							if (new_size > _size) {
+								tmp.assign(first, last);
+								this->reserve(new_size);
+								first = tmp.begin();
+								last = tmp.end();
+							}
+						}
+						else
+							this->reserve(new_size);
 						for (size_type i = new_size - 1 ; i >= end_count ; i--)
 							_alloc.construct(_start + i, _start[i - count]);
 						for (size_type i = it_pos ; first != last && i < end_count ; i++, first++)
@@ -366,6 +375,7 @@ namespace ft {
 					std::swap(this->_end, other._end);				// (other._start ^= this->_start),
 					std::swap(this->_size, other._size);			// (this->_start ^= other._start),
 					std::swap(this->_capacity, other._capacity);	// (other._start ^= this->_start);
+					std::swap(this->_alloc, other._alloc);
 				}
 
 				void		resize( size_type count, T value = T() ) {
@@ -380,21 +390,20 @@ namespace ft {
 
 				allocator_type get_allocator() const { return _alloc; }
 		};
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //// NON MEMBERS
 //
 
-namespace std {
 	template <class T, class Alloc>
 		void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y) { x.swap(y); }
+}
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//// RELATIONNAL OPERATORS
 	//
 	template <class T, class Alloc>
-		bool operator== (const ft::vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
+		bool operator== (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
 			if (lhs.size() == rhs.size())
 				return std::equal(lhs.begin(), lhs.end(), rhs.begin());
 			return false;
@@ -407,23 +416,12 @@ namespace std {
 			return true;
 		}
 
-	template <class T, class Alloc>
-		bool operator<  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-			if (lhs.size() < rhs.size()) {
-				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = lhs.begin() ; cit_lhs != cit_lhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs >= *cit_rhs)
-						return false;
-				return true;
-			}
-			return false;
-		}
 
 	template <class T, class Alloc>
-		bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs){
-			if (lhs.size() <= rhs.size()) {
+		bool operator< (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
+			if (lhs.size() < rhs.size()) {
 				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = lhs.begin() ; cit_lhs != cit_lhs.end() ; ++cit_lhs, ++cit_rhs)
+						cit_rhs = rhs.begin() ; cit_lhs != lhs.end() ; ++cit_lhs, ++cit_rhs)
 					if (*cit_lhs > *cit_rhs)
 						return false;
 				return true;
@@ -432,11 +430,11 @@ namespace std {
 		}
 
 	template <class T, class Alloc>
-		bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs){
-			if (lhs.size() > rhs.size()) {
+		bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
+			if (lhs.size() <= rhs.size()) {
 				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = lhs.begin() ; cit_rhs != cit_rhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs <= *cit_rhs)
+						cit_rhs = rhs.begin() ; cit_lhs != lhs.end() ; ++cit_lhs, ++cit_rhs)
+					if (*cit_lhs > *cit_rhs)
 						return false;
 				return true;
 			}
@@ -444,16 +442,28 @@ namespace std {
 		}
 
 	template <class T, class Alloc>
-		bool operator>= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs){
-			if (lhs.size() >= rhs.size()) {
+		bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
+			if (lhs.size() > rhs.size()) {
 				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = lhs.begin() ; cit_rhs != cit_rhs.end() ; ++cit_lhs, ++cit_rhs)
+						cit_rhs = rhs.begin() ; cit_rhs != rhs.end() ; ++cit_lhs, ++cit_rhs)
 					if (*cit_lhs < *cit_rhs)
 						return false;
 				return true;
 			}
 			return false;
 		}
-}
+
+	template <class T, class Alloc>
+		bool operator>= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
+			if (lhs.size() >= rhs.size()) {
+				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
+						cit_rhs = rhs.begin() ; cit_rhs != rhs.end() ; ++cit_lhs, ++cit_rhs)
+					if (*cit_lhs < *cit_rhs)
+						return false;
+				return true;
+			}
+			return false;
+		}
+
 
 #endif
