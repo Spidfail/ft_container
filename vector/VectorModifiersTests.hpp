@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 12:16:25 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 20:19:36 by guhernan         ###   ########lyon.fr   */
+/*   Updated: 2022/02/09 16:09:38 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ namespace ft {
 				} {
 					Ct	vecfill(20, random_value);
 					vecfill.assign(vecfill.begin(), vecfill.end());
+					for (typename Ct::iterator it = vecfill.begin() ;
+							it != vecfill.end(); it++)
+						os << *it << " ";
+				} {
+					Ct	vecfill(20, random_value);
+					vecfill.assign(vecfill.begin() + 5, vecfill.end() - 5);
 					for (typename Ct::iterator it = vecfill.begin() ;
 							it != vecfill.end(); it++)
 						os << *it << " ";
@@ -166,6 +172,21 @@ namespace ft {
 				} {
 					Ct	vecfill(10, 50);
 					vecfill.insert(vecfill.end(), vecfill.begin(), vecfill.end());
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << std::endl;
+				} {
+					Ct	vecfill(10, 50);
+					vecfill.insert(vecfill.begin() + 5, vecfill.begin(), vecfill.end());
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << std::endl;
+				} {
+					Ct	vecfill(10, 50);
+					vecfill.insert(vecfill.begin() + 5, vecfill.begin() + 2, vecfill.end() - 2);
+					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
+						os << *it << std::endl;
+				} {
+					Ct	vecfill(10, 50);
+					vecfill.insert(vecfill.begin(), vecfill.begin(), vecfill.end());
 					for (typename Ct::iterator it = vecfill.begin() ; it != vecfill.end() ; it++)
 						os << *it << std::endl;
 				}

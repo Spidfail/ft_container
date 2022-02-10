@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 22:02:42 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 21:54:31 by guhernan         ###   ########lyon.fr   */
+/*   Updated: 2022/02/09 19:58:15 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ namespace ft {
 
 				static void				operator_comparison(Os &os, type_value random_value, type_value replacement) {
 					(void)replacement;
+					os << "------------------------------------------------------" << std::endl;
+					os << " Values : random = " << random_value << ", replacement = " << replacement << std::endl;
 					os << "	OPERATOR == : " << std::endl;
 					{
 						Ct vecfill(20, random_value);
@@ -161,7 +163,7 @@ namespace ft {
 						os << bool(vecfill != cp_vec) << " " << bool(cp_vec != vecfill) << " ";
 						os << std::endl;
 					}
-					
+
 					os << "	OPERATOR > : " << std::endl;
 					{
 						Ct vecfill(20, random_value);

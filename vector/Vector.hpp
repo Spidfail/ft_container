@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/08 22:05:56 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/09 19:56:34 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 #include "EnableIf.hpp"
 #include "IsIntegral.hpp"
+#include "CompareUtils.hpp"
 
 #include "IteratorVector.hpp"
 #include "ReverseIteratorVector.hpp"
@@ -56,59 +57,6 @@ namespace ft {
 				size_type		_size;
 				size_type		_capacity;
 				allocator_type	_alloc;
-
-				//////////////////////////////Private Member Methods////////////////////////////////////////
-				void			_copy( const pointer start, const pointer end, pointer target ) const {
-					for (size_type i = 0 ; start + i != end ; i++)
-						target[i] = start[i];
-				}
-
-				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
-					this->_size = size;
-					this->_capacity = capacity;
-					this->_start = pointer;
-					this->_last = pointer + size;
-					this->_end = pointer + capacity;
-				}
-
-				void			_set_size( size_type new_size ) {
-					if (new_size <= _capacity)
-						_set_members(_start, new_size, _capacity);
-				}
-
-				void			_set_capacity( size_type new_capacity ) {
-					if (new_capacity >= _size)
-						_set_members(_start, _capacity, new_capacity);
-				}
-
-				void			_reset_members() {
-					this->_start = NULL;
-					this->_last = NULL;
-					this->_end = NULL;
-					this->_size = 0;
-					this->_capacity = 0;
-				}
-
-				void			_destroy(pointer pos, size_type n = 1) {
-					if (pos - _start + (n - 1) > _size)
-						return ;
-					while (pos != _start + n && pos != _last)
-						_alloc.destroy(pos++);
-				}
-
-				void			_destroy_all() {
-					if (_size > 0)
-						for (pointer temp = _start ; temp != _last ; temp++)
-							_alloc.destroy(temp);
-				}
-
-				void			_erase_all() {
-					if (_capacity > 0 && _start) {
-						_destroy_all();
-						_alloc.deallocate(_start, _capacity);
-					}
-					_reset_members();
-				}
 
 			public:
 				/////////////////////////////////////Member functions///////////////////////////////////////
@@ -387,14 +335,68 @@ namespace ft {
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// ALLOCATOR: get_allocator
-
 				allocator_type get_allocator() const { return _alloc; }
+
+			private:
+				//////////////////////////////Private Member Methods////////////////////////////////////////
+				//
+				void			_copy( const pointer start, const pointer end, pointer target ) const {
+					for (size_type i = 0 ; start + i != end ; i++)
+						target[i] = start[i];
+				}
+
+				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
+					this->_size = size;
+					this->_capacity = capacity;
+					this->_start = pointer;
+					this->_last = pointer + size;
+					this->_end = pointer + capacity;
+				}
+
+				void			_set_size( size_type new_size ) {
+					if (new_size <= _capacity)
+						_set_members(_start, new_size, _capacity);
+				}
+
+				void			_set_capacity( size_type new_capacity ) {
+					if (new_capacity >= _size)
+						_set_members(_start, _capacity, new_capacity);
+				}
+
+				void			_reset_members() {
+					this->_start = NULL;
+					this->_last = NULL;
+					this->_end = NULL;
+					this->_size = 0;
+					this->_capacity = 0;
+				}
+
+				void			_destroy(pointer pos, size_type n = 1) {
+					if (pos - _start + (n - 1) > _size)
+						return ;
+					while (pos != _start + n && pos != _last)
+						_alloc.destroy(pos++);
+				}
+
+				void			_destroy_all() {
+					if (_size > 0)
+						for (pointer temp = _start ; temp != _last ; temp++)
+							_alloc.destroy(temp);
+				}
+
+				void			_erase_all() {
+					if (_capacity > 0 && _start) {
+						_destroy_all();
+						_alloc.deallocate(_start, _capacity);
+					}
+					_reset_members();
+				}
+
 		};
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //// NON MEMBERS
 //
-
 	template <class T, class Alloc>
 		void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y) { x.swap(y); }
 }
@@ -416,53 +418,43 @@ namespace ft {
 			return true;
 		}
 
-
 	template <class T, class Alloc>
 		bool operator< (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-			if (lhs.size() < rhs.size()) {
-				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = rhs.begin() ; cit_lhs != lhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs > *cit_rhs)
-						return false;
-				return true;
-			}
-			return false;
-		}
-
-	template <class T, class Alloc>
-		bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-			if (lhs.size() <= rhs.size()) {
-				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = rhs.begin() ; cit_lhs != lhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs > *cit_rhs)
-						return false;
-				return true;
-			}
-			return false;
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 		}
 
 	template <class T, class Alloc>
 		bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-			if (lhs.size() > rhs.size()) {
-				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = rhs.begin() ; cit_rhs != rhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs < *cit_rhs)
-						return false;
-				return true;
+			typedef typename	ft::vector<T,Alloc>::const_iterator		it_type;
+			it_type		lit = lhs.begin(), rit = rhs.begin();
+			while (rit != rhs.end()) {
+				if (lit == lhs.end() || *lit < *rit)
+					return false;
+				if (*lit > *rit)
+					return true;
+				lit++, rit++;
 			}
-			return false;
+			return lit != lhs.end();
 		}
 
 	template <class T, class Alloc>
 		bool operator>= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-			if (lhs.size() >= rhs.size()) {
-				for (typename ft::vector<T,Alloc>::const_iterator cit_lhs = lhs.begin(),
-						cit_rhs = rhs.begin() ; cit_rhs != rhs.end() ; ++cit_lhs, ++cit_rhs)
-					if (*cit_lhs < *cit_rhs)
-						return false;
-				return true;
-			}
-			return false;
+			typedef		typename	ft::vector<T,Alloc>::const_iterator		it_type;
+			for (it_type lit = lhs.begin(), rit = rhs.begin() ;
+					rit != rhs.end() ; ++lit, ++rit)
+				if ((lit == lhs.end() && rit != rhs.end()) || *lit < *rit)
+					return false;
+			return true;
+		}
+
+	template <class T, class Alloc>
+		bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
+			typedef		typename	ft::vector<T,Alloc>::const_iterator		it_type;
+			for (it_type lit = lhs.begin(), rit = rhs.begin() ;
+					lit != lhs.end() ; ++lit, ++rit)
+				if ((rit == rhs.end() && lit != lhs.end()) || *lit > *rit)
+					return false;
+			return true;
 		}
 
 
