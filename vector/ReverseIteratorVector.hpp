@@ -15,6 +15,7 @@
 
 #include "IteratorVector.hpp"
 
+
 namespace ft {
 
 	template < class Iter >
@@ -39,6 +40,13 @@ namespace ft {
 				ReverseIteratorVector(const ReverseIteratorVector &source) : _base_iterator(source._base_iterator) { }
 				~ReverseIteratorVector() { }
 				ReverseIteratorVector	&operator=(const ReverseIteratorVector &source) {
+					this->_base_iterator = source._base_iterator;
+					return *this;
+				}
+
+				template<class TIter>
+				ReverseIteratorVector &operator= (const ReverseIteratorVector<TIter> &source)
+				{
 					this->_base_iterator = source._base_iterator;
 					return *this;
 				}
@@ -76,10 +84,12 @@ namespace ft {
 
 				/////////////////////////////////Comparison Operators///////////////////////////////////////
 				//
-				friend bool	operator==(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
+				template<class TIter_lhs, class TIter_rhs>
+				friend bool	operator==(const ReverseIteratorVector<TIter_lhs> &lhs, const ReverseIteratorVector<TIter_rhs> &rhs) {
 					return (lhs._base_iterator == rhs._base_iterator);
 				}
-				friend bool	operator!=(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {
+				template<class TIter_lhs, class TIter_rhs>
+				friend bool	operator!=(const ReverseIteratorVector<TIter_lhs> &lhs, const ReverseIteratorVector<TIter_rhs> &rhs) {
 					return (lhs._base_iterator != rhs._base_iterator);
 				}
 				friend bool	operator<(const ReverseIteratorVector &lhs, const ReverseIteratorVector &rhs) {

@@ -10,17 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ITERATOR_HPP
-# define ITERATOR_HPP
+#ifndef ITERATORVECTOR_HPP
+# define ITERATORVECTOR_HPP
 
-#include "IteratorTraits.hpp"
+# include "IteratorTraits.hpp"
+# include "Iterator.hpp"
 
 namespace ft {
 
 	template < typename Category, typename T >
 		class IteratorVector {
 
-			typedef		typename	ft::iterator_traits< typename std::iterator<Category, T> >	iterator_traits_type;
+			typedef		typename	ft::iterator_traits< typename ft::iterator<Category, T> >	iterator_traits_type;
 
 			public :
 				typedef		typename	iterator_traits_type::difference_type		difference_type;
@@ -30,6 +31,7 @@ namespace ft {
 				typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 			private:
+				typedef		IteratorVector<Category, const value_type>				const_iterator;
 				pointer		_position;
 
 			public:
@@ -44,6 +46,10 @@ namespace ft {
 
 				/////////////////////////////////////////////////////////////////////////////////////////
 				/////////////////////////////////OPERATORS///////////////////////////////////////////////
+				//
+				////////////////////////////////Cast Operator////////////////////////////////////////////
+				//
+				operator const_iterator() { return const_iterator(this->_position); };
 				//
 				////////////////////////////////Member access////////////////////////////////////////////
 				//
@@ -74,7 +80,7 @@ namespace ft {
 
 				/////////////////////////////////Comparison Operators///////////////////////////////////////
 				//
-				friend bool	operator==(const IteratorVector &lhs, const IteratorVector &rhs) {
+				friend bool	operator==(const IteratorVector<Category, T> &lhs, const IteratorVector<Category, T> &rhs) {
 					return (lhs._position == rhs._position);
 				}
 				friend bool	operator!=(const IteratorVector &lhs, const IteratorVector &rhs) {

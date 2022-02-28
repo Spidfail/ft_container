@@ -6,7 +6,7 @@
 /*   By: guhernan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 18:59:24 by guhernan          #+#    #+#             */
-/*   Updated: 2022/02/09 19:56:34 by guhernan         ###   ########.fr       */
+/*   Updated: 2022/02/10 19:48:05 by guhernan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,15 +112,15 @@ namespace ft {
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// ACCESSORS : operator[], at(), front(), back(), data()
 
-				reference			operator[]( size_type pos ) { return *(this->_start + pos); }
-				const_reference		operator[]( size_type pos ) const { return *(this->_start + pos); }
+				reference				operator[]( size_type pos ) { return *(this->_start + pos); }
+				const_reference			operator[]( size_type pos ) const { return *(this->_start + pos); }
 
-				reference			at( size_type pos ) {
+				reference				at( size_type pos ) {
 					if (pos < 0 || pos > _capacity)
 						throw(std::out_of_range("Out of range"));    // Need to test the exception message
 					return *(this->_start + pos);
 				}
-				const_reference		at( size_type pos ) const {
+				const_reference			at( size_type pos ) const {
 					if (pos < 0 || pos > _capacity)
 						throw(std::out_of_range("Out of range"));
 					return *(this->_start + pos);
@@ -129,8 +129,8 @@ namespace ft {
 				reference				front() { return *this->_start; }
 				const_reference			front() const { return *this->_start; }
 
-				reference				back() { return *this->_last; }
-				const_reference			back() const { return *this->_last; }
+				reference				back() { return *(this->_last - 1); }
+				const_reference			back() const { return *(this->_last - 1); }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// ITERATOS : begin, end(), rbegin(), rend()
@@ -141,20 +141,20 @@ namespace ft {
 				iterator				end() { return iterator(_last); }
 				const_iterator 			end() const { return const_iterator(_last); }
 
-				reverse_iterator		rbegin() { return reverse_iterator(end() - 1); }
-				const_reverse_iterator	rbegin() const { return const_reverse_iterator(end() - 1); }
+				reverse_iterator		rbegin() { return reverse_iterator(this->end() - 1); }
+				const_reverse_iterator	rbegin() const { return const_reverse_iterator(this->end() - 1); }
 
-				reverse_iterator		rend() { return reverse_iterator(begin() - 1); }
-				const_reverse_iterator	rend() const { return const_reverse_iterator(begin() - 1); }
+				reverse_iterator		rend() { return reverse_iterator(this->begin() - 1); }
+				const_reverse_iterator	rend() const { return const_reverse_iterator(this->begin() - 1); }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// CAPACITY : empty(), size(), max_size(), reserve(), capacity()
 
-				bool		empty() const { return !this->_size; }
+				bool					empty() const { return !this->_size; }
 
-				size_type	size() const { return this->_size; }
+				size_type				size() const { return this->_size; }
 
-				void		reserve( size_type new_cap ) {
+				void					reserve( size_type new_cap ) {
 					if (new_cap > this->max_size())
 						throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 					if (new_cap > _capacity) {
@@ -166,16 +166,16 @@ namespace ft {
 					}
 				}
 
-				size_type	max_size() const throw() {
+				size_type				max_size() const throw() {
 					return std::numeric_limits<size_type>::max() / sizeof(value_type); }
 
-				size_type	capacity() const { return this->_capacity; }
+				size_type				capacity() const { return this->_capacity; }
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				//// MODIFIERS: assign(), clear(), erase(), insert(), push_back(), pop_back(), swap()
 				//// resize()
 
-				void		assign( size_type count, const value_type &value ) {
+				void					assign( size_type count, const value_type &value ) {
 					pointer		temp = this->_alloc.allocate(count);
 					_erase_all();
 					_set_members(temp, count, count);
@@ -185,7 +185,7 @@ namespace ft {
 
 				template< class InputIt,
 				typename = typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt>::type >
-					void	assign( InputIt first, InputIt last ) {
+					void				assign( InputIt first, InputIt last ) {
 						size_type	new_size = last - first;
 						pointer		new_content = this->_alloc.allocate(new_size);
 						for (size_type i = 0 ; first != last && i < new_size ; ++i, ++first)
@@ -194,9 +194,9 @@ namespace ft {
 						this->_set_members(new_content, new_size, new_size);
 					}
 
-				void		clear() { _destroy_all(); _set_size(0); }
+				void					clear() { _destroy_all(); _set_size(0); }
 
-				iterator	erase( iterator pos ) {
+				iterator				erase( iterator pos ) {
 					if ( !(&(*pos) >= _start && &(*pos) < _end) ) {
 						std::cout << "vector::erase(iterator) called with an iterator ";
 						std::cout << "not referring to this vector" << std::endl;
@@ -213,7 +213,7 @@ namespace ft {
 					return iterator(_start + it_pos);
 				}
 
-				iterator	erase( iterator first, iterator last ) {
+				iterator				erase( iterator first, iterator last ) {
 					if (!(&(*first) >= _start && &(*first) < _end)
 							|| !(&(*last) >= _start && &(*last) <= _end)) {
 						std::cout << "vector::erase(iterator, iterator) called with two iterator ";
@@ -233,7 +233,7 @@ namespace ft {
 					return iterator(_start + it_pos);
 				}
 
-				iterator	insert( iterator pos, const T& value ) {
+				iterator				insert( iterator pos, const T& value ) {
 					if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
 						std::cout << "vector::insert(iterator, value) called with an iterator ";
 						std::cout << "not referring to this vector" << std::endl;
@@ -252,7 +252,7 @@ namespace ft {
 					return  iterator(_start + it_pos);
 				}
 
-				void		insert( iterator pos, size_type count, const T& value ) {
+				void					insert( iterator pos, size_type count, const T& value ) {
 					if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
 						std::cout << "vector::insert(iterator, count, value) called with an iterator ";
 						std::cout << "not referring to this vector" << std::endl;
@@ -275,7 +275,7 @@ namespace ft {
 
 				template< class InputIt,
 					typename = typename ft::enable_if< !(ft::is_integral<InputIt>::value), InputIt >::type >
-					void	insert( iterator pos, InputIt first, InputIt last ) {
+					void				insert( iterator pos, InputIt first, InputIt last ) {
 						if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
 							std::cout << "vector::insert(iterator, count, value) called with an iterator ";
 							std::cout << "not referring to this vector" << std::endl;
@@ -301,12 +301,12 @@ namespace ft {
 							this->reserve(new_size);
 						for (size_type i = new_size - 1 ; i >= end_count ; i--)
 							_alloc.construct(_start + i, _start[i - count]);
-						for (size_type i = it_pos ; first != last && i < end_count ; i++, first++)
+						for (size_type i = it_pos ; first != last && i < end_count ; ++i, ++first)
 							_start[i] = *first;
 						_set_size(new_size);
 					}
 
-				void		push_back( const T& value ) {
+				void		push_back( const_reference value ) {
 					if (_capacity == 0)
 						this->reserve(1);
 					else if (_size + 1 > _capacity)
@@ -407,14 +407,14 @@ namespace ft {
 	template <class T, class Alloc>
 		bool operator== (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
 			if (lhs.size() == rhs.size())
-				return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+				return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 			return false;
 		}
 
 	template <class T, class Alloc>
 		bool operator!= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
 			if (lhs.size() == rhs.size())
-				return !(std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+				return !(ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 			return true;
 		}
 

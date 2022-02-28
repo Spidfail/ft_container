@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <type_traits>
 #include <vector>
 #include <set>
 #include <algorithm>
@@ -19,6 +20,7 @@
 #include "EnableIf.hpp"
 #include <string>
 #include "Vector.hpp"
+#include "../gunner_tester/gunner_srcs/IsStd.hpp"
 
 int main() {
 
@@ -76,6 +78,10 @@ int main() {
 	std::cout << bool(vect <= vect3) << std::endl;
 	std::cout << bool(vect <= vect4) << std::endl;
 	std::cout << bool(vect <= vect5) << std::endl;
+
+	// std::cout << "------------------------------------------" << std::endl;
+	// std::vector<int>	vec = ft::enable_if< ft::is_std<std::vector<int>>::value, std::vector<int> >::type();
+	// std::vector<int>	vec = ft::enable_if< ft::is_std<ft::vector<int>>::value, ft::vector<int> >::type();
 
 //	ft::vector<int>	fill(10, 50);
 //	ft::vector<int>::iterator	it_begin = fill.begin();
