@@ -19,10 +19,10 @@ namespace ft {
 
 	template <class T, T v>
 		struct integral_constant {
-			static constexpr T value = v;
+			static const T value = v;
 			typedef T value_type;
 			typedef integral_constant<T,v> type;
-			constexpr operator T() { return v; }
+			operator T() { return v; }
 		};
 
 	// equivalent to std::true_type and std::false_type

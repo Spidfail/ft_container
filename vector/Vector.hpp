@@ -37,18 +37,18 @@ namespace ft {
 			public:
 				/////////////////////////////////////Member type////////////////////////////////////////////
 				// Member types of Vector
-				typedef				T																		value_type;
-				typedef				Allocator																allocator_type;
-				typedef				std::size_t																size_type;
-				typedef				std::ptrdiff_t															difference_type;
-				typedef				value_type&																reference;
-				typedef				const value_type&														const_reference;
-				typedef	typename	Allocator::pointer														pointer;
-				typedef	typename	Allocator::const_pointer												const_pointer;
-				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, value_type>			iterator;
-				typedef	typename	ft::IteratorVector<std::random_access_iterator_tag, const value_type>	const_iterator;
-				typedef	typename	ft::ReverseIteratorVector<iterator>										reverse_iterator;
-				typedef	typename	ft::ReverseIteratorVector<const_iterator>								const_reverse_iterator;
+				typedef				T										 		value_type;
+				typedef				Allocator								 		allocator_type;
+				typedef				std::size_t								 		size_type;
+				typedef				std::ptrdiff_t							 		difference_type;
+				typedef				value_type&								 		reference;
+				typedef				const value_type&						 		const_reference;
+				typedef	typename	Allocator::pointer						 		pointer;
+				typedef	typename	Allocator::const_pointer				 		const_pointer;
+				typedef	typename	ft::IteratorVector<value_type>			 		iterator;
+				typedef	typename	ft::IteratorVector<const value_type>	 		const_iterator;
+				typedef	typename	ft::ReverseIteratorVector<iterator>		 		reverse_iterator;
+				typedef	typename	ft::ReverseIteratorVector<const_iterator>		const_reverse_iterator;
 
 			private:
 				pointer			_start;
@@ -82,10 +82,10 @@ namespace ft {
 						_set_members(_start, n, n);
 					}
 
-				template <class InputIterator,
-				typename = typename ft::enable_if< !(ft::is_integral<InputIterator>::value), InputIterator >::type >
-					vector ( InputIterator first, InputIterator last,
-							const allocator_type& alloc = allocator_type() ) :
+				template <class InputIterator>
+					vector ( InputIterator first,
+							typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last,
+							const allocator_type& alloc = allocator_type()) :
 						_start(NULL), _last(NULL), _end(NULL), _size(0),
 						_capacity(0), _alloc(alloc) {
 

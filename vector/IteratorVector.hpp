@@ -18,10 +18,10 @@
 
 namespace ft {
 
-	template < typename Category, typename T >
+	template < typename T >
 		class IteratorVector {
 
-			typedef		typename	ft::iterator_traits< typename ft::iterator<Category, T> >	iterator_traits_type;
+			typedef		typename	ft::iterator_traits< typename ft::iterator<std::random_access_iterator_tag, T> >	iterator_traits_type;
 
 			public :
 				typedef		typename	iterator_traits_type::difference_type		difference_type;
@@ -31,7 +31,7 @@ namespace ft {
 				typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 			private:
-				typedef		IteratorVector<Category, const value_type>				const_iterator;
+				typedef		IteratorVector<const value_type>				const_iterator;
 				pointer		_position;
 
 			public:
@@ -80,50 +80,57 @@ namespace ft {
 
 				/////////////////////////////////Comparison Operators///////////////////////////////////////
 				//
-				friend bool	operator==(const IteratorVector<Category, T> &lhs, const IteratorVector<Category, T> &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator==(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position == rhs._position);
 				}
-				friend bool	operator!=(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator!=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position != rhs._position);
 				}
-				friend bool	operator<(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator<(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position < rhs._position);
 				}
-				friend bool	operator>(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator>(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position > rhs._position);
 				}
-				friend bool	operator<=(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator<=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position <= rhs._position);
 				}
-				friend bool	operator>=(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend bool	operator>=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return (lhs._position >= rhs._position);
 				}
 
 				/////////////////////////////////Arithmetic Operators///////////////////////////////////////
 				//
-				friend IteratorVector	operator+(const IteratorVector &lhs, const int &n) {
+				friend IteratorVector	operator+(const IteratorVector &lhs, const difference_type &n) {
 					IteratorVector	cp(lhs._position + n);
 					return cp;
 				}
-				friend IteratorVector	operator+(const int &n, const IteratorVector &lhs) {
+				friend IteratorVector	operator+(const difference_type &n, const IteratorVector &lhs) {
 					IteratorVector	cp(n + lhs._position);
 					return cp;
 				}
-				friend IteratorVector	operator-(const IteratorVector &lhs, const int &n) {
+				friend IteratorVector	operator-(const IteratorVector &lhs, const difference_type &n) {
 					IteratorVector	cp(lhs._position - n);
 					return cp;
 				}
-				friend long				operator-(const IteratorVector &lhs, const IteratorVector &rhs) {
+				template<class Type1, class Type2>
+				friend long				operator-(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
 					return lhs._position - rhs._position;
 				}
 
 				/////////////////////////////////Assignation Operators//////////////////////////////////////
 				//
-				friend IteratorVector	&operator+=(IteratorVector &lhs, const int &n) {
+				friend IteratorVector	&operator+=(IteratorVector &lhs, const difference_type &n) {
 					lhs = lhs + n;
 					return lhs;
 				}
-				friend IteratorVector	&operator-=(IteratorVector &lhs, const int &n) {
+				friend IteratorVector	&operator-=(IteratorVector &lhs, const difference_type &n) {
 					lhs = lhs - n;
 					return lhs;
 				}
