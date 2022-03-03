@@ -43,6 +43,10 @@ namespace ft {
 					this->_position = source._position;
 					return *this;
 				}
+				////////////////////////////////PUBLIC METHODS///////////////////////////////////////////
+				//
+				pointer		base() const { return _position; }
+				
 
 				/////////////////////////////////////////////////////////////////////////////////////////
 				/////////////////////////////////OPERATORS///////////////////////////////////////////////
@@ -78,33 +82,6 @@ namespace ft {
 					return cp;
 				}
 
-				/////////////////////////////////Comparison Operators///////////////////////////////////////
-				//
-				template<class Type1, class Type2>
-				friend bool	operator==(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position == rhs._position);
-				}
-				template<class Type1, class Type2>
-				friend bool	operator!=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position != rhs._position);
-				}
-				template<class Type1, class Type2>
-				friend bool	operator<(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position < rhs._position);
-				}
-				template<class Type1, class Type2>
-				friend bool	operator>(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position > rhs._position);
-				}
-				template<class Type1, class Type2>
-				friend bool	operator<=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position <= rhs._position);
-				}
-				template<class Type1, class Type2>
-				friend bool	operator>=(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return (lhs._position >= rhs._position);
-				}
-
 				/////////////////////////////////Arithmetic Operators///////////////////////////////////////
 				//
 				friend IteratorVector	operator+(const IteratorVector &lhs, const difference_type &n) {
@@ -119,10 +96,6 @@ namespace ft {
 					IteratorVector	cp(lhs._position - n);
 					return cp;
 				}
-				template<class Type1, class Type2>
-				friend long				operator-(const IteratorVector<Type1> &lhs, const IteratorVector<Type2> &rhs) {
-					return lhs._position - rhs._position;
-				}
 
 				/////////////////////////////////Assignation Operators//////////////////////////////////////
 				//
@@ -136,6 +109,76 @@ namespace ft {
 				}
 
 		};
+
+
+	/////////////////////////////////Arithmetic Operators///////////////////////////////////////
+	//
+	template<class Type>
+		long				operator-(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return lhs.base() - rhs.base();
+		}
+	template<class Type1, class Type2>
+		long				operator-(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return lhs.base() - rhs.base();
+		}
+
+	/////////////////////////////////Comparison Operators///////////////////////////////////////
+	//
+	template<class Type>
+		bool	operator==(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() == rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator==(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() == rhs.base());
+		}
+
+	template<class Type>
+		bool	operator!=(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() != rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator!=(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() != rhs.base());
+		}
+
+	template<class Type>
+		bool	operator<(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() < rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator<(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() < rhs.base());
+		}
+
+	template<class Type>
+		bool	operator>(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() > rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator>(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() > rhs.base());
+		}
+
+	template<class Type>
+		bool	operator<=(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() <= rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator<=(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() <= rhs.base());
+		}
+
+	template<class Type>
+		bool	operator>=(const ft::IteratorVector<Type> &lhs, const ft::IteratorVector<Type> &rhs) {
+			return (lhs.base() >= rhs.base());
+		}
+	template<class Type1, class Type2>
+		bool	operator>=(const ft::IteratorVector<Type1> &lhs, const ft::IteratorVector<Type2> &rhs) {
+			return (lhs.base() >= rhs.base());
+		}
+
+
 }
 
 #endif

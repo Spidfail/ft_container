@@ -47,8 +47,8 @@ namespace ft {
 				typedef	typename	Allocator::const_pointer				 		const_pointer;
 				typedef	typename	ft::IteratorVector<value_type>			 		iterator;
 				typedef	typename	ft::IteratorVector<const value_type>	 		const_iterator;
-				typedef	typename	ft::ReverseIteratorVector<iterator>		 		reverse_iterator;
-				typedef	typename	ft::ReverseIteratorVector<const_iterator>		const_reverse_iterator;
+				typedef	typename	ft::ReverseIterator<iterator>		 			reverse_iterator;
+				typedef	typename	ft::ReverseIterator<const_iterator>				const_reverse_iterator;
 
 			private:
 				pointer			_start;
@@ -69,11 +69,12 @@ namespace ft {
 
 				vector( const vector<value_type> &target, const allocator_type &alloc = allocator_type() ) :
 					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc)
-			{ *this = target; }
+					{ *this = target; }
 
 				vector( size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type() ) :
 					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc) {
+
 						if (n < 0 || n > (std::numeric_limits<size_type>::max() / sizeof(value_type)))
 							throw std::length_error("vector");
 						this->_start = this->_alloc.allocate(n);
@@ -89,8 +90,8 @@ namespace ft {
 						_start(NULL), _last(NULL), _end(NULL), _size(0),
 						_capacity(0), _alloc(alloc) {
 
-							size_type	new_size = last - first;
-							pointer		new_content = this->_alloc.allocate(new_size);
+							const size_type		new_size = last - first;
+							const pointer		new_content = this->_alloc.allocate(new_size);
 							for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
 								_alloc.construct(new_content + i, *first);
 							_set_members(new_content, new_size, new_size);
@@ -102,7 +103,7 @@ namespace ft {
 				//// MEMBERS OPERATORS
 
 				vector			&operator=( const vector<value_type> &source ) {
-					pointer		temp = _alloc.allocate(source.size());
+					const pointer		temp = _alloc.allocate(source.size());
 					_erase_all();
 					_copy(source._start, source._start + source.size(), temp);
 					_set_members(temp, source.size(), source.size());
@@ -158,8 +159,8 @@ namespace ft {
 					if (new_cap > this->max_size())
 						throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 					if (new_cap > _capacity) {
-						size_type	tmp_size = _size;
-						pointer		temp = _alloc.allocate(new_cap);
+						const size_type	tmp_size = _size;
+						const pointer		temp = _alloc.allocate(new_cap);
 						_copy(_start, _last, temp);
 						_erase_all();
 						_set_members(temp, tmp_size, new_cap);
@@ -183,11 +184,11 @@ namespace ft {
 						_alloc.construct(&(*it), value);
 				}
 
-				template< class InputIt,
-				typename = typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt>::type >
-					void				assign( InputIt first, InputIt last ) {
-						size_type	new_size = last - first;
-						pointer		new_content = this->_alloc.allocate(new_size);
+				template< class InputIt >
+					void				assign( InputIt first,
+												typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type last ) {
+						const size_type	new_size = last - first;
+						const pointer		new_content = this->_alloc.allocate(new_size);
 						for (size_type i = 0 ; first != last && i < new_size ; ++i, ++first)
 							_alloc.construct(new_content + i, *first);
 						this->_erase_all();
@@ -203,8 +204,8 @@ namespace ft {
 						assert(0);
 					}
 
-					size_type	it_pos = &(*pos) - _start;
-					size_type	new_size = _size - 1;
+					const size_type	it_pos = &(*pos) - _start;
+					const size_type	new_size = _size - 1;
 					if (_size > 1)
 						for (size_type i = it_pos ; i < new_size - 1 ; ++i)
 							_start[i] = _start[i + 1];
@@ -221,9 +222,9 @@ namespace ft {
 						assert(0);
 					}
 
-					size_type	it_pos = &(*first) - _start;
-					size_type	count = last - first;
-					size_type	new_size = _size - count;
+					const size_type	it_pos = &(*first) - _start;
+					const size_type	count = last - first;
+					const size_type	new_size = _size - count;
 					if (count > 0)
 						for ( size_type i = it_pos ; i + count < _size ; ++i )
 							_start[i] = _start[i + count];
@@ -240,8 +241,8 @@ namespace ft {
 						assert(0);
 					}
 
-					size_type	it_pos = &(*pos) - _start;
-					size_type	new_size = _size + 1;
+					const size_type	it_pos = &(*pos) - _start;
+					const size_type	new_size = _size + 1;
 					this->reserve(new_size);
 					_alloc.construct(_start + _size, _start[_size - 1]);
 					for (size_type i = _size - 1 ; i > 0 && i > it_pos + 1 ; i--) {
@@ -261,9 +262,9 @@ namespace ft {
 
 					if (count == 0)
 						return ;
-					size_type	it_pos = &(*pos) - _start;
-					size_type	new_size = _size + count;
-					size_type	end_count = it_pos + count;
+					const size_type	it_pos = &(*pos) - _start;
+					const size_type	new_size = _size + count;
+					const size_type	end_count = it_pos + count;
 					this->reserve(new_size);
 					for (size_type i = new_size - 1 ; i >= end_count ; i--)
 						_alloc.construct(_start + i, _start[i - count]);
@@ -273,21 +274,21 @@ namespace ft {
 					_set_size(new_size);
 				}
 
-				template< class InputIt,
-					typename = typename ft::enable_if< !(ft::is_integral<InputIt>::value), InputIt >::type >
-					void				insert( iterator pos, InputIt first, InputIt last ) {
+				template< class InputIt>
+					void				insert( iterator pos, InputIt first,
+												typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type last ) {
 						if ( !(&(*pos) >= _start && &(*pos) <= _last) ) {
 							std::cout << "vector::insert(iterator, count, value) called with an iterator ";
 							std::cout << "not referring to this vector" << std::endl;
 							assert(0);
 						}
 
-						size_type	count = last - first;
+						const size_type	count = last - first;
 						if (count < 1)
 							return ;
-						size_type	it_pos = &(*pos) - _start;
-						size_type	end_count = it_pos + count;
-						size_type	new_size = _size + count;
+						const size_type	it_pos = &(*pos) - _start;
+						const size_type	end_count = it_pos + count;
+						const size_type	new_size = _size + count;
 						ft::vector<value_type,allocator_type>		tmp;
 						if (&*first >= _start && &*first < _end) {
 							if (new_size > _size) {
@@ -399,7 +400,6 @@ namespace ft {
 //
 	template <class T, class Alloc>
 		void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y) { x.swap(y); }
-}
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//// RELATIONNAL OPERATORS
@@ -456,6 +456,8 @@ namespace ft {
 					return false;
 			return true;
 		}
+}
+
 
 
 #endif
