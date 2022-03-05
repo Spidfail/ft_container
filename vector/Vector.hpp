@@ -22,12 +22,12 @@
 #include <cstddef>
 #include <cassert>
 
-#include "EnableIf.hpp"
-#include "IsIntegral.hpp"
-#include "CompareUtils.hpp"
+#include "../EnableIf.hpp"
+#include "../IsIntegral.hpp"
+#include "../CompareUtils.hpp"
 
 #include "IteratorVector.hpp"
-#include "ReverseIteratorVector.hpp"
+#include "../ReverseIteratorVector.hpp"
 
 namespace ft {
 
