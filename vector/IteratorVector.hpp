@@ -31,7 +31,7 @@ namespace ft {
 				typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 			private:
-				typedef		IteratorVector<const value_type>				const_iterator;
+				typedef		IteratorVector<const value_type>						const_iterator;
 				pointer		_position;
 
 			public:
