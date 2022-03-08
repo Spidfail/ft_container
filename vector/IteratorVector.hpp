@@ -178,7 +178,6 @@ namespace ft {
 			return (lhs.base() >= rhs.base());
 		}
 
-
 }
 
 #endif

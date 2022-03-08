@@ -47,23 +47,30 @@ namespace ft {
 						Node		*parent;
 						Node		*predecessor;
 						Node		*successor;
-						value_type	content;
+						pointer		content;
 						short int	balance_factor;
 
 						Node() :
-							parent(NULL), predecessor(NULL), successor(NULL), content(), balance_factor(0) { }
+							parent(NULL), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) { }
 						Node(const Node &source) :
-							parent(source.parent), predecessor(source.predecessor), successor(source.successor),
-							content(source.content), balance_factor(source.balance_factor) { }
+							parent(NULL), predecessor(NULL), successor(NULL),
+							content(NULL), balance_factor(0) { *this = source; }
 						Node(const_reference value) :
-							parent(NULL), predecessor(NULL), successor(NULL), content(value), balance_factor(0) { }
+							parent(NULL), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) {
+								content = new value_type(value);
+							}
 						Node(const_reference value, Node *parent) :
-							parent(parent), predecessor(NULL), successor(NULL), content(value), balance_factor(0) { }
+							parent(parent), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) {
+								content = new value_type(value);
+							}
 						Node	operator=(const Node &source) {
 							parent = source.parent;
 							predecessor = source.parent;
 							successor = source.parent;
-							content = source.content;
+							pointer new_content = new value_type(*source.content);
+							if (content)
+								delete content;
+							content = new_content;
 							balance_factor = source.balance_factor;
 							return *this;
 						}
@@ -72,10 +79,11 @@ namespace ft {
 							predecessor = NULL;
 							successor = NULL;
 							balance_factor = 0;
+							delete content;
 						}
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
-							return value_compare()(lhs.content, rhs.content);
+							return value_compare()(*lhs.content, *rhs.content);
 						}
 
 						friend	bool	operator>(const Node &lhs, const Node &rhs) {
@@ -91,7 +99,7 @@ namespace ft {
 						}
 
 						friend	bool	operator==(const Node &lhs, const Node &rhs) {
-							return (lhs.content.first == rhs.content.first);
+							return (lhs.content->first == rhs.content->first);
 						}
 
 						friend	bool	operator!=(const Node &lhs, const Node &rhs) {
@@ -138,108 +146,112 @@ namespace ft {
 							typedef		Node		&	node_reference;
 							typedef		const Node	&	const_node_reference;
 
-						node_pointer	_position;
-						node_pointer	_root;
-						bool			_is_end;
+							node_pointer	_position;
+							node_pointer	_root;
+							bool			_is_end;
 
-						node_pointer	_find_begin() {
-							node_pointer rtn = _root;
-							while (rtn->predecessor)
-								rtn = rtn->predecessor;
-							return rtn;
-						}
-						node_pointer	_find_last() {
-							node_pointer rtn = _root;
-							while (rtn->successor)
-								rtn = rtn->successor;
-							return rtn;
-						}
+							node_pointer	_find_min(node_pointer pos) {
+								while (pos->predecessor)
+									pos = pos->predecessor;
+								return pos;
+							}
+							node_pointer	_find_max(node_pointer pos) {
+								while (pos->successor)
+									pos = pos->successor;
+								return pos;
+							}
 
 
 						public:
-						IteratorMap()
-							: _position(NULL), _root(NULL), _is_end(false) { }
-						IteratorMap(node_pointer source, node_pointer root)
-							: _position(source), _root(root), _is_end(false) { }
+							IteratorMap()
+								: _position(NULL), _root(NULL), _is_end(false) { }
+							IteratorMap(node_pointer source, node_pointer root)
+								: _position(source), _root(root), _is_end(false) { }
 
-						IteratorMap(node_pointer source, node_pointer root, bool)
-							: _position(source), _root(root), _is_end(false) {
-								if (source == NULL)
-									_is_end = true;
-							}
-						IteratorMap(const IteratorMap &source) : _position(source._position), _root(source._root) { }
-						~IteratorMap() { }
-
-						//////////////////////////////////Operators////////////////////////////////////////////
-
-						IteratorMap							operator= (const IteratorMap &source) {
-							this->_position = source._position;
-							this->_root = source._root;
-							return *this;
-						}
-						IteratorMap<const value_type>		operator() () { return (const_iterator(*this)); }
-
-						reference			operator* () { return _position->content; }
-						pointer				operator-> () { return &_position->content; }
-
-						//////////////////////////////////Accessors////////////////////////////////////////////
-
-						node_pointer				base() const { return _position; }
-
-						//////////////////////////////////Increment/Decrement//////////////////////////////////
-
-						IteratorMap			&operator++ () {
-							if (_position == NULL) {
-								if (!_is_end)
-									_position = _find_begin();
-							}
-							else if (_position->successor)
-								_position = _position->successor;
-							else {
-								node_pointer tmp = _position;
-								while (tmp->parent && *tmp <= *_position)
-									tmp = tmp->parent;
-								if (*tmp > *_position)
-									_position = tmp;
-								else {
-									_position = NULL;
-									_is_end = true;
+							IteratorMap(node_pointer source, node_pointer root, bool)
+								: _position(source), _root(root), _is_end(false) {
+									if (source == NULL)
+										_is_end = true;
 								}
+							IteratorMap(const IteratorMap &source)
+								: _position(source._position), _root(source._root), _is_end(source._is_end) { }
+							~IteratorMap() { }
+
+							//////////////////////////////////Operators////////////////////////////////////////////
+
+							IteratorMap							operator= (const IteratorMap &source) {
+								this->_position = source._position;
+								this->_root = source._root;
+								this->_is_end = source._is_end;
+								return *this;
 							}
-							return *this;
-						}
-						IteratorMap			&operator++ (int) {
-							IteratorMap		cp(*this);
-							++(*this);
-							return cp;
-						}
-						IteratorMap			&operator-- () {
-							std::cout << _is_end << std::endl;
-							if (_position == NULL) {
-								if (_is_end)
-									_position = _find_last();
-								_is_end = false;
-							}
-							else if (_position->predecessor)
-								_position = _position->predecessor;
-							else {
-								node_pointer tmp = _position;
-								while (tmp->parent && *tmp >= *_position)
-									tmp = tmp->parent;
-								if (*tmp < *_position)
-									_position = tmp;
+							IteratorMap<const value_type>		operator() () { return (const_iterator(*this)); }
+
+							reference			operator* () { return *_position->content; }
+							pointer				operator-> () { return _position->content; }
+
+							//////////////////////////////////Accessors////////////////////////////////////////////
+
+							node_pointer		base() const { return _position; }
+
+							//////////////////////////////////Increment/Decrement//////////////////////////////////
+
+							IteratorMap			&operator++ () {
+								if (_position == NULL) {
+									if (!_is_end)
+										_position = _find_min(_root);
+								}
+								else if (_position->successor) {
+									_position = _find_min(_position->successor);
+								}
 								else {
-									_position = NULL;
+									node_pointer tmp = _position;
+									while (tmp->parent && *tmp <= *_position) {
+										tmp = tmp->parent;
+									}
+									if (*tmp > *_position)
+										_position = tmp;
+									else {
+										_position = NULL;
+										_is_end = true;
+									}
+								}
+								return *this;
+							}
+							IteratorMap			operator++ (int) {
+								IteratorMap		cp(*this);
+								++(*this);
+								return cp;
+							}
+
+							IteratorMap			&operator-- () {
+								if (_position == NULL) {
+									if (_is_end)
+										_position = _find_max(_root);
 									_is_end = false;
 								}
+								else if (_position->predecessor) {
+									_position = _find_max(_position->predecessor);
+								}
+								else {
+									node_pointer	tmp = _position;
+									while (tmp->parent && *tmp >= *_position) {
+										tmp = tmp->parent;
+									}
+									if (*tmp < *_position)
+										_position = tmp;
+									else {
+										_position = NULL;
+										_is_end = false;
+									}
+								}
+								return *this;
 							}
-							return *this;
-						}
-						IteratorMap			&operator-- (int) {
-							IteratorMap		cp(*this);
-							--(*this);
-							return cp;
-						}
+							IteratorMap			operator-- (int) {
+								IteratorMap		cp(*this);
+								--(*this);
+								return cp;
+							}
 					};
 
 				/////////////////////////////////Comparison Operators///////////////////////////////////////
@@ -341,6 +353,30 @@ namespace ft {
 					_root = _create_node(value_type(2, str2), NULL);
 					_root->predecessor = _create_node(value_type(1, str), _root);
 					_root->successor = _create_node(value_type(3, str3), _root);
+				}
+				void					_create_double_tree_successor_test(std::string str, std::string str2, std::string str3) {
+					_root = _create_node(value_type(2, str2), NULL);
+					_root->predecessor = _create_node(value_type(1, str), _root);
+					_root->successor = _create_node(value_type(4, str3), _root);
+
+					node_pointer	new_tree = _root->successor;
+					new_tree->predecessor = _create_node(value_type(3, str), new_tree);
+					new_tree->successor = _create_node(value_type(6, str3), new_tree);
+					new_tree->successor->successor = _create_node(value_type(7, str3), new_tree->successor);
+					new_tree->successor->predecessor = _create_node(value_type(5, str), new_tree->successor);
+				}
+
+				void					_create_double_tree_predecessor_test(std::string str, std::string str2, std::string str3) {
+					_root = _create_node(value_type(3, str2), NULL);
+					_root->predecessor = _create_node(value_type(0, str), _root);
+					_root->successor = _create_node(value_type(4, str3), _root);
+
+					node_pointer	new_tree = _root->predecessor; // 0
+					new_tree->predecessor = _create_node(value_type(-2, str), new_tree);
+					new_tree->successor = _create_node(value_type(1, str2), new_tree);
+					new_tree->successor->successor = _create_node(value_type(2, str2), new_tree->successor);
+					new_tree->predecessor->predecessor = _create_node(value_type(-3, str3), new_tree->predecessor);
+					new_tree->predecessor->successor = _create_node(value_type(-1, str3), new_tree->predecessor);
 				}
 
 		};

@@ -59,7 +59,7 @@ namespace ft {
 				//
 				reference		operator[](difference_type index) { return _base_iterator[-index]; }
 				reference		operator*() { return *_base_iterator; }
-				pointer			operator->() { return _base_iterator; }
+				pointer			operator->() { return &*_base_iterator; }
 
 				////////////////////////////////Increment/Decrement//////////////////////////////////////
 				//
