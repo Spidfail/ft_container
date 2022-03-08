@@ -35,7 +35,27 @@ int main() {
 			std::cout << it->second << std::endl;
 			++it;
 		}
-
+	} {
+		ft::map<int, std::string>			test;
+		test._create_tree_test("manger", "des", "frites");
+		ft::map<int, std::string>::iterator	it = test.end();
+		--it;
+		while (it != test.begin()) {
+			std::cout << it->first << std::endl;
+			std::cout << it->second << std::endl;
+			--it;
+		}
+	}{
+		ft::map<int, std::string>			test;
+		test._create_tree_test("manger", "des", "frites");
+		ft::map<int, std::string>::reverse_iterator	it = test.rbegin();
+		while (it != test.rend()) {
+			std::cout << it->first << std::endl;
+			std::cout << it->second << std::endl;
+			++it;
+		}
 	}
+
+
 
 }

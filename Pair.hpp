@@ -19,7 +19,7 @@ namespace ft {
 			pair (const first_type& a, const second_type& b) : first(a), second(b) { }
 			template<class U, class V>
 				pair (const pair<U,V>& pr) { *this = pr; }
-			~pair();
+			~pair() { }
 
 			pair	&operator=(const pair &pr) {
 				this->first = pr.first;

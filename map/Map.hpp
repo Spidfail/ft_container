@@ -11,6 +11,8 @@
 # include "../ReverseIteratorVector.hpp"
 # include <string>
 
+# include <iostream>
+
 namespace ft {
 
 
@@ -73,7 +75,7 @@ namespace ft {
 						}
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
-							return (value_compare()(lhs.content, rhs.content));
+							return value_compare()(lhs.content, rhs.content);
 						}
 
 						friend	bool	operator>(const Node &lhs, const Node &rhs) {
@@ -96,8 +98,6 @@ namespace ft {
 							return (!(lhs == rhs));
 						}
 					};
-
-
 
 				typedef		Node		node_type;
 				typedef		Node *		node_pointer;
@@ -126,18 +126,17 @@ namespace ft {
 						typedef 	typename 	ft::iterator_traits<typename ft::iterator<std::bidirectional_iterator_tag, Value> >		iterator_traits_type;
 
 						public :
-						typedef		typename	iterator_traits_type::difference_type		difference_type;
-						typedef		typename	iterator_traits_type::value_type			value_type;
-						typedef		typename	iterator_traits_type::pointer				pointer;
-						typedef		typename	iterator_traits_type::reference				reference;
-						typedef		typename	iterator_traits_type::iterator_category		iterator_category;
+							typedef		typename	iterator_traits_type::difference_type		difference_type;
+							typedef		typename	iterator_traits_type::value_type			value_type;
+							typedef		typename	iterator_traits_type::pointer				pointer;
+							typedef		typename	iterator_traits_type::reference				reference;
+							typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 						private:
-
-						typedef		Node			node_type;
-						typedef		Node		*	node_pointer;
-						typedef		Node		&	node_reference;
-						typedef		const Node	&	const_node_reference;
+							typedef		Node			node_type;
+							typedef		Node		*	node_pointer;
+							typedef		Node		&	node_reference;
+							typedef		const Node	&	const_node_reference;
 
 						node_pointer	_position;
 						node_pointer	_root;
@@ -215,6 +214,7 @@ namespace ft {
 							return cp;
 						}
 						IteratorMap			&operator-- () {
+							std::cout << _is_end << std::endl;
 							if (_position == NULL) {
 								if (_is_end)
 									_position = _find_last();
@@ -323,14 +323,14 @@ namespace ft {
 				iterator				begin() { return iterator(_find_begin(), _root); }
 				const_iterator			begin() const { return const_iterator(_find_begin(), _root); }
 
-				reverse_iterator		rbegin() { return reverse_iterator(_find_last(), _root); }
-				const_reverse_iterator	rbegin() const { return const_reverse_iterator(_find_last(), _root); }
+				reverse_iterator		rbegin() { return reverse_iterator(iterator(_find_last(), _root)); }
+				const_reverse_iterator	rbegin() const { return const_reverse_iterator(const_iterator(_find_last(), _root)); }
 
 				iterator				end() { return iterator(NULL, _root, int()); }
 				const_iterator 			end() const { return const_iterator(NULL, _root, int()); }
 
-				reverse_iterator		rend() { return reverse_iterator(NULL, _root); }
-				const_reverse_iterator	rend() const { return const_reverse_iterator(NULL, _root); }
+				reverse_iterator		rend() { return reverse_iterator(iterator(NULL, _root)); }
+				const_reverse_iterator	rend() const { return const_reverse_iterator(const_iterator(NULL, _root)); }
 
 				node_pointer			_create_node(const_reference value, node_pointer parent) {
 					return new node_type(value, parent);
@@ -356,6 +356,9 @@ namespace ft {
 				value_compare(Compare source) : _comp_instance(source) { }
 
 			public:
+				typedef		bool				return_value;
+				typedef		const_reference		first_argument_type;
+				typedef		const_reference		second_argument_type;
 				value_compare(const value_compare &source) :
 					_comp_instance(source._comp_instance) { }
 				~value_compare() { }
@@ -364,7 +367,7 @@ namespace ft {
 					_comp_instance = source._comp_instance;
 					return *this;
 				}
-				value_compare	operator() (const_reference value1, const_reference value2) const {
+				return_value	operator() (first_argument_type value1, second_argument_type value2) const {
 					return _comp_instance(value1.first, value2.first);
 				}
 
