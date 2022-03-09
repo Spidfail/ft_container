@@ -10,6 +10,8 @@
 # include "../IteratorTraits.hpp"
 # include "../ReverseIteratorVector.hpp"
 # include <string>
+# include <queue>
+# include <math.h>
 
 # include <iostream>
 
@@ -33,6 +35,7 @@ namespace ft {
 				typedef		const value_type &						const_reference;
 				typedef		value_type *							pointer;
 				typedef		const value_type *						const_pointer;
+				typedef		Alloc									allocator_type;
 
 				typedef		Compare									key_compare;
 
@@ -41,45 +44,61 @@ namespace ft {
 					return value_compare(key_compare());
 				}
 
+friend	void	print_tree();
 			protected:
 					struct Node {
 
-						Node		*parent;
-						Node		*predecessor;
-						Node		*successor;
-						pointer		content;
-						short int	balance_factor;
+						private:
+							pointer			allocate_content(const_reference	instance) {
+									pointer		new_content = alloc.allocate(1);
+									alloc.construct(new_content, instance);
+									return new_content;
+							}
+
+
+						allocator_type	alloc;
+						Node			*parent;
+						Node			*predecessor;
+						Node			*successor;
+						pointer			content;
+						size_type		weight_pred;
+						size_type		weight_succ;
 
 						Node() :
-							parent(NULL), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) { }
+							alloc(allocator_type()), parent(NULL), predecessor(NULL), successor(NULL),
+							content(NULL), weight_pred(0), weight_succ(0) { }
 						Node(const Node &source) :
-							parent(NULL), predecessor(NULL), successor(NULL),
-							content(NULL), balance_factor(0) { *this = source; }
+							alloc(allocator_type()), parent(NULL), predecessor(NULL), successor(NULL),
+							content(NULL), weight_pred(0), weight_succ(0) { *this = source; }
 						Node(const_reference value) :
-							parent(NULL), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) {
-								content = new value_type(value);
+							alloc(allocator_type()), parent(NULL), predecessor(NULL), successor(NULL),
+							content(NULL), weight_pred(0), weight_succ(0) {
+								content = allocate_content(value_type(value));
 							}
 						Node(const_reference value, Node *parent) :
-							parent(parent), predecessor(NULL), successor(NULL), content(NULL), balance_factor(0) {
-								content = new value_type(value);
+							alloc(allocator_type()), parent(parent), predecessor(NULL), successor(NULL),
+							content(NULL), weight_pred(0), weight_succ(0) {
+								content = allocate_content(value_type(value));
 							}
-						Node	operator=(const Node &source) {
+						Node	&operator=(const Node &source) {
 							parent = source.parent;
-							predecessor = source.parent;
-							successor = source.parent;
-							pointer new_content = new value_type(*source.content);
+							predecessor = source.predecessor;
+							successor = source.successor;
+							pointer new_content = allocate_content(value_type(*source.content));
 							if (content)
-								delete content;
+								alloc.deallocate(content, 1);
 							content = new_content;
-							balance_factor = source.balance_factor;
+							weight_pred = source.weight_pred;
+							weight_succ = source.weight_succ;
 							return *this;
 						}
 						~Node() {
 							parent = NULL;
 							predecessor = NULL;
 							successor = NULL;
-							balance_factor = 0;
-							delete content;
+							weight_pred = 0;
+							weight_succ = 0;
+							alloc.deallocate(content, 1);
 						}
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
@@ -113,8 +132,9 @@ namespace ft {
 
 				node_pointer	_find_begin() {
 					node_pointer rtn = _root;
-					while (rtn->predecessor)
+					while (rtn->predecessor){
 						rtn = rtn->predecessor;
+					}
 					return rtn;
 				}
 				node_pointer	_find_last() {
@@ -179,7 +199,7 @@ namespace ft {
 
 							//////////////////////////////////Operators////////////////////////////////////////////
 
-							IteratorMap							operator= (const IteratorMap &source) {
+							IteratorMap							&operator= (const IteratorMap &source) {
 								this->_position = source._position;
 								this->_root = source._root;
 								this->_is_end = source._is_end;
@@ -280,7 +300,7 @@ namespace ft {
 
 
 			public:
-				typedef		typename Alloc::template rebind<node_type>::other	allocator_type;
+				typedef		typename Alloc::template rebind<node_type>::other	allocator_node;
 
 				typedef		IteratorMap<value_type>				iterator;
 				typedef		IteratorMap<const value_type>		const_iterator;
@@ -290,16 +310,161 @@ namespace ft {
 
 			private:
 				allocator_type	_alloc;
+				allocator_node	_node_alloc;
 				value_compare	_comp;
 				node_pointer	_root;
 				size_type		_size;
 
+
+				void			_add_weight() {
+
+				}
+
+				node_pointer	_insert_recursion(node_pointer	elem, node_pointer	subtree) {
+					if (*subtree == *elem)
+						return subtree;
+					else if (*subtree < *elem) {
+						if (subtree->predecessor) {
+							node_pointer rtn = _insert_recursion(elem, subtree->predecessor);
+							if (rtn)
+								return rtn;
+							else
+								++subtree->weight_pred;
+						}
+						else {
+							subtree->predecessor = elem;
+							++subtree->weight_pred;
+						}
+					}
+					else if (*subtree > *elem) {
+						if (subtree->successor) {
+							node_pointer rtn = _insert_recursion(elem, subtree->successor);
+							if (rtn)
+								return rtn;
+							else
+								++subtree->weight_succ;
+						}
+						else {
+							subtree->successor = elem;
+							++subtree->weight_succ;
+						}
+					}
+				}
+
 			public:
+
+void	print_tree()
+		{
+			std::cout<<"dans print tree\n";
+			int i = 0;
+			int tour = 0;
+			// std::cout<<"dans print tree1.25"<<head->getKey()<<"\n";
+			int space = pow(2,_root->height() -1 );
+			// std::cout<<"dans print tree1.35\n";
+			int vide = 0;
+			int v = 1;
+			int debug = 0;
+			std::queue<Node*> n;
+			// std::cout<<"dans print tree1.5\n";
+			// std::cout<<"dans print tree1.75\n";
+			node_pointer temp;
+			node_pointer temp_head = _root;
+			n.push(temp_head);
+			node_pointer temp2;
+			for (int x = 0 ; x <space ; x++)
+			{
+				std::cout<<" ";
+			}
+			while(!n.empty() )//&& debug < 15)
+			{
+				// std::cout<<"dans print tree2\n";
+				debug++;
+				temp = n.front();
+				n.pop();
+				if (temp->getKey() == '*')
+					std::cout<<(char)(temp->getKey());
+				else
+					std::cout<<(temp->getKey());
+				i++;
+				if (i != 0 && i == pow(2,tour)/2)
+					std::cout<<" ";
+				if(i == pow(2,tour))
+				{
+					if (v == 0)
+					{
+						std::cout<<"\n";
+						return;
+					}
+					std::cout<<"\n";
+					for (int x = 0 ; x <space -pow(2,tour); x++)
+					{
+						std::cout<<" ";
+					}
+					tour++;
+					i = 0;
+					v = 0;
+				}
+				if (temp->getKey() == '*')
+				{
+					pair<const char,int> p1('*' , 0);
+					temp2 = _node_alloc.allocate(1);
+					_node_alloc.construct(temp2, node_type(p1));
+					n.push(temp2);
+					temp2 = _node_alloc.allocate(1);
+					_node_alloc.construct(temp2, node_type(p1));
+					n.push(temp2);
+					delete temp;
+					continue;
+				}
+				if(temp->getLeft()!= 0)
+				{
+					// std::cout<<"dans left ";
+					n.push(temp->getLeft());
+					if (temp->getKey()!='*')
+						v++;
+				}
+				else
+				{
+					pair<const char,int> p1('*' , 0);
+					temp2 = _node_alloc.allocate(1);
+					_node_alloc.construct(temp2, node_type(p1));
+					n.push(temp2);
+				}
+				if(temp->getRight()!= 0)
+				{
+					// std::cout<<"dans right ";
+					n.push(temp->getRight());
+					if (temp->getKey()!='*')
+						v++;
+				}
+				else
+				{
+					pair<const char,int> p1('*' , 0);
+					temp2 = _node_alloc.allocate(1);
+					_node_alloc.construct(temp2, node_type(p1));
+					n.push(temp2);
+					// n.push(Node<Key,T,Alloc>("*",0));
+					vide ++;
+				}
+				// std::cout<<"v == "<<v<<" ";
+			}
+			std::cout<<"\n";
+		}
+
 				/////////////////////////////////Constructors/////////////////////////////////////////////////////////
+				//
+				// allocator_type	_alloc;
+				// allocator_node	_node_alloc;
+				// value_compare	_comp;
+				// node_pointer	_root;
+				// size_type		_size;
+				//
 				map() :
-					_alloc(allocator_type()), _comp(key_compare()), _root(NULL), _size(0)  { }
+					_alloc(allocator_type()), _node_alloc(allocator_node()), _comp(key_compare()), _root(NULL), _size(0) { }
+
 				explicit map(const Compare& comp, const allocator_type& alloc = allocator_type()) :
-					_alloc(alloc), _comp(comp), _root(NULL), _size(0) { }
+					_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL), _size(0) { }
+
 				map(const map &source) { *this = source; }
 				// template< class InputIt >
 					// map(InputIt first, InputIt last,
@@ -310,50 +475,20 @@ namespace ft {
 				/////////////////////////////////Destructor///////////////////////////////////////////////////////////
 				~map() { }
 
-				/////////////////////////////////Operators////////////////////////////////////////////////////////////
-				map		operator= (const map &source) {
-					_alloc = source._alloc;
-					_comp = source._comp;
-					// _root = source._root;
-					// _begin = source._begin;   // NEED DEEP COPY WITH iterator
-					// _last = source._last;
-					// _end = source._end;
-					_size = source._size;
-				}
-
-				/////////////////////////////////Capacity/////////////////////////////////////////////////////////////
-				allocator_type			get_allocator() { return _alloc; }
-				bool					empty() const { return !_root; }
-				size_type				size() const { return _size; }
-				size_type				max_size() const { return std::numeric_limits<size_type>::max(); }
-
-				/////////////////////////////////Modifiers////////////////////////////////////////////////////////////
-
-				/////////////////////////////////Accessors////////////////////////////////////////////////////////////
-				
-				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
-				iterator				begin() { return iterator(_find_begin(), _root); }
-				const_iterator			begin() const { return const_iterator(_find_begin(), _root); }
-
-				reverse_iterator		rbegin() { return reverse_iterator(iterator(_find_last(), _root)); }
-				const_reverse_iterator	rbegin() const { return const_reverse_iterator(const_iterator(_find_last(), _root)); }
-
-				iterator				end() { return iterator(NULL, _root, int()); }
-				const_iterator 			end() const { return const_iterator(NULL, _root, int()); }
-
-				reverse_iterator		rend() { return reverse_iterator(iterator(NULL, _root)); }
-				const_reverse_iterator	rend() const { return const_reverse_iterator(const_iterator(NULL, _root)); }
-
+				/////////////////////////////////Node methode PRIVATE/////////////////////////////////////////////////
 				node_pointer			_create_node(const_reference value, node_pointer parent) {
-					return new node_type(value, parent);
+					node_pointer	new_node = _node_alloc.allocate(1);
+					_node_alloc.construct(new_node, node_type(value, parent));
+					return new_node;
 				}
 
-				////// TEST //////
+				////// TEST ////////////////////////
 				void					_create_tree_test(std::string str, std::string str2, std::string str3) {
 					_root = _create_node(value_type(2, str2), NULL);
 					_root->predecessor = _create_node(value_type(1, str), _root);
 					_root->successor = _create_node(value_type(3, str3), _root);
 				}
+
 				void					_create_double_tree_successor_test(std::string str, std::string str2, std::string str3) {
 					_root = _create_node(value_type(2, str2), NULL);
 					_root->predecessor = _create_node(value_type(1, str), _root);
@@ -379,6 +514,43 @@ namespace ft {
 					new_tree->predecessor->successor = _create_node(value_type(-1, str3), new_tree->predecessor);
 				}
 
+				/////////////////////////////////Operators////////////////////////////////////////////////////////////
+				map		operator= (const map &source) {
+					_alloc = source._alloc;
+					_comp = source._comp;
+					// _root = source._root;
+					// _begin = source._begin;   // NEED DEEP COPY WITH iterator
+					// _last = source._last;
+					// _end = source._end;
+					_size = source._size;
+				}
+
+				/////////////////////////////////Capacity/////////////////////////////////////////////////////////////
+				allocator_type			get_allocator() { return _alloc; }
+				bool					empty() const { return !_root; }
+				size_type				size() const { return _size; }
+				size_type				max_size() const { return std::numeric_limits<size_type>::max(); }
+
+				/////////////////////////////////Modifiers////////////////////////////////////////////////////////////
+				// pair<iterator,bool>		insert (const value_type& val) {
+				// }
+
+				/////////////////////////////////Accessors////////////////////////////////////////////////////////////
+				
+				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
+				iterator				begin() { return iterator(_find_begin(), _root); }
+				const_iterator			begin() const { return const_iterator(_find_begin(), _root); }
+
+				reverse_iterator		rbegin() { return reverse_iterator(iterator(_find_last(), _root)); }
+				const_reverse_iterator	rbegin() const { return const_reverse_iterator(const_iterator(_find_last(), _root)); }
+
+				iterator				end() { return iterator(NULL, _root, int()); }
+				const_iterator 			end() const { return const_iterator(NULL, _root, int()); }
+
+				reverse_iterator		rend() { return reverse_iterator(iterator(NULL, _root)); }
+				const_reverse_iterator	rend() const { return const_reverse_iterator(const_iterator(NULL, _root)); }
+
+
 		};
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -399,7 +571,7 @@ namespace ft {
 					_comp_instance(source._comp_instance) { }
 				~value_compare() { }
 
-				value_compare	operator= (const value_compare &source) {
+				value_compare	&operator= (const value_compare &source) {
 					_comp_instance = source._comp_instance;
 					return *this;
 				}
