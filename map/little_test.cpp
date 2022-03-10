@@ -4,21 +4,23 @@
 #include <iostream>
 
 int main() {
-	{
-		std::cout << std::boolalpha;
-		ft::map<int, std::string>			test;
-		ft::map<int, std::string>::value_compare  comp_obj = test.value_comp();
-		ft::map<int, std::string>::value_compare  comp_obj2(comp_obj);
-		comp_obj = comp_obj2;
+	std::cout << std::boolalpha;
 
+	{
+		ft::map<int, std::string>			test;
 		test._create_tree_test("manger", "des", "frites");
 
-		std::cout << "fjdksjfkjdsfkjdsf"<< std::endl;
 		ft::map<int, std::string>::iterator	it = test.begin();
 		while (it != test.end()) {
 			std::cout << it->first << " " << it->second << std::endl;
 			++it;
 		}
+		--it;
+		while (it != test.begin()) {
+			std::cout << it->first << " " << it->second << std::endl;
+			--it;
+		}
+		std::cout << it->first << " " << it->second << std::endl;
 		std::cout << std::endl;
 	} {
 		ft::map<int, std::string>			test;
@@ -29,9 +31,14 @@ int main() {
 			std::cout << it->first << " " << it->second << std::endl;
 			it--;
 		}
+		std::cout << it->first << " " << it->second << std::endl;
+		while (it != test.end()) {
+			std::cout << it->first << " " << it->second << std::endl;
+			++it;
+		}
 		std::cout << std::endl;
-	}
-	{
+
+	} {
 		ft::map<int, std::string>			test;
 		test._create_tree_test("manger", "des", "frites");
 		ft::map<int, std::string>::reverse_iterator	it = test.rbegin();
@@ -39,8 +46,13 @@ int main() {
 			std::cout << it->first << " " << it->second << std::endl;
 			it++;
 		}
+		while (it != test.rbegin()) {
+			std::cout << it->first << " " << it->second << std::endl;
+			--it;
+		}
+		std::cout << it->first << " " << it->second << std::endl;
 		std::cout << std::endl;
-	}{
+	} {
 		ft::map<int, std::string>			test;
 		test._create_tree_test("manger", "des", "frites");
 		ft::map<int, std::string>::reverse_iterator	it = test.rend();
@@ -48,6 +60,11 @@ int main() {
 		while (it != test.rbegin()) {
 			std::cout << it->first << " " << it->second << std::endl;
 			--it;
+		}
+		std::cout << it->first << " " << it->second << std::endl;
+		while (it != test.rend()) {
+			std::cout << it->first << " " << it->second << std::endl;
+			++it;
 		}
 		std::cout << std::endl;
 	}
@@ -151,5 +168,18 @@ int main() {
 		std::cout << std::endl;
 	}
 
+	std::cout << "//////////////////////////INSERT////////////////////////////////" << std::endl;
+	{
+		typedef		ft::map<int, std::string>::value_type	value_type;
+		ft::map<int, std::string>			test;
+		test._create_tree_test("manger", "des", "frites");
+		ft::map<int, std::string>::iterator		it = test.begin();
+		test.insert(value_type(8, "caca"));
+		while (it != test.end()) {
+			std::cout << it->first << " " << it->second << std::endl;
+			++it;
+		}
+		test.print_tree();
+	}
 
 }
