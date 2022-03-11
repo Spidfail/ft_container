@@ -165,12 +165,14 @@ int main() {
 			std::cout << it->first << " " << it->second << std::endl;
 			--it;
 		}
+test.print_tree();
 		std::cout << std::endl;
 	}
 
 	std::cout << "//////////////////////////INSERT////////////////////////////////" << std::endl;
+	typedef		ft::map<int, std::string>::value_type			value_type;
+	typedef		ft::map<int, std::string>::iterator				iterator_type;
 	{
-		typedef		ft::map<int, std::string>::value_type	value_type;
 		ft::map<int, std::string>			test;
 		test._create_tree_test("manger", "des", "frites");
 		ft::map<int, std::string>::iterator		it = test.begin();
@@ -179,7 +181,28 @@ int main() {
 			std::cout << it->first << " " << it->second << std::endl;
 			++it;
 		}
-		test.print_tree();
+		std::cout << std::endl;
+		test.insert(value_type(0, "pipi"));
+		ft::map<int, std::string>::reverse_iterator		it2 = test.rbegin();
+		while (it2 != test.rend()) {
+			std::cout << it2->first << " " << it2->second << std::endl;
+			++it2;
+		}
+		std::cout << std::endl;
+
+	} {
+		ft::map<int, std::string>			test;
+		test.insert(value_type(0, "root"));
+		for (int i = 1 ; i < 20 ; ++i) {
+			test.insert(value_type(i, "after"));
+			test.insert(value_type(-i, "before"));
+		}
+		for (iterator_type it = test.begin() ; it != test.end() ; ++it) {
+			std::cout << it->first << " " << it->second << " ";
+			std::cout << it.get_weight_predecessor()  << " ";
+			std::cout << it.get_weight_successor() << " ";
+			std::cout << it.get_balance_factor() << std::endl;
+		}
 	}
 
 }

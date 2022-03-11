@@ -3,6 +3,7 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+#include <algorithm>
 # include <functional> 
 # include "../Pair.hpp"
 # include <limits>
@@ -40,6 +41,7 @@ namespace ft {
 				typedef		Compare									key_compare;
 
 				class value_compare;
+
 				value_compare	value_comp() const {
 					return value_compare(key_compare());
 				}
@@ -61,8 +63,8 @@ friend	void	print_tree();
 						Node			*predecessor;
 						Node			*successor;
 						pointer			content;
-						size_type		weight_pred;
-						size_type		weight_succ;
+						ssize_t			weight_pred;
+						ssize_t			weight_succ;
 
 						Node() :
 							alloc(allocator_type()), parent(NULL), predecessor(NULL), successor(NULL),
@@ -107,9 +109,9 @@ friend	void	print_tree();
 						Node				*get_successor() { return successor; }
 						Node				*get_predecessor() { return predecessor; }
 						Node				*get_parent() { return parent; }
-						size_type			get_weight_predecessor() { return weight_pred; }
-						size_type			get_weight_successor() { return weight_succ; }
-						size_type			get_balance_factor() { return weight_pred - weight_succ; }
+						ssize_t				get_weight_predecessor() { return weight_pred; }
+						ssize_t				get_weight_successor() { return weight_succ; }
+						ssize_t				get_balance_factor() { return weight_pred - weight_succ; }
 
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
@@ -177,8 +179,24 @@ friend	void	print_tree();
 					return pos;
 				}
 
+				size_type	height_recurse(node_pointer subtree, int i) {
+					if (!subtree)
+						return i;
+					++i;
+					if (!subtree->successor && !subtree->predecessor)
+						return i;
+					size_type	pred_value = height_recurse(subtree->predecessor, i);
+					size_type	succ_value = height_recurse(subtree->successor, i);
+					return pred_value > succ_value ? pred_value : succ_value;
+				}
+				size_type	height(node_pointer subtree) {
+					size_type	pred_value = height_recurse(subtree->predecessor, 0);
+					size_type	succ_value = height_recurse(subtree->successor, 0);
+					return pred_value > succ_value ? pred_value : succ_value;
+				}
+
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
-				///////////////////////////Class Iterator/////////////////////////////////////////////////////////////
+				///////////////////////////Define Iterator/////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 				template <typename Value>
@@ -220,6 +238,17 @@ friend	void	print_tree();
 						//  _find_max()
 						//
 						public:
+ssize_t	get_balance_factor() {
+	return _position->get_balance_factor();
+}
+
+ssize_t	get_weight_successor() {
+	return _position->get_weight_successor();
+}
+ssize_t	get_weight_predecessor() {
+	return _position->get_weight_predecessor();
+}
+
 							IteratorMap()
 								: _position(NULL), _is_out(false), _is_end(false) { }
 
@@ -266,7 +295,7 @@ friend	void	print_tree();
 								}
 								else {
 									node_pointer tmp = _position;
-									while (tmp->parent && *tmp <= *_position) {
+									while (tmp->parent && !(*tmp > *_position)) {
 										tmp = tmp->parent;
 									}
 									if (*tmp > *_position)
@@ -297,7 +326,7 @@ friend	void	print_tree();
 								}
 								else {
 									node_pointer	tmp = _position;
-									while (tmp->parent && *tmp >= *_position) {
+									while (tmp->parent && !(*tmp < *_position)) {
 										tmp = tmp->parent;
 									}
 									if (*tmp < *_position)
@@ -360,35 +389,124 @@ friend	void	print_tree();
 
 				/////////////////////////////////////Insert Utils/////////////////////////////////////////////////////
 				//
-				typedef		pair<iterator,bool>		insert_return;
+				typedef		pair<node_pointer,bool>		search_return;
+				typedef		pair<iterator,bool>			insert_return;
+
+
+				search_return	_search_operation(node_pointer	elem, node_pointer	subtree) {
+					if (*subtree > *elem) {
+						if (subtree->predecessor)
+							return _search_operation(elem, subtree->predecessor);
+						else
+							return search_return(subtree, true);
+					}
+					else if (*subtree < *elem) {
+						if (subtree->successor)
+							return _search_operation(elem, subtree->successor);
+						else
+							return search_return(subtree, true);
+					}
+					return search_return(subtree, false);
+				}
+
+				size_t			_get_sub_weight(node_pointer subnode) {
+					if (subnode->weight_pred > subnode->weight_succ)
+						return subnode->weight_pred + 1;
+					return subnode->weight_succ + 1;
+				}
+
+				node_pointer	_rotation_right(node_pointer subtree) {
+					node_pointer	b = subtree->successor;
+
+					subtree->successor = b->predecessor;
+					if (subtree->successor)
+						subtree->successor->parent = subtree->successor;
+					b->parent = subtree->parent;
+					subtree->parent = b;
+					b->predecessor = subtree;
+					return b;	// return the node to set the parent child
+				}
+
+				node_pointer	_rotation_left(node_pointer subtree) {
+					node_pointer	b = subtree->predecessor;
+
+					subtree->predecessor = b->successor;
+					if (subtree->predecessor)
+						subtree->predecessor->parent = subtree->predecessor;
+					b->parent = subtree->parent;
+					subtree->parent = b;
+					b->successor = subtree;
+					return b;	// return the node to set the parent child
+				}
+
+				node_pointer	_rotation_right_left(node_pointer subtree) {
+					node_pointer	b = subtree->successor;
+					node_pointer	c = b->predecessor;
+
+					subtree->successor = c->predecessor;
+					if (subtree->successor)
+						subtree->successor->parent = subtree->successor;
+					b->predecessor = c->successor;
+					if (b->predecessor)
+						b->predecessor->parent = b->predecessor;
+
+					c->parent = subtree->parent;
+					c->predecessor = subtree;
+					c->successor = b;
+					subtree->parent = c;
+					b->parent = c;
+					return c;	// return the node to set the parent child
+				}
+
+				node_pointer	_rotation_left_right(node_pointer subtree) {
+					node_pointer	b = subtree->predecessor;
+					node_pointer	c = b->successor;
+
+					subtree->predecessor = c->successor;
+					if (subtree->predecessor)
+						subtree->predecessor->parent = subtree->predecessor;
+					b->successor = c->predecessor;
+					if (b->successor)
+						b->successor->parent = b->successor;
+
+					c->parent = subtree->parent;
+					c->successor = subtree;
+					c->predecessor = b;
+					subtree->parent = c;
+					b->parent = c;
+					return c;	// return the node to set the parent child
+				}
+
+				void			_balance(node_pointer subtree) {
+				}
 
 				insert_return	_insert_recursion(node_pointer	elem, node_pointer	subtree) {
 					if (*subtree > *elem) {
 						if (subtree->predecessor) {
 							insert_return	rtn = _insert_recursion(elem, subtree->predecessor);
-							if (rtn.second)
-								++subtree->weight_pred;
+							_balance(subtree->predecessor);
+							subtree->weight_pred = _get_sub_weight(subtree->predecessor);
 							return rtn;
 						}
 						else {
-							subtree->predecessor = elem;
 							elem->parent = subtree;
-							++subtree->weight_pred;
-							return (insert_return(iterator(subtree->predecessor), true));
+							subtree->predecessor = elem;
+							subtree->weight_pred = 1;
+							return insert_return(iterator(elem), true);
 						}
 					}
 					else if (*subtree < *elem) {
 						if (subtree->successor) {
-							insert_return rtn = _insert_recursion(elem, subtree->successor);
-							if (rtn.second)
-								++subtree->weight_succ;
+							insert_return	rtn = _insert_recursion(elem, subtree->successor);
+							_balance(subtree->predecessor);
+							subtree->weight_succ = _get_sub_weight(subtree->successor);
 							return rtn;
 						}
 						else {
-							subtree->successor = elem;
 							elem->parent = subtree;
-							++subtree->weight_succ;
-							return (insert_return(iterator(subtree->successor), true));
+							subtree->successor = elem;
+							subtree->weight_succ = 1;
+							return insert_return(iterator(elem), true);
 						}
 					}
 					return insert_return(iterator(subtree), false);
@@ -403,7 +521,7 @@ void	print_tree()
 			int i = 0;
 			int tour = 0;
 			// std::cout<<"dans print tree1.25"<<head->getKey()<<"\n";
-			int space = pow(2,_root->get_balance_factor() -1 );
+			int space = pow(2,4 ); // set the height
 			// std::cout<<"dans print tree1.35\n";
 			int vide = 0;
 			int v = 1;
@@ -450,7 +568,7 @@ void	print_tree()
 				}
 				if (temp->get_key() == '*')
 				{
-					pair<const char,int> p1('*' , 0);
+					pair<const int,std::string> p1(0 , "*");
 					temp2 = _node_alloc.allocate(1);
 					_node_alloc.construct(temp2, node_type(p1));
 					n.push(temp2);
@@ -469,7 +587,7 @@ void	print_tree()
 				}
 				else
 				{
-					pair<const char,int> p1('*' , 0);
+					pair<const int,std::string> p1(0 , "*");
 					temp2 = _node_alloc.allocate(1);
 					_node_alloc.construct(temp2, node_type(p1));
 					n.push(temp2);
@@ -483,7 +601,7 @@ void	print_tree()
 				}
 				else
 				{
-					pair<const char,int> p1('*' , 0);
+					pair<const int,std::string> p1(0 , "*");
 					temp2 = _node_alloc.allocate(1);
 					_node_alloc.construct(temp2, node_type(p1));
 					n.push(temp2);
@@ -585,11 +703,15 @@ void	print_tree()
 
 				/////////////////////////////////Modifiers////////////////////////////////////////////////////////////
 				pair<iterator,bool>		insert(const value_type& val) {
+					if (_root == NULL) {
+						_root = _create_node(val);
+						return insert_return(iterator(_root), true);
+					}
 					return _insert_recursion(_create_node(val), _root);
 				}
 
 				/////////////////////////////////Accessors////////////////////////////////////////////////////////////
-				
+
 				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
 				//
 				// IteratorMap(node_pointer source);					// For begin() iterators
@@ -612,7 +734,9 @@ void	print_tree()
 
 	template <class Key, class T, class Compare, class Alloc>
 		class ft::map<Key, T, Compare, Alloc>::value_compare : std::binary_function<value_type, value_type, bool> {
+
 			friend class map;
+
 			private:
 				value_compare() { }
 
