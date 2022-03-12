@@ -409,10 +409,25 @@ ssize_t	get_weight_predecessor() {
 					return search_return(subtree, false);
 				}
 
-				size_t			_get_sub_weight(node_pointer subnode) {
+				ssize_t			_get_sub_weight(node_pointer subnode) {
+					if (subnode == NULL)
+						return 0;
 					if (subnode->weight_pred > subnode->weight_succ)
 						return subnode->weight_pred + 1;
 					return subnode->weight_succ + 1;
+				}
+
+				node_pointer	_replace_child(node_pointer target, node_pointer replacement) {
+					if (target->parent == NULL) {
+						return replacement;
+					}
+					if (target->parent->successor == target) {
+						target->parent->successor = replacement;
+					}
+					else {
+						target->parent->predecessor = replacement;
+					}
+					return replacement;
 				}
 
 				node_pointer	_rotation_right(node_pointer subtree) {
@@ -422,6 +437,7 @@ ssize_t	get_weight_predecessor() {
 					if (subtree->successor)
 						subtree->successor->parent = subtree->successor;
 					b->parent = subtree->parent;
+					_replace_child(subtree, b);
 					subtree->parent = b;
 					b->predecessor = subtree;
 					return b;	// return the node to set the parent child
@@ -434,6 +450,7 @@ ssize_t	get_weight_predecessor() {
 					if (subtree->predecessor)
 						subtree->predecessor->parent = subtree->predecessor;
 					b->parent = subtree->parent;
+					_replace_child(subtree, b);
 					subtree->parent = b;
 					b->successor = subtree;
 					return b;	// return the node to set the parent child
@@ -451,6 +468,7 @@ ssize_t	get_weight_predecessor() {
 						b->predecessor->parent = b->predecessor;
 
 					c->parent = subtree->parent;
+					_replace_child(subtree, c);
 					c->predecessor = subtree;
 					c->successor = b;
 					subtree->parent = c;
@@ -470,6 +488,7 @@ ssize_t	get_weight_predecessor() {
 						b->successor->parent = b->successor;
 
 					c->parent = subtree->parent;
+					_replace_child(subtree, c);
 					c->successor = subtree;
 					c->predecessor = b;
 					subtree->parent = c;
@@ -477,14 +496,26 @@ ssize_t	get_weight_predecessor() {
 					return c;	// return the node to set the parent child
 				}
 
-				void			_balance(node_pointer subtree) {
+				node_pointer	_balance(node_pointer subtree) {
+					ssize_t		balance = _get_sub_weight(subtree->predecessor) - _get_sub_weight(subtree->successor);
+					if (balance < -1) {
+						if (subtree->successor->weight_succ > subtree->successor->weight_pred)
+							return _rotation_right(subtree);
+						return _rotation_right_left(subtree);
+					}
+					else if (balance > 1) {
+						if (subtree->predecessor->weight_pred > subtree->predecessor->weight_succ)
+							return _rotation_left(subtree);
+						return _rotation_left_right(subtree);
+					}
+					return subtree;
 				}
 
 				insert_return	_insert_recursion(node_pointer	elem, node_pointer	subtree) {
 					if (*subtree > *elem) {
 						if (subtree->predecessor) {
 							insert_return	rtn = _insert_recursion(elem, subtree->predecessor);
-							_balance(subtree->predecessor);
+							subtree = _balance(subtree);
 							subtree->weight_pred = _get_sub_weight(subtree->predecessor);
 							return rtn;
 						}
@@ -498,7 +529,7 @@ ssize_t	get_weight_predecessor() {
 					else if (*subtree < *elem) {
 						if (subtree->successor) {
 							insert_return	rtn = _insert_recursion(elem, subtree->successor);
-							_balance(subtree->predecessor);
+							subtree = _balance(subtree);
 							subtree->weight_succ = _get_sub_weight(subtree->successor);
 							return rtn;
 						}

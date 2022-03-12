@@ -172,25 +172,31 @@ test.print_tree();
 	std::cout << "//////////////////////////INSERT////////////////////////////////" << std::endl;
 	typedef		ft::map<int, std::string>::value_type			value_type;
 	typedef		ft::map<int, std::string>::iterator				iterator_type;
+	typedef		ft::map<int, std::string>::reverse_iterator				reverse_iterator_type;
 	{
 		ft::map<int, std::string>			test;
 		test._create_tree_test("manger", "des", "frites");
-		ft::map<int, std::string>::iterator		it = test.begin();
 		test.insert(value_type(8, "caca"));
-		while (it != test.end()) {
+		for (iterator_type it = test.begin() ; it != test.end() ; ++it)
 			std::cout << it->first << " " << it->second << std::endl;
-			++it;
-		}
 		std::cout << std::endl;
+
 		test.insert(value_type(0, "pipi"));
-		ft::map<int, std::string>::reverse_iterator		it2 = test.rbegin();
+		reverse_iterator_type		it2 = test.rbegin();
 		while (it2 != test.rend()) {
 			std::cout << it2->first << " " << it2->second << std::endl;
 			++it2;
 		}
-		std::cout << std::endl;
 
-	} {
+		test.insert(value_type(9, "popo"));
+		for (iterator_type it = test.begin() ; it != test.end() ; ++it) {
+			std::cout << it->first << " " << it->second << std::endl;
+		}
+		std::cout << std::endl;
+test.print_tree();
+
+	}
+	{
 		ft::map<int, std::string>			test;
 		test.insert(value_type(0, "root"));
 		for (int i = 1 ; i < 20 ; ++i) {
