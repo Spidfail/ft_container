@@ -370,7 +370,6 @@ ssize_t	get_weight_predecessor() {
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 			public:
 				typedef		typename Alloc::template rebind<node_type>::other	allocator_node;
 
@@ -433,80 +432,113 @@ ssize_t	get_weight_predecessor() {
 				node_pointer	_rotation_right(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 
+					std::cout<<"--------------rotation right :"
+						<< " a[" << subtree->get_key() << "]"
+						<< " b[" << b->get_key() << "]" << std::endl;
+
 					subtree->successor = b->predecessor;
 					if (subtree->successor)
-						subtree->successor->parent = subtree->successor;
+						subtree->successor->parent = subtree;
+					_replace_child(subtree, b);			// replace the parent's pointer on 'subtree' by 'b'
 					b->parent = subtree->parent;
-					_replace_child(subtree, b);
 					subtree->parent = b;
 					b->predecessor = subtree;
-					return b;	// return the node to set the parent child
+					return b;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_left(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 
+					std::cout<<"--------------rotation left :"
+						<< " a[" << subtree->get_key() << "]"
+						<< " b[" << b->get_key() << "]" << std::endl;
+
 					subtree->predecessor = b->successor;
 					if (subtree->predecessor)
-						subtree->predecessor->parent = subtree->predecessor;
+						subtree->predecessor->parent = subtree;
+					_replace_child(subtree, b);			// replace the parent's pointer on 'subtree' by 'b'
 					b->parent = subtree->parent;
-					_replace_child(subtree, b);
 					subtree->parent = b;
 					b->successor = subtree;
-					return b;	// return the node to set the parent child
+					return b;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_right_left(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 					node_pointer	c = b->predecessor;
+					std::cout<<"--------------rotation right-left : "
+						<< " a[" << subtree->get_key() << "]"
+						<< " b[" << b->get_key() << "]"
+						<< " c[" << c->get_key() << "]" << std::endl;
 
 					subtree->successor = c->predecessor;
 					if (subtree->successor)
-						subtree->successor->parent = subtree->successor;
+						subtree->successor->parent = subtree;
 					b->predecessor = c->successor;
 					if (b->predecessor)
-						b->predecessor->parent = b->predecessor;
+						b->predecessor->parent = b;
 
 					c->parent = subtree->parent;
-					_replace_child(subtree, c);
+					_replace_child(subtree, c);			// replace the parent's pointer on 'subtree' by 'c'
 					c->predecessor = subtree;
 					c->successor = b;
 					subtree->parent = c;
 					b->parent = c;
-					return c;	// return the node to set the parent child
+					return c;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_left_right(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 					node_pointer	c = b->successor;
 
+					std::cout<<"--------------rotation left-right :"
+						<< " a[" << subtree->get_key() << "]"
+						<< " b[" << b->get_key() << "]"
+						<< " c[" << c->get_key() << "]" << std::endl;
 					subtree->predecessor = c->successor;
 					if (subtree->predecessor)
-						subtree->predecessor->parent = subtree->predecessor;
+						subtree->predecessor->parent = subtree;
 					b->successor = c->predecessor;
 					if (b->successor)
-						b->successor->parent = b->successor;
+						b->successor->parent = b;
 
 					c->parent = subtree->parent;
-					_replace_child(subtree, c);
+					_replace_child(subtree, c);			// replace the parent's pointer on 'subtree' by 'c'
 					c->successor = subtree;
 					c->predecessor = b;
 					subtree->parent = c;
 					b->parent = c;
-					return c;	// return the node to set the parent child
+
+					// std::cout << " subtree->key : " << subtree->get_key() << std::endl;
+					// std::cout << " subtree->parent : " << subtree->get_parent()->get_key() << std::endl;
+					// std::cout << " subtree->successor : " << subtree->get_successor()->get_key() << std::endl;
+					// // std::cout << " subtree->predecessor : " << subtree->get_predecessor()->get_key() << std::endl;
+					// std::cout << " b->key : " << b->get_key() << std::endl;
+					// std::cout << " b->parent : " << b->get_parent()->get_key() << std::endl;
+					// std::cout << " b->successor : " << b->get_successor()->get_key() << std::endl;
+					// std::cout << " b->predecessor : " << b->get_predecessor()->get_key() << std::endl;
+					// std::cout << " c->key : " << c->get_key() << std::endl;
+					// std::cout << " c->parent : " << c->get_parent()->get_key() << std::endl;
+					// std::cout << " c->successor : " << c->get_successor()->get_key() << std::endl;
+					// std::cout << " c->predecessor : " << c->get_predecessor()->get_key() << std::endl;
+					return c;							// return the node to set the parent child
 				}
 
 				node_pointer	_balance(node_pointer subtree) {
 					ssize_t		balance = _get_sub_weight(subtree->predecessor) - _get_sub_weight(subtree->successor);
 					if (balance < -1) {
-						if (subtree->successor->weight_succ > subtree->successor->weight_pred)
+						if (subtree->successor->get_weight_successor() > subtree->successor->get_weight_predecessor())
 							return _rotation_right(subtree);
-						return _rotation_right_left(subtree);
+						else if (subtree->successor->get_weight_successor() < subtree->successor->get_weight_predecessor())
+							return _rotation_right_left(subtree);
 					}
 					else if (balance > 1) {
-						if (subtree->predecessor->weight_pred > subtree->predecessor->weight_succ)
+						if (subtree->predecessor->get_weight_predecessor() > subtree->predecessor->get_weight_successor()) {
 							return _rotation_left(subtree);
-						return _rotation_left_right(subtree);
+						}
+						else if (subtree->predecessor->get_weight_predecessor() < subtree->predecessor->get_weight_successor()) {
+							return _rotation_left_right(subtree);
+						}
 					}
 					return subtree;
 				}
@@ -515,8 +547,10 @@ ssize_t	get_weight_predecessor() {
 					if (*subtree > *elem) {
 						if (subtree->predecessor) {
 							insert_return	rtn = _insert_recursion(elem, subtree->predecessor);
-							subtree = _balance(subtree);
 							subtree->weight_pred = _get_sub_weight(subtree->predecessor);
+							subtree = _balance(subtree);
+							if (!subtree->parent)
+								_root = subtree;
 							return rtn;
 						}
 						else {
@@ -529,8 +563,10 @@ ssize_t	get_weight_predecessor() {
 					else if (*subtree < *elem) {
 						if (subtree->successor) {
 							insert_return	rtn = _insert_recursion(elem, subtree->successor);
-							subtree = _balance(subtree);
 							subtree->weight_succ = _get_sub_weight(subtree->successor);
+							subtree = _balance(subtree);
+							if (!subtree->parent)
+								_root = subtree;
 							return rtn;
 						}
 						else {
@@ -716,14 +752,13 @@ void	print_tree()
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 				/////////////////////////////////Operators////////////////////////////////////////////////////////////
-				map		operator= (const map &source) {
+				map		&operator= (const map &source) {
 					_alloc = source._alloc;
+					_node_alloc = source._node_alloc;
 					_comp = source._comp;
-					// _root = source._root;
-					// _begin = source._begin;   // NEED DEEP COPY WITH iterator
-					// _last = source._last;
-					// _end = source._end;
+					_root = source._root;
 					_size = source._size;
+					return *this;
 				}
 
 				/////////////////////////////////Capacity/////////////////////////////////////////////////////////////

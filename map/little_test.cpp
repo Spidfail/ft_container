@@ -2,6 +2,29 @@
 #include <map>
 #include "Map.hpp"
 #include <iostream>
+#include <ctime>
+#include <random>
+#include "../vector/Vector.hpp"
+
+template <class Ct>
+void	print_content(Ct map, bool is_print) {
+	typedef		typename Ct::iterator				iterator_type;
+
+	map.print_tree();
+	if (is_print)
+		for (iterator_type it = map.begin() ; it != map.end() ; ++it)
+			std::cout << it->first << " " << it->second << std::endl;
+}
+
+template <class Ct>
+void	print_reverse_content(Ct map, bool is_print) {
+	typedef		typename Ct::reverse_iterator		reverse_iterator_type;
+
+	map.print_tree();
+	if (is_print)
+		for (reverse_iterator_type it = map.rbegin() ; it != map.rend() ; ++it)
+			std::cout << it->first << " " << it->second << std::endl;
+}
 
 int main() {
 	std::cout << std::boolalpha;
@@ -171,44 +194,119 @@ test.print_tree();
 
 	std::cout << "//////////////////////////INSERT////////////////////////////////" << std::endl;
 	typedef		ft::map<int, std::string>::value_type			value_type;
-	typedef		ft::map<int, std::string>::iterator				iterator_type;
-	typedef		ft::map<int, std::string>::reverse_iterator				reverse_iterator_type;
 	{
+
 		ft::map<int, std::string>			test;
-		test._create_tree_test("manger", "des", "frites");
+
+		test.insert(value_type(3, "caca"));
+
+		std::cout << "#### First state : "; test.print_tree();
+
+		std::cout << "#### Insert 8: ";
 		test.insert(value_type(8, "caca"));
-		for (iterator_type it = test.begin() ; it != test.end() ; ++it)
-			std::cout << it->first << " " << it->second << std::endl;
+		print_content(test, false);
 		std::cout << std::endl;
 
-		test.insert(value_type(0, "pipi"));
-		reverse_iterator_type		it2 = test.rbegin();
-		while (it2 != test.rend()) {
-			std::cout << it2->first << " " << it2->second << std::endl;
-			++it2;
-		}
 
-		test.insert(value_type(9, "popo"));
-		for (iterator_type it = test.begin() ; it != test.end() ; ++it) {
-			std::cout << it->first << " " << it->second << std::endl;
-		}
+		std::cout << "#### Insert 5: ";
+		test.insert(value_type(5, "pipi"));
+		print_reverse_content(test, false);
 		std::cout << std::endl;
-test.print_tree();
 
+		 std::cout << "#### Insert 1: ";
+		 test.insert(value_type(1, "crotte"));
+		 print_reverse_content(test, false);
+		 std::cout << std::endl;
+
+
+		 std::cout << "#### Insert 2: ";
+		 test.insert(value_type(2, "crotte"));
+		 print_reverse_content(test, false);
+		 std::cout << std::endl;
+
+		 std::cout << "#### Insert 7: ";
+		 test.insert(value_type(7, "zigouigoui"));
+		 print_reverse_content(test, false);
+		 std::cout << std::endl;
+
+		 std::cout << "#### Insert 9: ";
+		 test.insert(value_type(9, "popo"));
+		 print_content(test, false);
+
+		 std::cout << std::endl;
+
+		 std::cout << "#### Insert 4: ";
+		 test.insert(value_type(4, "popo"));
+		 print_content(test, false);
+
+		 std::cout << std::endl;
+
+		 std::cout << "#### Insert 7: ";
+		 test.insert(value_type(7, "popo"));
+		 print_content(test, false);
+		 std::cout << std::endl;
+
+		 std::cout << "#### Insert 6: ";
+		 test.insert(value_type(6, "popo"));
+		 print_content(test, false);
 	}
 	{
-		ft::map<int, std::string>			test;
-		test.insert(value_type(0, "root"));
-		for (int i = 1 ; i < 20 ; ++i) {
-			test.insert(value_type(i, "after"));
-			test.insert(value_type(-i, "before"));
-		}
-		for (iterator_type it = test.begin() ; it != test.end() ; ++it) {
-			std::cout << it->first << " " << it->second << " ";
-			std::cout << it.get_weight_predecessor()  << " ";
-			std::cout << it.get_weight_successor() << " ";
-			std::cout << it.get_balance_factor() << std::endl;
-		}
+	// typedef		ft::map<int, std::string>::iterator				iterator_type;
+	typedef		std::vector<int>::iterator				iterator_vector;
+	std::cout << "//////////////////////////CRASHING INSERT/////////////////////////" << std::endl;
+	srand(time(NULL));
+		 ft::map<int, std::string>			test;
+		 int	array[] = {5, 11, 16, 1, 3, 7};
+
+		 std::vector<int> vec_values(array, array + sizeof(array) / sizeof(array[0]));
+
+		 for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
+			 test.insert(value_type(*it, "lol"));
+		 print_content(test, false);
+		 }
+
+
+		 // std::cout << "#### Insert 10: ";
+		 // test.insert(value_type(10, "lol"));
+		 // print_content(test, false);
+		 // std::cout << "#### Insert 4: ";
+		 // test.insert(value_type(4, "lol"));
+		 // print_content(test, false);
+		 // std::cout << "#### Insert 12: ";
+		 // test.insert(value_type(12, "lol"));
+		 // print_content(test, false);
+		 // std::cout << "#### Insert 9: ";
+		 // test.insert(value_type(9, "lol"));
+		 // print_content(test, false);
+		 // std::cout << "#### Insert 8: ";
+		 // test.insert(value_type(8, "lol"));
+		 // print_content(test, false);
+//
+		 // std::cout << "#### Insert 2: ";
+		 // test.insert(value_type(2, "lol"));
+		 // print_content(test, false);
+//
+		 // std::cout << "#### Insert 18: ";
+		 // test.insert(value_type(18, "lol"));
+		 // print_content(test, false);
+
+	// int	rand_nb = rand() % 20 + 1;
+		 // std::cout << "#### Insert " << rand_nb << ": ";
+		 // test.insert(value_type(rand_nb, "chevre"));
+		// for (iterator_type it = test.begin() ; it != test.end() ; ++it)
+			// std::cout << rand_nb << std::endl;
+		 // print_content(test, false);
 	}
+	// std::cout << "//////////////////////////RANDOM INSERT/////////////////////////" << std::endl;
+	 // {
+			 // srand(time(NULL));
+		 // ft::map<int, std::string>			test;
+		 // for (int i = 1 ; i < 50 ; ++i) {
+			 // int	new_nb = rand() % 20 + 1;
+			 // std::cout << " #### insert " << new_nb << " : ";
+			 // test.insert(value_type(new_nb, "lol"));
+		 // print_content(test, false);
+		 // }
+	 // }
 
 }
