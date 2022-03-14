@@ -412,9 +412,9 @@ ssize_t	get_weight_predecessor() {
 					node_pointer	b = subtree->successor;
 
 					// LOGS
-					std::cout<<"--------------rotation right :"
-						<< " a[" << subtree->get_key() << "]"
-						<< " b[" << b->get_key() << "]" << std::endl;
+					// std::cout<<"--------------rotation right :"
+						// << " a[" << subtree->get_key() << "]"
+						// << " b[" << b->get_key() << "]" << std::endl;
 
 					subtree->successor = b->predecessor;
 					if (subtree->successor)
@@ -422,15 +422,17 @@ ssize_t	get_weight_predecessor() {
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->predecessor = subtree;
+					_update_values(b);
+					_update_values(subtree);
 					return b;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_left(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 					// LOGS
-					std::cout<<"--------------rotation left :"
-						<< " a[" << subtree->get_key() << "]"
-						<< " b[" << b->get_key() << "]" << std::endl;
+					// std::cout<<"--------------rotation left :"
+						// << " a[" << subtree->get_key() << "]"
+						// << " b[" << b->get_key() << "]" << std::endl;
 
 					subtree->predecessor = b->successor;
 					if (subtree->predecessor)
@@ -438,6 +440,8 @@ ssize_t	get_weight_predecessor() {
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->successor = subtree;
+					_update_values(b);
+					_update_values(subtree);
 					return b;							// return the node to set the parent child
 				}
 
@@ -445,10 +449,10 @@ ssize_t	get_weight_predecessor() {
 					node_pointer	b = subtree->successor;
 					node_pointer	c = b->predecessor;
 					// LOGS
-					std::cout<<"--------------rotation right-left : "
-						<< " a[" << subtree->get_key() << "]"
-						<< " b[" << b->get_key() << "]"
-						<< " c[" << c->get_key() << "]" << std::endl;
+					// std::cout<<"--------------rotation right-left : "
+						// << " a[" << subtree->get_key() << "]"
+						// << " b[" << b->get_key() << "]"
+						// << " c[" << c->get_key() << "]" << std::endl;
 
 					subtree->successor = c->predecessor;
 					if (subtree->successor)
@@ -462,6 +466,9 @@ ssize_t	get_weight_predecessor() {
 					c->successor = b;
 					subtree->parent = c;
 					b->parent = c;
+					_update_values(c);
+					_update_values(b);
+					_update_values(subtree);
 					return c;							// return the node to set the parent child
 				}
 
@@ -470,10 +477,10 @@ ssize_t	get_weight_predecessor() {
 					node_pointer	c = b->successor;
 
 					// LOGS
-					std::cout<<"--------------rotation left-right :"
-						<< " a[" << subtree->get_key() << "]"
-						<< " b[" << b->get_key() << "]"
-						<< " c[" << c->get_key() << "]" << std::endl;
+					// std::cout<<"--------------rotation left-right :"
+						// << " a[" << subtree->get_key() << "]"
+						// << " b[" << b->get_key() << "]"
+						// << " c[" << c->get_key() << "]" << std::endl;
 					subtree->predecessor = c->successor;
 					if (subtree->predecessor)
 						subtree->predecessor->parent = subtree;
@@ -486,21 +493,20 @@ ssize_t	get_weight_predecessor() {
 					c->predecessor = b;
 					subtree->parent = c;
 					b->parent = c;
+					_update_values(c);
+					_update_values(b);
+					_update_values(subtree);
 					return c;							// return the node to set the parent child
 				}
 
 				node_pointer	_balance(node_pointer subtree) {
 					if (subtree->balance_factor < -1) {
-						std::cout << "subtree->key = " << subtree->get_key() << std::endl;
-						std::cout << "successor->key = " << subtree->successor->get_key() << std::endl;
 						if (subtree->successor->balance_factor <= 0)
 							return _rotation_right(subtree);
 						else
 							return _rotation_right_left(subtree);
 					}
 					else if (subtree->balance_factor > 1) {
-						std::cout << "subtree->key = " << subtree->get_key() << std::endl;
-						std::cout << "predecessor->key = " << subtree->predecessor->get_key() << std::endl;
 						if (subtree->predecessor->balance_factor >= 0)
 							return _rotation_left(subtree);
 						else
