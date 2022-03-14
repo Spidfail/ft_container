@@ -266,30 +266,6 @@ test.print_tree();
 		 }
 
 
-		 // std::cout << "#### Insert 10: ";
-		 // test.insert(value_type(10, "lol"));
-		 // print_content(test, false);
-		 // std::cout << "#### Insert 4: ";
-		 // test.insert(value_type(4, "lol"));
-		 // print_content(test, false);
-		 // std::cout << "#### Insert 12: ";
-		 // test.insert(value_type(12, "lol"));
-		 // print_content(test, false);
-		 // std::cout << "#### Insert 9: ";
-		 // test.insert(value_type(9, "lol"));
-		 // print_content(test, false);
-		 // std::cout << "#### Insert 8: ";
-		 // test.insert(value_type(8, "lol"));
-		 // print_content(test, false);
-//
-		 // std::cout << "#### Insert 2: ";
-		 // test.insert(value_type(2, "lol"));
-		 // print_content(test, false);
-//
-		 // std::cout << "#### Insert 18: ";
-		 // test.insert(value_type(18, "lol"));
-		 // print_content(test, false);
-
 	// int	rand_nb = rand() % 20 + 1;
 		 // std::cout << "#### Insert " << rand_nb << ": ";
 		 // test.insert(value_type(rand_nb, "chevre"));
@@ -297,16 +273,16 @@ test.print_tree();
 			// std::cout << rand_nb << std::endl;
 		 // print_content(test, false);
 	}
-	// std::cout << "//////////////////////////RANDOM INSERT/////////////////////////" << std::endl;
-	 // {
-			 // srand(time(NULL));
-		 // ft::map<int, std::string>			test;
-		 // for (int i = 1 ; i < 50 ; ++i) {
-			 // int	new_nb = rand() % 20 + 1;
-			 // std::cout << " #### insert " << new_nb << " : ";
-			 // test.insert(value_type(new_nb, "lol"));
-		 // print_content(test, false);
-		 // }
-	 // }
+	std::cout << "//////////////////////////RANDOM INSERT/////////////////////////" << std::endl;
+	 {
+			 srand(time(NULL));
+		 ft::map<int, std::string>			test;
+		 for (int i = 1 ; i < 50 ; ++i) {
+			 int	new_nb = rand() % 20 + 1;
+			 std::cout << " #### insert " << new_nb << " : ";
+			 test.insert(value_type(new_nb, "lol"));
+		 print_content(test, false);
+		 }
+	 }
 
 }
