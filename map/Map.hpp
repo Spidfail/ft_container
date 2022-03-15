@@ -1,10 +1,10 @@
 
-
 #ifndef MAP_HPP
 # define MAP_HPP
 
 #include <algorithm>
 #include <climits>
+#include <cstddef>
 # include <functional> 
 # include "../Pair.hpp"
 # include <limits>
@@ -16,6 +16,10 @@
 # include <math.h>
 
 # include <iostream>
+
+# define PREDECESSOR	0 
+# define SUCCESSOR		1 
+# define NONE			-1 
 
 namespace ft {
 
@@ -87,9 +91,13 @@ friend	void	print_tree();
 							parent = source.parent;
 							predecessor = source.predecessor;
 							successor = source.successor;
-							pointer new_content = allocate_content(value_type(*source.content));
-							if (content)
+							pointer new_content = NULL;
+							if (source.content)
+								new_content = allocate_content(value_type(*source.content));
+							if (content) {
+								alloc.destroy(content);
 								alloc.deallocate(content, 1);
+							}
 							content = new_content;
 							balance_factor = source.balance_factor;
 							height = source.height;
@@ -101,6 +109,7 @@ friend	void	print_tree();
 							successor = NULL;
 							balance_factor = 0;
 							height = 0;
+							alloc.destroy(content);
 							alloc.deallocate(content, 1);
 						}
 
@@ -112,6 +121,12 @@ friend	void	print_tree();
 						Node				*get_parent() { return parent; }
 						ssize_t				get_balance_factor() { return balance_factor; }
 						ssize_t				get_height() { return height; }
+
+						void				set_content(const_reference val) {
+							alloc.destroy(content);
+							alloc.deallocate(content, 1);
+							content = allocate_content(val);
+						}
 
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
@@ -157,12 +172,16 @@ friend	void	print_tree();
 				typedef		const node_type			&	const_node_reference;
 
 				node_pointer	_find_begin() {
+					if (!_root)
+						return NULL;
 					node_pointer rtn = _root;
 					while (rtn->predecessor)
 						rtn = rtn->predecessor;
 					return rtn;
 				}
 				node_pointer	_find_last() {
+					if (!_root)
+						return NULL;
 					node_pointer rtn = _root;
 					while (rtn->successor)
 						rtn = rtn->successor;
@@ -238,16 +257,17 @@ friend	void	print_tree();
 						//  _find_max()
 						//
 						public:
-ssize_t	get_balance_factor() {
-	return _position->get_balance_factor();
-}
+							// TEST
+							ssize_t	get_balance_factor() {
+								return _position->get_balance_factor();
+							}
 
-ssize_t	get_weight_successor() {
-	return _position->get_weight_successor();
-}
-ssize_t	get_weight_predecessor() {
-	return _position->get_weight_predecessor();
-}
+							ssize_t	get_weight_successor() {
+								return _position->get_weight_successor();
+							}
+							ssize_t	get_weight_predecessor() {
+								return _position->get_weight_predecessor();
+							}
 
 							IteratorMap()
 								: _position(NULL), _is_out(false), _is_end(false) { }
@@ -283,6 +303,8 @@ ssize_t	get_weight_predecessor() {
 							//////////////////////////////////Increment/Decrement//////////////////////////////////
 
 							IteratorMap			&operator++ () {
+								if (_position == NULL)
+									return *this;
 								if (_is_out) {
 									if (!_is_end) {
 										_position = _find_begin(_position);
@@ -314,6 +336,8 @@ ssize_t	get_weight_predecessor() {
 							}
 
 							IteratorMap			&operator-- () {
+								if (_position == NULL)
+									return *this;
 								if (_is_out) {
 									if (_is_end) {
 										_position = _find_last(_position);
@@ -344,6 +368,7 @@ ssize_t	get_weight_predecessor() {
 								return cp;
 							}
 
+				/////////////////////////////////Comparison Operators///////////////////////////////////////
 							template<class Type>
 								friend bool		operator== (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
 									return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
@@ -352,7 +377,6 @@ ssize_t	get_weight_predecessor() {
 								friend bool		operator== (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
 									return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
 								}
-
 
 							template<class Type>
 								friend bool		operator!= (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
@@ -364,7 +388,6 @@ ssize_t	get_weight_predecessor() {
 								}
 					};
 
-				/////////////////////////////////Comparison Operators///////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,27 +409,10 @@ ssize_t	get_weight_predecessor() {
 				node_pointer	_root;
 				size_type		_size;
 
+				//////////////////////////////////////////////////////////////////////////////////////////////////////
 				/////////////////////////////////////Insert Utils/////////////////////////////////////////////////////
-				//
 				typedef		pair<node_pointer,bool>		search_return;
 				typedef		pair<iterator,bool>			insert_return;
-
-
-				search_return	_search_operation(node_pointer	elem, node_pointer	subtree) {
-					if (*subtree > *elem) {
-						if (subtree->predecessor)
-							return _search_operation(elem, subtree->predecessor);
-						else
-							return search_return(subtree, true);
-					}
-					else if (*subtree < *elem) {
-						if (subtree->successor)
-							return _search_operation(elem, subtree->successor);
-						else
-							return search_return(subtree, true);
-					}
-					return search_return(subtree, false);
-				}
 
 				node_pointer	_rotation_right(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
@@ -415,45 +421,44 @@ ssize_t	get_weight_predecessor() {
 					// std::cout<<"--------------rotation right :"
 						// << " a[" << subtree->get_key() << "]"
 						// << " b[" << b->get_key() << "]" << std::endl;
-
 					subtree->successor = b->predecessor;
 					if (subtree->successor)
 						subtree->successor->parent = subtree;
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->predecessor = subtree;
-					_update_values(b);
 					_update_values(subtree);
+					_update_values(b);
 					return b;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_left(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
+
 					// LOGS
 					// std::cout<<"--------------rotation left :"
 						// << " a[" << subtree->get_key() << "]"
 						// << " b[" << b->get_key() << "]" << std::endl;
-
 					subtree->predecessor = b->successor;
 					if (subtree->predecessor)
 						subtree->predecessor->parent = subtree;
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->successor = subtree;
-					_update_values(b);
 					_update_values(subtree);
+					_update_values(b);
 					return b;							// return the node to set the parent child
 				}
 
 				node_pointer	_rotation_right_left(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 					node_pointer	c = b->predecessor;
+
 					// LOGS
 					// std::cout<<"--------------rotation right-left : "
 						// << " a[" << subtree->get_key() << "]"
 						// << " b[" << b->get_key() << "]"
 						// << " c[" << c->get_key() << "]" << std::endl;
-
 					subtree->successor = c->predecessor;
 					if (subtree->successor)
 						subtree->successor->parent = subtree;
@@ -466,9 +471,9 @@ ssize_t	get_weight_predecessor() {
 					c->successor = b;
 					subtree->parent = c;
 					b->parent = c;
-					_update_values(c);
-					_update_values(b);
 					_update_values(subtree);
+					_update_values(b);
+					_update_values(c);
 					return c;							// return the node to set the parent child
 				}
 
@@ -493,9 +498,9 @@ ssize_t	get_weight_predecessor() {
 					c->predecessor = b;
 					subtree->parent = c;
 					b->parent = c;
-					_update_values(c);
-					_update_values(b);
 					_update_values(subtree);
+					_update_values(b);
+					_update_values(c);
 					return c;							// return the node to set the parent child
 				}
 
@@ -527,7 +532,7 @@ ssize_t	get_weight_predecessor() {
 					subtree->balance_factor = pred_height - succ_height;
 				}
 
-				node_pointer	_insert_recurse(insert_return elem, node_pointer subtree) {
+				node_pointer	_insert_recurse(insert_return &elem, node_pointer subtree) {
 					if (subtree == NULL)
 						return elem.first.base();
 					// Recurse if there is a leaf
@@ -548,144 +553,123 @@ ssize_t	get_weight_predecessor() {
 					return _balance(subtree);
 				}
 
+				//////////////////////////////////////////////////////////////////////////////////////////////////////
+				//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 			public:
-void	print_tree()
-		{
-			std::cout<<"dans print tree\n";
-			int i = 0;
-			int tour = 0;
-			// std::cout<<"dans print tree1.25"<<head->getKey()<<"\n";
-			int space = pow(2,4 ); // set the height
-			// std::cout<<"dans print tree1.35\n";
-			int vide = 0;
-			int v = 1;
-			int debug = 0;
-			std::queue<node_pointer> n;
-			// std::cout<<"dans print tree1.5\n";
-			// std::cout<<"dans print tree1.75\n";
-			node_pointer temp;
-			node_pointer temp_head = _root;
-			n.push(temp_head);
-			node_pointer temp2;
-			for (int x = 0 ; x <space ; x++)
-			{
-				std::cout<<" ";
-			}
-			while(!n.empty() )//&& debug < 15)
-			{
-				// std::cout<<"dans print tree2\n";
-				debug++;
-				temp = n.front();
-				n.pop();
-				if (temp->get_key() == '*')
-					std::cout<<(char)(temp->get_key());
-				else
-					std::cout<<(temp->get_key());
-				i++;
-				if (i != 0 && i == pow(2,tour)/2)
-					std::cout<<" ";
-				if(i == pow(2,tour))
+				void	print_tree()
 				{
-					if (v == 0)
-					{
-						std::cout<<"\n";
-						return;
-					}
-					std::cout<<"\n";
-					for (int x = 0 ; x <space -pow(2,tour); x++)
+					std::cout<<"dans print tree\n";
+					int i = 0;
+					int tour = 0;
+					// std::cout<<"dans print tree1.25"<<head->getKey()<<"\n";
+					int space = pow(2,4 ); // set the height
+										   // std::cout<<"dans print tree1.35\n";
+					int vide = 0;
+					int v = 1;
+					int debug = 0;
+					std::queue<node_pointer> n;
+					// std::cout<<"dans print tree1.5\n";
+					// std::cout<<"dans print tree1.75\n";
+					node_pointer temp;
+					node_pointer temp_head = _root;
+					n.push(temp_head);
+					node_pointer temp2;
+					for (int x = 0 ; x <space ; x++)
 					{
 						std::cout<<" ";
 					}
-					tour++;
-					i = 0;
-					v = 0;
-				}
-				if (temp->get_key() == '*')
-				{
-					pair<const int,std::string> p1(0 , "*");
-					temp2 = _node_alloc.allocate(1);
-					_node_alloc.construct(temp2, node_type(p1));
-					n.push(temp2);
-					// temp2 = _node_alloc.allocate(1);
-					// _node_alloc.construct(temp2, node_type(p1));
-					// n.push(temp2);
-					delete temp;
-					continue;
-				}
-				if(temp->get_predecessor()!= 0)
-				{
-					// std::cout<<"dans left ";
-					n.push(temp->get_predecessor());
-					if (temp->get_key()!='*')
-						v++;
-				}
-				else
-				{
-					pair<const int,std::string> p1(0 , "*");
-					temp2 = _node_alloc.allocate(1);
-					_node_alloc.construct(temp2, node_type(p1));
-					n.push(temp2);
-				}
-				if(temp->get_successor()!= 0)
-				{
-					// std::cout<<"dans right ";
-					n.push(temp->get_successor());
-					if (temp->get_key()!='*')
-						v++;
-				}
-				else
-				{
-					pair<const int,std::string> p1(0 , "*");
-					temp2 = _node_alloc.allocate(1);
-					_node_alloc.construct(temp2, node_type(p1));
-					n.push(temp2);
-					// n.push(Node<Key,T,Alloc>("*",0));
-					vide ++;
-				}
-				// std::cout<<"v == "<<v<<" ";
-			}
-			std::cout<<"\n";
-		}
-
-				/////////////////////////////////Constructors/////////////////////////////////////////////////////////
-				//
-				// allocator_type	_alloc;
-				// allocator_node	_node_alloc;
-				// value_compare	_comp;
-				// node_pointer	_root;
-				// size_type		_size;
-				//
-				map() :
-					_alloc(allocator_type()), _node_alloc(allocator_node()), _comp(key_compare()), _root(NULL), _size(0) { }
-
-				explicit map(const Compare& comp, const allocator_type& alloc = allocator_type()) :
-					_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL), _size(0) { }
-
-				map(const map &source) { *this = source; }
-
-				// template< class InputIt >
-					// map(InputIt first, InputIt last,
-							// const Compare& comp = Compare(),
-							// const Alloc& alloc = Alloc()) {
-					// }
-
-				/////////////////////////////////Destructor///////////////////////////////////////////////////////////
-				~map() { }
-
-				/////////////////////////////////Node methode PRIVATE/////////////////////////////////////////////////
-				node_pointer			_create_node(const_reference value) {
-					node_pointer	new_node = _node_alloc.allocate(1);
-					_node_alloc.construct(new_node, node_type(value));
-					return new_node;
+					while(!n.empty() )//&& debug < 15)
+					{
+						// std::cout<<"dans print tree2\n";
+						debug++;
+						temp = n.front();
+						n.pop();
+						if (temp->get_key() == '*')
+							std::cout<<(char)(temp->get_key());
+						else
+							std::cout<<(temp->get_key());
+						i++;
+						if (i != 0 && i == pow(2,tour)/2)
+							std::cout<<" ";
+						if(i == pow(2,tour))
+						{
+							if (v == 0)
+							{
+								std::cout<<"\n";
+								return;
+							}
+							std::cout<<"\n";
+							for (int x = 0 ; x <space -pow(2,tour); x++)
+							{
+								std::cout<<" ";
+							}
+							tour++;
+							i = 0;
+							v = 0;
+						}
+						if (temp->get_key() == '*')
+						{
+							pair<const int,std::string> p1(0 , "*");
+							temp2 = _node_alloc.allocate(1);
+							_node_alloc.construct(temp2, node_type(p1));
+							n.push(temp2);
+							// temp2 = _node_alloc.allocate(1);
+							// _node_alloc.construct(temp2, node_type(p1));
+							// n.push(temp2);
+							delete temp;
+							continue;
+						}
+						if(temp->get_predecessor()!= 0)
+						{
+							// std::cout<<"dans left ";
+							n.push(temp->get_predecessor());
+							if (temp->get_key()!='*')
+								v++;
+						}
+						else
+						{
+							pair<const int,std::string> p1(0 , "*");
+							temp2 = _node_alloc.allocate(1);
+							_node_alloc.construct(temp2, node_type(p1));
+							n.push(temp2);
+						}
+						if(temp->get_successor()!= 0)
+						{
+							// std::cout<<"dans right ";
+							n.push(temp->get_successor());
+							if (temp->get_key()!='*')
+								v++;
+						}
+						else
+						{
+							pair<const int,std::string> p1(0 , "*");
+							temp2 = _node_alloc.allocate(1);
+							_node_alloc.construct(temp2, node_type(p1));
+							n.push(temp2);
+							// n.push(Node<Key,T,Alloc>("*",0));
+							vide ++;
+						}
+						// std::cout<<"v == "<<v<<" ";
+					}
+					std::cout<<"\n";
 				}
 
-				node_pointer			_create_node(const_reference value, node_pointer parent) {
-					node_pointer	new_node = _node_alloc.allocate(1);
-					_node_alloc.construct(new_node, node_type(value, parent));
-					return new_node;
+			private:
+				////////////////////////////TEST Checker Utils////////////////////////////////////////////////////////
+				pair<bool, int> _is_valid_sub(node_pointer node) {
+					if (node == NULL) return make_pair(true, 0);
+					pair<bool, int> left = _is_valid_sub(node->predecessor);
+					pair<bool, int> right = _is_valid_sub(node->successor);
+					int height = std::max(left.second, right.second) + 1;
+					return make_pair(left.first && right.first && std::abs(left.second - right.second) < 2, height);
 				}
 
-				////// TEST ////////////////////////
+			public:
+				bool _is_valid() {
+					return _is_valid_sub(_root).first;
+				}
+
 				void					_create_tree_test(std::string str, std::string str2, std::string str3) {
 					_root = _create_node(value_type(2, str2), NULL);
 					_root->predecessor = _create_node(value_type(1, str), _root);
@@ -717,6 +701,71 @@ void	print_tree()
 					new_tree->predecessor->successor = _create_node(value_type(-1, str3), new_tree->predecessor);
 				}
 				//////////////////////////////////////////////////////////////////////////////////////////////////////
+				////////////////////////////Map Utils/////////////////////////////////////////////////////////////////
+				search_return	_search_operation(node_pointer	elem, node_pointer	subtree) {
+					if (*subtree > *elem) {
+						if (subtree->predecessor)
+							return _search_operation(elem, subtree->predecessor);
+						else
+							return search_return(subtree, true);
+					}
+					else if (*subtree < *elem) {
+						if (subtree->successor)
+							return _search_operation(elem, subtree->successor);
+						else
+							return search_return(subtree, true);
+					}
+					return search_return(subtree, false);
+				}
+
+				int			_is_side(node_pointer subtree) {
+					if (!subtree->parent)
+						return NONE;
+					if (*subtree->parent->successor == *subtree)
+						return SUCCESSOR;
+					return PREDECESSOR;
+				}
+
+
+			public:
+				/////////////////////////////////Constructors/////////////////////////////////////////////////////////
+				//
+				// allocator_type	_alloc;
+				// allocator_node	_node_alloc;
+				// value_compare	_comp;
+				// node_pointer	_root;
+				// size_type		_size;
+				//
+				map() :
+					_alloc(allocator_type()), _node_alloc(allocator_node()), _comp(key_compare()), _root(NULL), _size(0) { }
+
+				explicit map(const Compare& comp, const allocator_type& alloc = allocator_type()) :
+					_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL), _size(0) { }
+
+				map(const map &source) { *this = source; }
+
+				// template< class InputIt >
+				// map(InputIt first, InputIt last,
+				// const Compare& comp = Compare(),
+				// const Alloc& alloc = Alloc()) {
+				// }
+
+				/////////////////////////////////Destructor///////////////////////////////////////////////////////////
+				~map() { }
+
+				/////////////////////////////////Node methode PRIVATE/////////////////////////////////////////////////
+				node_pointer			_create_node(const_reference value) {
+					node_pointer	new_node = _node_alloc.allocate(1);
+					_node_alloc.construct(new_node, node_type(value));
+					return new_node;
+				}
+
+				node_pointer			_create_node(const_reference value, node_pointer parent) {
+					node_pointer	new_node = _node_alloc.allocate(1);
+					_node_alloc.construct(new_node, node_type(value, parent));
+					return new_node;
+				}
+
 
 				/////////////////////////////////Operators////////////////////////////////////////////////////////////
 				map		&operator= (const map &source) {
@@ -750,12 +799,29 @@ void	print_tree()
 					return wrapper;
 				}
 
+				iterator 				insert (iterator position, const value_type& val) {
+					if (_root == NULL || position.base()->parent == NULL
+							|| (!value_comp()(*position, val) && !(*position == val)))
+						return insert(val).first;
+					node_pointer	new_node = _create_node(val);
+					insert_return	wrapper(iterator(new_node), true);
+					node_pointer	it_parent = position.base()->parent;
+					if (_is_side(position.base()) == SUCCESSOR)
+						it_parent->successor = _insert_recurse(wrapper, position.base());
+					else if (_is_side(position.base()) == PREDECESSOR)
+						it_parent->predecessor = _insert_recurse(wrapper, position.base());
+					if (!wrapper.second) {
+						_node_alloc.destroy(new_node);
+						_node_alloc.deallocate(new_node, 1);
+					}
+					return wrapper.first;
+				}
+
 				/////////////////////////////////Accessors////////////////////////////////////////////////////////////
 
 				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
-				//
+				//// Constructore available :
 				// IteratorMap(node_pointer source);					// For begin() iterators
-				//
 				// IteratorMap(node_pointer source, bool is_end);		// For end()/rend()
 				//
 				iterator				begin() { return iterator(_find_begin()); }
@@ -799,12 +865,8 @@ void	print_tree()
 				return_value	operator() (first_argument_type value1, second_argument_type value2) const {
 					return _comp_instance(value1.first, value2.first);
 				}
-
 		};
 
-
-
 }
-
 
 #endif

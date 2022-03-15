@@ -255,15 +255,26 @@ test.print_tree();
 	typedef		std::vector<int>::iterator				iterator_vector;
 	std::cout << "//////////////////////////CRASHING INSERT/////////////////////////" << std::endl;
 	srand(time(NULL));
-		 ft::map<int, std::string>			test;
-		 int	array[] = {5, 11, 16, 1, 3, 7};
 
-		 std::vector<int> vec_values(array, array + sizeof(array) / sizeof(array[0]));
+	ft::map<int, std::string>			test;
+	int	array[] = {5, 11, 16, 1, 3, 7, 8, 10};
 
-		 for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
-			 test.insert(value_type(*it, "lol"));
-		 print_content(test, false);
-		 }
+	std::vector<int> vec_values(array, array + sizeof(array) / sizeof(array[0]));
+
+	for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
+		test.insert(test.begin(), value_type(*it, "lol"));
+		print_content(test, false);
+		std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+	}
+	{
+		std::cout << "//////////////////////////INSERT BEGINING/////////////////////////" << std::endl;
+		ft::map<int, std::string>			test2;
+		for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
+			test2.insert(value_type(*it, "lol"));
+			print_content(test2, false);
+			std::cout << " IS VALID ? : " <<  test2._is_valid() << std::endl;
+		}
+	}
 
 
 	// int	rand_nb = rand() % 20 + 1;
@@ -273,16 +284,17 @@ test.print_tree();
 			// std::cout << rand_nb << std::endl;
 		 // print_content(test, false);
 	}
-	std::cout << "//////////////////////////RANDOM INSERT/////////////////////////" << std::endl;
-	 {
-			 srand(time(NULL));
-		 ft::map<int, std::string>			test;
-		 for (int i = 1 ; i < 50 ; ++i) {
-			 int	new_nb = rand() % 20 + 1;
-			 std::cout << " #### insert " << new_nb << " : ";
-			 test.insert(value_type(new_nb, "lol"));
-		 print_content(test, false);
-		 }
-	 }
+	// std::cout << "//////////////////////////RANDOM INSERT/////////////////////////" << std::endl;
+	 // {
+			 // srand(time(NULL));
+		 // ft::map<int, std::string>			test;
+		 // for (int i = 1 ; i < 50 ; ++i) {
+			 // int	new_nb = rand() % 20 + 1;
+			 // std::cout << " #### insert " << new_nb << " : ";
+			 // test.insert(value_type(new_nb, "lol"));
+		 // print_content(test, false);
+		 // std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+		 // }
+	 // }
 
 }
