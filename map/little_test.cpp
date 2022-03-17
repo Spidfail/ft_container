@@ -69,6 +69,7 @@ int main() {
 			std::cout << it->first << " " << it->second << std::endl;
 			it++;
 		}
+		it--;
 		while (it != test.rbegin()) {
 			std::cout << it->first << " " << it->second << std::endl;
 			--it;
@@ -280,13 +281,19 @@ test.print_tree();
 	{
 		srand(time(NULL));
 		ft::map<int, std::string>			test;
+		std::map<int, std::string>				test_off;
 		for (int i = 1 ; i < 50 ; ++i) {
 			int	new_nb = rand() % 20 + 1;
 			std::cout << " #### insert " << new_nb << " : ";
 			test[new_nb] = "mdr";
+			test_off[new_nb] = "mdr";
 			print_content(test, false);
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 		}
+		std::map<int, std::string>::iterator	it_off = test_off.end();
+		std::cout << (it_off->second) << std::endl;
 	}
+
+
 
 }

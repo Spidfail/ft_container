@@ -297,7 +297,7 @@ friend	void	print_tree();
 
 							reference			operator* () {
 								if (_is_out)
-									return NULL;
+									return *_position->successor->content;
 								return *_position->content;
 							}
 							pointer				operator-> () {
@@ -853,6 +853,56 @@ friend	void	print_tree();
 					return	(* ( (this->insert( ft::make_pair(k,mapped_type())) ).first ) ).second;
 				}
 
+
+				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
+				//// Constructore available :
+				// IteratorMap(node_pointer source);					// For begin() iterators
+				// IteratorMap(node_pointer source, bool is_end);		// For end()/rend()
+				//
+				iterator				begin() {
+					if (_root)
+						return iterator(find_begin());
+					return iterator(NULL);
+				}
+				const_iterator			begin() const { 
+					if (_root)
+						return const_iterator(find_begin());
+					return const_iterator(NULL);
+				}
+
+				reverse_iterator		rbegin() {
+					if (_root)
+						return reverse_iterator(iterator(find_last()));
+					return reverse_iterator(iterator(NULL));
+				}
+				const_reverse_iterator	rbegin() const {
+					if (_root)
+						return const_reverse_iterator(iterator(find_last()));
+					return const_reverse_iterator(iterator(NULL));
+				}
+
+				iterator				end() {
+					if (_root)
+						return iterator(find_last(), true);
+					return iterator(NULL, true);
+				}
+				const_iterator 			end() const {
+					if (_root)
+						return const_iterator(find_last(), true);
+					return const_iterator(NULL, true);
+				}
+
+				reverse_iterator		rend() {
+					if (_root)
+						return reverse_iterator(iterator(find_begin(), false));
+					return reverse_iterator(iterator(NULL, false));
+				}
+				const_reverse_iterator	rend() const {
+					if (_root)
+						return const_reverse_iterator(iterator(find_begin(), false));
+					return const_reverse_iterator(iterator(NULL, false));
+				}
+
 				/////////////////////////////////Capacity///////////////////////////////////////////////////
 				allocator_type			get_allocator() { return _alloc; }
 				bool					empty() const { return !_root; }
@@ -906,7 +956,7 @@ friend	void	print_tree();
 
 				/////////////////////////////////Lookup/////////////////////////////////////////////////////
 				size_type 		count( const Key& key ) const {
-					if (search_operation().second)
+					if (search_operation(ft::make_pair(key, mapped_type())).second)
 						return 1;
 					return 0;
 				}
@@ -918,6 +968,10 @@ friend	void	print_tree();
 					return this->end();
 				}
 				const_iterator	find( const Key& key ) const {
+					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
+					if (rtn.second)
+						return rtn.first;
+					return this->end();
 				}
 		};
 
