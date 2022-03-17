@@ -23,7 +23,6 @@
 
 namespace ft {
 
-
 	template <class Key,
 			 class T,
 			 class Compare = std::less<Key>,
@@ -296,8 +295,16 @@ friend	void	print_tree();
 							}
 							IteratorMap<const value_type>		operator() () { return (const_iterator(*this)); }
 
-							reference			operator* () { return *_position->content; }
-							pointer				operator-> () { return _position->content; }
+							reference			operator* () {
+								if (_is_out)
+									return NULL;
+								return *_position->content;
+							}
+							pointer				operator-> () {
+								if (_is_out)
+									return NULL;
+								return _position->content;
+							}
 
 							//////////////////////////////////Accessors/////////////////////////////////////
 							node_pointer		base() const { return _position; }
@@ -554,7 +561,6 @@ friend	void	print_tree();
 					// Rotate if balance_factor > 1 || balance_factor < -1
 					return _balance(subtree);
 				}
-
 				////////////////////////////////////////////////////////////////////////////////////////////
 				////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -799,7 +805,6 @@ friend	void	print_tree();
 					return PREDECESSOR;
 				}
 
-
 			public:
 				/////////////////////////////////Constructors///////////////////////////////////////////////
 				//
@@ -818,7 +823,7 @@ friend	void	print_tree();
 				map(const map &source)
 					: _root(NULL), _size(0) { *this = source; }
 
-				template< class InputIt >
+				template<class InputIt>
 					map(InputIt first, InputIt last,
 							const Compare& comp = Compare(),
 							const Alloc& alloc = Alloc()) : 
@@ -845,7 +850,7 @@ friend	void	print_tree();
 
 				/////////////////////////////////Accessors//////////////////////////////////////////////////
 				mapped_type				&operator[] (const key_type &k) {
-					return (* ( (this->insert(ft::make_pair(k,mapped_type()))).first ) ).second;
+					return	(* ( (this->insert( ft::make_pair(k,mapped_type())) ).first ) ).second;
 				}
 
 				/////////////////////////////////Capacity///////////////////////////////////////////////////
@@ -900,9 +905,20 @@ friend	void	print_tree();
 				}
 
 				/////////////////////////////////Lookup/////////////////////////////////////////////////////
-				size_type 		count( const Key& key ) const;
-				iterator		find( const Key& key );
-				const_iterator	find( const Key& key ) const;
+				size_type 		count( const Key& key ) const {
+					if (search_operation().second)
+						return 1;
+					return 0;
+				}
+
+				iterator		find( const Key& key ) {
+					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
+					if (rtn.second)
+						return rtn.first;
+					return this->end();
+				}
+				const_iterator	find( const Key& key ) const {
+				}
 		};
 
 	template <class Key, class T, class Compare, class Alloc>
