@@ -5,6 +5,7 @@
 #include <ctime>
 #include <random>
 #include "../vector/Vector.hpp"
+#include <stack>
 
 template <class Ct>
 void	print_content(Ct map, bool is_print) {
@@ -290,8 +291,85 @@ test.print_tree();
 			print_content(test, false);
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 		}
-		std::map<int, std::string>::iterator	it_off = test_off.end();
-		std::cout << (it_off->second) << std::endl;
+		// Test segfault on end() iterator
+		// std::map<int, std::string>::iterator	it_off = test_off.end();
+		// std::cout << (it_off->second) << std::endl;
+	}
+
+	std::cout << "//////////////////////////LOOKUP////////////////////////////////" << std::endl;
+	{
+		// COUNT
+		ft::map<int, std::string>			test;
+		std::map<int, std::string>			test_off;
+		std::stack<int>						stack;
+		for (int i = 1 ; i < 20 ; ++i) {
+			int	new_nb = rand() % 20 + 1;
+			std::cout << " #### insert " << new_nb << " : ";
+			test[new_nb] = "mdr";
+			test_off[new_nb] = "mdr";
+			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+			stack.push(new_nb);
+		}
+		while (!stack.empty()) {
+			std::cout << " #### count on : " << stack.top() << " = ";
+			std::cout << test.count(stack.top()) << " | ";
+			std::cout << test_off.count(stack.top()) << std::endl;
+			stack.pop();
+		}
+	} {
+		// Find
+		ft::map<int, std::string>			test;
+		std::map<int, std::string>				test_off;
+		std::stack<int>						stack;
+		for (int i = 1 ; i < 10 ; ++i) {
+			int	new_nb = rand() % 10 + 1;
+			std::cout << " #### insert " << new_nb << " : ";
+			test[new_nb] = "mdr";
+			test_off[new_nb] = "mdr2";
+			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+			stack.push(new_nb);
+		}
+		while (!stack.empty()) {
+			std::cout << " #### find on : " << stack.top() << " = " << std::endl;
+			ft::map<int, std::string>::iterator		it =	test.find(stack.top());
+			std::map<int, std::string>::iterator	it2 =	test_off.find(stack.top());
+			std::cout << " Reverse order [";
+			for ( ; it != test.begin() ; --it, --it2)
+				std::cout << " | " << it->first << " " << it2->first;
+			std::cout << "] " << std::endl;
+			std::cout << " Ordered [";
+			for ( ; it != test.end() ; ++it, ++it2)
+				std::cout << " | " << it->first << " " << it2->first;
+			std::cout << "]" << std::endl;
+			stack.pop();
+		}
+	} {
+		// Find
+		ft::map<int, std::string>			test;
+		std::map<int, std::string>				test_off;
+		std::stack<int>						stack;
+		for (int i = 1 ; i < 10 ; ++i) {
+			int	new_nb = rand() % 10 + 1;
+			std::cout << " #### insert " << new_nb << " : ";
+			test[new_nb] = "mdr";
+			test_off[new_nb] = "mdr2";
+			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+			stack.push(new_nb);
+		}
+		while (!stack.empty()) {
+			std::cout << " #### find on : " << stack.top() << " = " << std::endl;
+			ft::map<int, std::string>::const_iterator		it =	test.find(stack.top());
+			std::map<int, std::string>::const_iterator		it2 =	test_off.find(stack.top());
+			std::cout << " Reverse order [";
+			for ( ; it != test.begin() ; --it, --it2)
+				std::cout << " | " << it->first << " " << it2->first;
+			std::cout << "] " << std::endl;
+			std::cout << " Ordered [";
+			for ( ; it != test.end() ; ++it, ++it2)
+				std::cout << " | " << it->first << " " << it2->first;
+			std::cout << "]" << std::endl;
+			stack.pop();
+		}
 	}
 
 

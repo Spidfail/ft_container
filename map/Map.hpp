@@ -14,6 +14,8 @@
 # include <string>
 # include <queue>
 # include <math.h>
+# include "../EnableIf.hpp"
+# include "../IsIntegral.hpp"
 
 # include <iostream>
 
@@ -293,7 +295,7 @@ friend	void	print_tree();
 								this->_is_end = source._is_end;
 								return *this;
 							}
-							IteratorMap<const value_type>		operator() () { return (const_iterator(*this)); }
+							operator IteratorMap<const value_type>() { return (IteratorMap<const value_type>(_position)); }
 
 							reference			operator* () {
 								if (_is_out)
@@ -376,25 +378,37 @@ friend	void	print_tree();
 								return cp;
 							}
 
-				/////////////////////////////////Comparison Operators///////////////////////////////////////
+							/////////////////////////////////Comparison Operators Iterators/////////////////////////////
 							template<class Type>
-								friend bool		operator== (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
-									return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
-								}
+								friend bool		operator== (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs);
 							template<class Type1, class Type2>
-								friend bool		operator== (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
-									return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
-								}
+								friend bool		operator== (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs);
 
 							template<class Type>
-								friend bool		operator!= (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
-									return !(lhs == rhs);
-								}
+								friend bool		operator!= (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs);
 							template<class Type1, class Type2>
-								friend bool		operator!= (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
-									return !(lhs == rhs);
-								}
+								friend bool		operator!= (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs);
+
 					};
+
+				/////////////////////////////////Comparison Operators Iterators/////////////////////////////
+				template<class Type>
+					friend bool		operator== (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
+						return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
+					}
+				template<class Type1, class Type2>
+					friend bool		operator== (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
+						return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
+					}
+
+				template<class Type>
+					friend bool		operator!= (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
+						return !(lhs == rhs);
+					}
+				template<class Type1, class Type2>
+					friend bool		operator!= (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
+						return !(lhs == rhs);
+					}
 
 
 				////////////////////////////////////////////////////////////////////////////////////////////
@@ -758,7 +772,7 @@ friend	void	print_tree();
 				/////////////////////////////////Search Operation/////////////////////////////////////////////////////
 				// See also : search_operation(const_reference val, node_pointer subtree)
 				// 		> Search a content (value_type) instead of a node_pointer (Node *).
-				search_return		search_operation(node_pointer	elem, node_pointer	subtree) {
+				search_return		search_operation(const node_pointer	&elem, const node_pointer &subtree) const {
 					if (*subtree > *elem) {
 						if (subtree->predecessor)
 							return search_operation(elem, subtree->predecessor);
@@ -776,7 +790,7 @@ friend	void	print_tree();
 
 				// See also : search_operation(node_pointer elem, node_pointer subtree)
 				// 		> Search a node_pointer (Node *) instead of a content (value_type).
-				search_return		search_operation(const_reference val, node_pointer subtree) {
+				search_return		search_operation(const_reference val, const node_pointer &subtree) const {
 					if (val == *subtree->get_value())
 						return search_return(subtree, true);
 					else if (_comp(val, *subtree->get_value())) {
@@ -924,16 +938,6 @@ friend	void	print_tree();
 					insert_return	return_value(iterator(), false);
 					_root = _insert_recurse(val, return_value, _root, NULL);
 					return return_value;
-
-
-					// search_return search = search_operation(val, _root);
-					// if (!search.second) {
-						// node_pointer	new_node = create_node(val);
-						// _root = _insert_recurse(new_node, _root);
-						// ++_size;
-						// return insert_return(iterator(new_node), true);
-					// }
-					// return insert_return(iterator(search.first), false);
 				}
 
 				iterator 				insert(iterator, const value_type& val) {
@@ -941,7 +945,8 @@ friend	void	print_tree();
 				}
 
 				template <class InputIterator>
-					void insert (InputIterator first, InputIterator last) {
+					void 				insert (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
+							typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last) {
 						for (; first != last ; ++first)
 							insert(*first);
 					}
@@ -955,24 +960,37 @@ friend	void	print_tree();
 				}
 
 				/////////////////////////////////Lookup/////////////////////////////////////////////////////
-				size_type 		count( const Key& key ) const {
-					if (search_operation(ft::make_pair(key, mapped_type())).second)
+				size_type 		count(const Key& key) const {
+					if (search_operation(ft::make_pair(key, mapped_type()), _root).second)
 						return 1;
 					return 0;
 				}
 
-				iterator		find( const Key& key ) {
+				iterator		find(const Key& key) {
 					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
 					if (rtn.second)
 						return rtn.first;
 					return this->end();
 				}
-				const_iterator	find( const Key& key ) const {
+				const_iterator	find(const Key& key) const {
 					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
 					if (rtn.second)
 						return rtn.first;
 					return this->end();
 				}
+
+				pair<iterator, iterator>				equal_range(const key_type &key) {
+					return ft::make_pair(find(key), ++(find(key)));
+				}
+				pair<const_iterator, const_iterator>	equal_range(const key_type &key) const {
+					return ft::make_pair(find(key), ++(find(key)));
+				}
+
+				iterator 		lower_bound( const Key& key ) { return find(key); }
+				const_iterator	lower_bound( const Key& key ) const { return find(key); }
+
+				iterator 		upper_bound( const Key& key ) { return find(key); }
+				const_iterator	upper_bound( const Key& key ) const { return find(key); }
 		};
 
 	template <class Key, class T, class Compare, class Alloc>
