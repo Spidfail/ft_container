@@ -295,14 +295,16 @@ friend	void	print_tree();
 								this->_is_end = source._is_end;
 								return *this;
 							}
-							operator IteratorMap<const value_type>() { return (IteratorMap<const value_type>(_position)); }
+							operator IteratorMap<const value_type>() const {
+								return (IteratorMap<const value_type>(_position));
+							}
 
-							reference			operator* () {
+							reference			operator* () const {
 								if (_is_out)
 									return *_position->successor->content;
 								return *_position->content;
 							}
-							pointer				operator-> () {
+							pointer				operator-> () const {
 								if (_is_out)
 									return NULL;
 								return _position->content;
@@ -677,8 +679,12 @@ friend	void	print_tree();
 					std::cout<<"\n";
 				}
 
+			public:
+				bool _is_valid() { return _is_valid_sub(_root).first; }
+
 			private:
-				////////////////////////////TEST Checker Utils////////////////////////////////////////////////////////
+				////////////////////////////////////////////////////////////////////////////////////////////
+				////////////////////////////Map Utils///////////////////////////////////////////////////////
 				pair<bool, int> _is_valid_sub(node_pointer node) {
 					if (node == NULL) return make_pair(true, 0);
 					pair<bool, int> left = _is_valid_sub(node->predecessor);
@@ -686,44 +692,6 @@ friend	void	print_tree();
 					int height = std::max(left.second, right.second) + 1;
 					return make_pair(left.first && right.first && std::abs(left.second - right.second) < 2, height);
 				}
-
-			public:
-				bool _is_valid() {
-					return _is_valid_sub(_root).first;
-				}
-
-				void					_create_tree_test(std::string str, std::string str2, std::string str3) {
-					_root = create_node(value_type(2, str2), NULL);
-					_root->predecessor = create_node(value_type(1, str), _root);
-					_root->successor = create_node(value_type(3, str3), _root);
-				}
-
-				void					_create_double_tree_successor_test(std::string str, std::string str2, std::string str3) {
-					_root = create_node(value_type(2, str2), NULL);
-					_root->predecessor = create_node(value_type(1, str), _root);
-					_root->successor = create_node(value_type(4, str3), _root);
-
-					node_pointer	new_tree = _root->successor;
-					new_tree->predecessor = create_node(value_type(3, str), new_tree);
-					new_tree->successor = create_node(value_type(6, str3), new_tree);
-					new_tree->successor->successor = create_node(value_type(7, str3), new_tree->successor);
-					new_tree->successor->predecessor = create_node(value_type(5, str), new_tree->successor);
-				}
-
-				void					_create_double_tree_predecessor_test(std::string str, std::string str2, std::string str3) {
-					_root = create_node(value_type(3, str2), NULL);
-					_root->predecessor = create_node(value_type(0, str), _root);
-					_root->successor = create_node(value_type(4, str3), _root);
-
-					node_pointer	new_tree = _root->predecessor; // 0
-					new_tree->predecessor = create_node(value_type(-2, str), new_tree);
-					new_tree->successor = create_node(value_type(1, str2), new_tree);
-					new_tree->successor->successor = create_node(value_type(2, str2), new_tree->successor);
-					new_tree->predecessor->predecessor = create_node(value_type(-3, str3), new_tree->predecessor);
-					new_tree->predecessor->successor = create_node(value_type(-1, str3), new_tree->predecessor);
-				}
-				////////////////////////////////////////////////////////////////////////////////////////////
-				////////////////////////////Map Utils///////////////////////////////////////////////////////
 
 				/////////////////////////////////Node methode PRIVATE///////////////////////////////////////
 				node_pointer		create_node(const_reference value) {
@@ -737,6 +705,9 @@ friend	void	print_tree();
 					_node_alloc.construct(new_node, node_type(value, parent));
 					return new_node;
 				}
+
+
+			private:
 
 				// See also : erase_tree(node_pointer subtree);
 				void				erase_node(node_pointer node) {
@@ -951,6 +922,15 @@ friend	void	print_tree();
 							insert(*first);
 					}
 
+				void 					erase(iterator pos) {
+				}
+
+				void 					erase(iterator first, iterator last) {
+				}
+
+				size_type 				erase(const Key& key) {
+				}
+
 				void					swap(map &other) {
 					std::swap(this->_comp, other._comp);
 					std::swap(this->_alloc, other._alloc);
@@ -989,8 +969,8 @@ friend	void	print_tree();
 				iterator 		lower_bound( const Key& key ) { return find(key); }
 				const_iterator	lower_bound( const Key& key ) const { return find(key); }
 
-				iterator 		upper_bound( const Key& key ) { return find(key); }
-				const_iterator	upper_bound( const Key& key ) const { return find(key); }
+				iterator 		upper_bound( const Key& key ) { return ++find(key); }
+				const_iterator	upper_bound( const Key& key ) const { return ++find(key); }
 		};
 
 	template <class Key, class T, class Compare, class Alloc>
