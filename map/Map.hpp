@@ -2,9 +2,9 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-#include <algorithm>
-#include <climits>
-#include <cstddef>
+# include <algorithm>
+# include <climits>
+# include <cstddef>
 # include <functional> 
 # include "../Pair.hpp"
 # include <limits>
@@ -129,6 +129,37 @@ friend	void	print_tree();
 							content = allocate_content(val);
 						}
 
+						void				assign_pointers(const Node *target) {
+							if (target == *this)
+								return ;
+							if (this->successor != *this)
+								this->successor = target->successor;
+							if (this->predecessor != *this)
+								this->predecessor = target->predecessor;
+							if (this->parent != *this)
+								this->parent = target->parent;
+						}
+
+						void				assign_height(const Node *target) {
+							this->height = target->height;
+							this->balance_factor = target->balance_factor;
+						}
+
+						// Used to ensure relation with all pointer of *this.
+						// Segfault protected.
+						// No leak protection : he could erase pointer's own assignations.
+						void				ensure_relations() {
+							if (this->parent) {
+								if (this->parent < *this)
+									this->parent->successor = *this;
+								else
+									this->parent->predecessor = *this;
+							}
+							if (this->successor)
+								this->successor->parent = *this;
+							if (this->predecessor)
+								this->predecessor->parent = *this;
+						}
 
 						friend	bool	operator<(const Node &lhs, const Node &rhs) {
 							return value_compare()(*lhs.content, *rhs.content);
@@ -188,11 +219,13 @@ friend	void	print_tree();
 						rtn = rtn->successor;
 					return rtn;
 				}
+				//find the leftmost node of node pos.
 				static node_pointer		find_min(node_pointer pos) {
 					while (pos->predecessor)
 						pos = pos->predecessor;
 					return pos;
 				}
+				//find the rightmost node of node pos.
 				static node_pointer		find_max(node_pointer pos) {
 					while (pos->successor)
 						pos = pos->successor;
@@ -255,13 +288,6 @@ friend	void	print_tree();
 								return (find_max(cp));
 							}
 
-						///////////////////////////////////////////////////////////////////////////////////////////
-						// Extern used methods :
-						//  find_min()
-						//  find_max()
-						//
-						public:
-							// TEST
 							ssize_t	get_balance_factor() {
 								return _position->get_balance_factor();
 							}
@@ -273,6 +299,7 @@ friend	void	print_tree();
 								return _position->get_weight_predecessor();
 							}
 
+						public:
 							IteratorMap()
 								: _position(NULL), _is_out(false), _is_end(false) { }
 
@@ -314,6 +341,10 @@ friend	void	print_tree();
 							node_pointer		base() const { return _position; }
 
 							//////////////////////////////////Increment/Decrement///////////////////////////
+							// Used extern methods :
+							//  find_min()
+							//  find_max()
+							//
 							IteratorMap			&operator++ () {
 								if (_position == NULL)
 									return *this;
@@ -435,10 +466,14 @@ friend	void	print_tree();
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				/////////////////////////////////////Insert Utils///////////////////////////////////////////
+
+				// Private typedef
 				typedef		pair<node_pointer,bool>		search_return;
 				typedef		pair<iterator,bool>			insert_return;
+				// .first : predecessor,  .second : successor
+				typedef		pair<ssize_t, ssize_t>		subtree_height;
 
-				node_pointer	_rotation_right(node_pointer subtree) {
+				node_pointer	rotation_right(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 
 					// LOGS
@@ -451,12 +486,12 @@ friend	void	print_tree();
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->predecessor = subtree;
-					_update_values(subtree);
-					_update_values(b);
+					update_values(subtree);
+					update_values(b);
 					return b;							// return the node to set the parent child
 				}
 
-				node_pointer	_rotation_left(node_pointer subtree) {
+				node_pointer	rotation_left(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 
 					// LOGS
@@ -469,12 +504,12 @@ friend	void	print_tree();
 					b->parent = subtree->parent;
 					subtree->parent = b;
 					b->successor = subtree;
-					_update_values(subtree);
-					_update_values(b);
+					update_values(subtree);
+					update_values(b);
 					return b;							// return the node to set the parent child
 				}
 
-				node_pointer	_rotation_right_left(node_pointer subtree) {
+				node_pointer	rotation_right_left(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 					node_pointer	c = b->predecessor;
 
@@ -495,13 +530,13 @@ friend	void	print_tree();
 					c->successor = b;
 					subtree->parent = c;
 					b->parent = c;
-					_update_values(subtree);
-					_update_values(b);
-					_update_values(c);
+					update_values(subtree);
+					update_values(b);
+					update_values(c);
 					return c;							// return the node to set the parent child
 				}
 
-				node_pointer	_rotation_left_right(node_pointer subtree) {
+				node_pointer	rotation_left_right(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 					node_pointer	c = b->successor;
 
@@ -522,41 +557,37 @@ friend	void	print_tree();
 					c->predecessor = b;
 					subtree->parent = c;
 					b->parent = c;
-					_update_values(subtree);
-					_update_values(b);
-					_update_values(c);
+					update_values(subtree);
+					update_values(b);
+					update_values(c);
 					return c;							// return the node to set the parent child
 				}
 
-				node_pointer	_balance(node_pointer subtree) {
+				node_pointer	balance(node_pointer subtree) {
 					if (subtree->balance_factor < -1) {
 						if (subtree->successor->balance_factor <= 0)
-							return _rotation_right(subtree);
+							return rotation_right(subtree);
 						else
-							return _rotation_right_left(subtree);
+							return rotation_right_left(subtree);
 					}
 					else if (subtree->balance_factor > 1) {
 						if (subtree->predecessor->balance_factor >= 0)
-							return _rotation_left(subtree);
+							return rotation_left(subtree);
 						else
-							return _rotation_left_right(subtree);
+							return rotation_left_right(subtree);
 					}
 					return subtree;
 				}
 
-				void			_update_values(node_pointer subtree) {
-					ssize_t		pred_height = -1;
-					ssize_t		succ_height = -1;
-
-					if (subtree->predecessor)
-						pred_height = subtree->predecessor->height;
-					if (subtree->successor)
-						succ_height = subtree->successor->height;
-					subtree->height = std::max(pred_height, succ_height) + 1;
-					subtree->balance_factor = pred_height - succ_height;
+				// Update height and balance factor of current 'subtree'.
+				// They are based on children's height.
+				void			update_values(node_pointer subtree) {
+					subtree_height		sub_height = get_subtree_height(subtree);
+					subtree->height = std::max(sub_height.first, sub_height.second) + 1;
+					subtree->balance_factor = sub_height.first - sub_height.second;
 				}
 
-				node_pointer	_insert_recurse(const_reference val, insert_return &wrapper, node_pointer subtree, node_pointer parent) {
+				node_pointer	insert_recurse(const_reference val, insert_return &wrapper, node_pointer subtree, node_pointer parent) {
 					if (subtree == NULL) {
 						wrapper.first = iterator(create_node(val, parent));
 						wrapper.second = true;
@@ -569,13 +600,13 @@ friend	void	print_tree();
 						return subtree;
 					}
 					else if (_comp(val, *subtree->content))
-						subtree->predecessor = _insert_recurse(val, wrapper, subtree->predecessor, subtree);
+						subtree->predecessor = insert_recurse(val, wrapper, subtree->predecessor, subtree);
 					else 
-						subtree->successor = _insert_recurse(val, wrapper, subtree->successor, subtree);
+						subtree->successor = insert_recurse(val, wrapper, subtree->successor, subtree);
 					// Update the balance factor of it's children
-					_update_values(subtree);
+					update_values(subtree);
 					// Rotate if balance_factor > 1 || balance_factor < -1
-					return _balance(subtree);
+					return balance(subtree);
 				}
 				////////////////////////////////////////////////////////////////////////////////////////////
 				////////////////////////////////////////////////////////////////////////////////////////////
@@ -710,13 +741,13 @@ friend	void	print_tree();
 			private:
 
 				// See also : erase_tree(node_pointer subtree);
-				void				erase_node(node_pointer node) {
+				void				erase_node(const node_pointer &node) {
 					_node_alloc.destroy(node);
 					_node_alloc.deallocate(node, 1);
 				}
 
 				// Recursive function, always return NULL
-				node_pointer		erase_tree(node_pointer subtree) {
+				node_pointer		erase_tree(const node_pointer &subtree) {
 					if (subtree == NULL)
 						return subtree;
 					subtree->predecessor = erase_tree(subtree->predecessor);
@@ -739,6 +770,36 @@ friend	void	print_tree();
 						replacement->successor->parent = replacement;
 					return replacement;
 				}
+
+				// See 'update_values' for it's use in recursive form.
+				pair<ssize_t, ssize_t>	get_subtree_height(const node_pointer &subtree) {
+					ssize_t		pred_height = -1;
+					ssize_t		succ_height = -1;
+
+					if (subtree->predecessor)
+						pred_height = subtree->predecessor->height;
+					if (subtree->successor)
+						succ_height = subtree->successor->height;
+					return make_pair(pred_height, succ_height);
+				}
+
+				// Replace the subtree's position in parent node by 'target'.
+				// Return target if successfull, otherwise subtree.
+				// Doesn't delete subtree.
+				node_pointer			replace_parent_child(const node_pointer &subtree, const node_pointer &target) {
+					if (subtree->parent == NULL)
+						return subtree;
+					if (subtree->parent->successor == subtree) {
+						subtree->parent->successor = target;
+						return target;
+					}
+					else if (subtree->parent->predecessor == subtree) {
+						subtree->parent->predecessor = target;
+						return target;
+					}
+					return subtree;
+				}
+
 
 				/////////////////////////////////Search Operation/////////////////////////////////////////////////////
 				// See also : search_operation(const_reference val, node_pointer subtree)
@@ -907,7 +968,7 @@ friend	void	print_tree();
 						return insert_return(iterator(_root), true);
 					}
 					insert_return	return_value(iterator(), false);
-					_root = _insert_recurse(val, return_value, _root, NULL);
+					_root = insert_recurse(val, return_value, _root, NULL);
 					return return_value;
 				}
 
@@ -922,14 +983,93 @@ friend	void	print_tree();
 							insert(*first);
 					}
 
-				void 					erase(iterator pos) {
+			private:
+				void					erase_no_child(const node_pointer &subtree) {
+					// if parent == NULL, subtree is root by definition.
+					// otherwise, there is a serious problem in the tree.
+					if (subtree->parent == NULL) {
+						erase_node(_root);
+						_root = NULL;
+						return ;
+					}
+					else if (subtree->parent->successor == subtree)
+						subtree->parent->successor = NULL;
+					else
+						subtree->parent->predecessor = NULL;
+					erase_node(subtree);
 				}
 
-				void 					erase(iterator first, iterator last) {
+				node_pointer			erase_one_child(const node_pointer &subtree, const subtree_height &heights) {
+					node_pointer		replacement;
+					// if pred is the only child of subtree.
+					// else, succ is the only child of subtree.
+					if (heights.first != -1)
+						replacement = subtree->predecessor;
+					else
+						replacement = subtree->successor;
+					replace_parent_child(subtree, replacement);
+					replacement->parent = subtree->parent;
+					erase_node(subtree);
+					// update_values to check balance_factor later.
+					update_values(replacement);
+				}
+
+				void					erase_two_children(const node_pointer &subtree, const subtree_height &heights) {
+					node_pointer	replacement;
+					// if successor is eavyer or equal than predecessor,
+					// replace subtree by his in-order successor.
+					if (heights.first <= heights.second) {
+						replacement = find_min(subtree->successor);
+						if (replacement->successor) {
+							replacement->successor->parent = replacement->parent;
+							replace_parent_child(replacement, replacement->successor);
+						}
+					}
+					// else, replace subtree by his in-order predecessor.
+					else {
+						replacement = find_max(subtree->predecessor);
+						if (replacement->predecessor) {
+							replacement->predecessor->parent = replacement->parent;
+							replace_parent_child(replacement, replacement->predecessor);
+						}
+					}
+					replacement->assign_pointers(subtree);
+					replace_parent_child(subtree, replacement);
+					replacement->ensure_relations();
+					erase_node(subtree);
+					// update_values to check balance_factor later.
+					update_values(replacement);
+				}
+
+			public:
+				void 					erase(iterator pos) {
+					if (pos.base() == NULL)
+						return ;
+					subtree_height	heights = get_subtree_height(pos.base());
+					node_pointer	target = pos.base();
+					// if there is no child
+					if (heights.first == -1 && heights.second == -1) {
+					}
+					// else if there is one child
+					else if (heights.first == -1 || heights.second == -1)
+						erase_one_child(target);
+					// else, there is two children
+					else
+						erase_two_children(target, heights);
 				}
 
 				size_type 				erase(const Key& key) {
+					iterator	it(find());
+					if (it != end()) {
+						erase(it);
+						return 1;
+					}
+					return 0;
 				}
+
+				// void 					erase(iterator first, iterator last) {
+				// }
+
 
 				void					swap(map &other) {
 					std::swap(this->_comp, other._comp);
