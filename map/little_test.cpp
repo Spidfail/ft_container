@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include <map>
 #include "Map.hpp"
 #include <iostream>
@@ -319,6 +320,47 @@ int main() {
 			stack.pop();
 			std::cout << std::endl;
 		}
+	}
+
+	std::cout << "//////////////////////////ERASE/////////////////////////////////" << std::endl;
+	{
+		srand(time(NULL));
+		ft::map<int, std::string>			test;
+		std::map<int, std::string>			test_off;
+		// // RANDOM INSERT
+		// ft::vector<int>					vec_keys;
+		// for (int i = 1 ; i < 10 ; ++i) {
+			// int	new_nb = rand() % 20 + 1;
+			// vec_keys.push_back(new_nb);
+			// std::cout << " #### insert " << new_nb << " : ";
+			// test[new_nb] = "mdr";
+			// test_off[new_nb] = "mdr";
+			// print_content(test, false);
+			// std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+		// }
+		// std::random_shuffle(vec_keys.begin(), vec_keys.end());
+		// ft::vector<int>::iterator	it = vec_keys.begin();
+
+		// for (; it != vec_keys.end() ; ++it) {
+			// std::cout << *it << " ";
+		// }
+		std::cout << std::endl;
+
+		int	array[] = {8, 2, 10, 16, 5, 15, 17};
+		int	nb_to_erase = 8;
+
+		std::vector<int> vec_values(array, array + sizeof(array) / sizeof(array[0]));
+		for (std::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
+			test.insert(ft::make_pair(*it, "manger des chips"));
+			print_content(test, false);
+			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
+		}
+
+		std::cout << "///////////////////////////////// ONE ELEMENT" << std::endl;
+		std::cout << " ERASE ONE ELEMENT :" << nb_to_erase << std::endl;
+		test.erase(test.find(nb_to_erase));
+		std::cout << " IS VALID ? : " << test._is_valid() << std::endl;
+		test.print_tree();
 	}
 
 }
