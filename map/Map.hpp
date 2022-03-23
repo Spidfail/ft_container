@@ -123,6 +123,15 @@ friend	void	print_tree();
 						ssize_t				get_balance_factor() { return balance_factor; }
 						ssize_t				get_height() { return height; }
 
+						size_type			count_children() {
+							if (successor && predecessor)
+								return 2;
+							else if (successor || predecessor)
+								return 1;
+							return 0;
+						}
+						bool				is_parent() { return parent; }
+
 						void				set_content(const_reference val) {
 							alloc.destroy(content);
 							alloc.deallocate(content, 1);
@@ -143,6 +152,14 @@ friend	void	print_tree();
 						void				assign_height(const Node *target) {
 							this->height = target->height;
 							this->balance_factor = target->balance_factor;
+						}
+
+						// Reset all pointers of this node, set at NULL.
+						// Do not destroy or deallocate memory.
+						void				reset_relations() {
+							this->successor = NULL;
+							this->predecessor = NULL;
+							this->parent = NULL;
 						}
 
 						// Used to ensure relation with all pointer of *this.
@@ -800,6 +817,15 @@ friend	void	print_tree();
 					return subtree;
 				}
 
+				// Return NULL if there is no replacement.
+				node_pointer			disconnect_and_substitute_erase(node_pointer &replacement, node_pointer &subtree) {
+					if (replacement) {
+						replacement->parent = subtree->parent;
+						update_values(replacement);
+					}
+					subtree->reset_relations();
+					return replacement;
+				}
 
 				/////////////////////////////////Search Operation/////////////////////////////////////////////////////
 				// See also : search_operation(const_reference val, node_pointer subtree)
@@ -899,7 +925,6 @@ friend	void	print_tree();
 					return	(* ( (this->insert( ft::make_pair(k,mapped_type())) ).first ) ).second;
 				}
 
-
 				/////////////////////////////////Iterators////////////////////////////////////////////////////////////
 				//// Constructore available :
 				// IteratorMap(node_pointer source);					// For begin() iterators
@@ -984,26 +1009,23 @@ friend	void	print_tree();
 					}
 
 			private:
+				/////////////////////////////////Erase Utils////////////////////////////////////////////////
 				void					erase_no_child(const node_pointer &subtree) {
 					// if parent == NULL, subtree is root by definition.
-					// otherwise, there is a serious problem in the tree.
 					if (subtree->parent == NULL) {
 						erase_node(_root);
 						_root = NULL;
 						return ;
 					}
-					else if (subtree->parent->successor == subtree)
-						subtree->parent->successor = NULL;
-					else
-						subtree->parent->predecessor = NULL;
+					replace_parent_child(subtree, NULL);
 					erase_node(subtree);
 				}
 
-				node_pointer			erase_one_child(const node_pointer &subtree, const subtree_height &heights) {
+				node_pointer			erase_one_child(const node_pointer &subtree) {
 					node_pointer		replacement;
 					// if pred is the only child of subtree.
 					// else, succ is the only child of subtree.
-					if (heights.first != -1)
+					if (subtree->predecessor)
 						replacement = subtree->predecessor;
 					else
 						replacement = subtree->successor;
@@ -1012,33 +1034,71 @@ friend	void	print_tree();
 					erase_node(subtree);
 					// update_values to check balance_factor later.
 					update_values(replacement);
+					balance(replacement);
+					return replacement;
 				}
 
-				void					erase_two_children(const node_pointer &subtree, const subtree_height &heights) {
+				node_pointer			erase_two_children(const node_pointer &subtree) {
 					node_pointer	replacement;
-					// if successor is eavyer or equal than predecessor,
-					// replace subtree by his in-order successor.
-					if (heights.first <= heights.second) {
-						replacement = find_min(subtree->successor);
-						if (replacement->successor) {
-							replacement->successor->parent = replacement->parent;
-							replace_parent_child(replacement, replacement->successor);
-						}
-					}
-					// else, replace subtree by his in-order predecessor.
-					else {
-						replacement = find_max(subtree->predecessor);
-						if (replacement->predecessor) {
-							replacement->predecessor->parent = replacement->parent;
-							replace_parent_child(replacement, replacement->predecessor);
-						}
-					}
+					subtree_height	heights = get_subtree_height(subtree);
+					// Recursive on subtree, return a node_pointer to keep travelled subtrees balanced
+					if (heights.first <= heights.second)
+						subtree->successor = find_replacement_erase(replacement, subtree->successor, PREDECESSOR);
+					else
+						subtree->predecessor = find_replacement_erase(replacement, subtree->predecessor, SUCCESSOR);
+					// Set and place replacement node and erase subree
 					replacement->assign_pointers(subtree);
 					replace_parent_child(subtree, replacement);
 					replacement->ensure_relations();
 					erase_node(subtree);
-					// update_values to check balance_factor later.
-					update_values(replacement);
+					// values and balance factor are checked in main function, not here.
+					return replacement;
+				}
+
+				// Find the node, disconnect the node and replace it if it must.
+				// Recursively update values and rotate if it must.
+				node_pointer			find_replacement_erase(node_pointer &replacement,
+						node_pointer &subtree, const bool &direction) {
+					if (direction == PREDECESSOR) {
+						if (subtree->predecessor == NULL) {
+							replacement = subtree;
+							return disconnect_and_substitute_erase(replacement->successor, replacement);
+						}
+						subtree->predecessor = find_replacement_erase(replacement, subtree->predecessor, direction);
+					}
+					else {
+						if (subtree->successor == NULL) {
+							replacement = subtree;
+							return disconnect_and_substitute_erase(replacement->predecessor, replacement);
+						}
+						subtree->successor = find_replacement_erase(replacement, subtree->successor, direction);
+					}
+					update_values(subtree);
+					balance(subtree);
+					return subtree;
+				}
+
+				node_pointer			find_node_erase(const node_pointer &target, node_pointer &subtree) {
+					// if the target doesn't exists
+					if (subtree == NULL)
+						return subtree;
+					// if the target is reached
+					else if (target == subtree) {
+						if (subtree->count_children() == 2)
+							subtree = erase_two_children(subtree);
+						else if (subtree->count_children() == 1)
+							subtree = erase_one_child(subtree);
+						else
+							erase_no_child(subtree);
+					}
+					// otherwise, recurse on children
+					else if (*target > *subtree)
+						subtree->successor = find_node_erase(target, subtree->successor);
+					else
+						subtree->predecessor = find_node_erase(target, subtree->predecessor);
+					update_values(subtree);
+					balance(subtree);
+					return subtree;
 				}
 
 			public:
@@ -1048,14 +1108,6 @@ friend	void	print_tree();
 					subtree_height	heights = get_subtree_height(pos.base());
 					node_pointer	target = pos.base();
 					// if there is no child
-					if (heights.first == -1 && heights.second == -1) {
-					}
-					// else if there is one child
-					else if (heights.first == -1 || heights.second == -1)
-						erase_one_child(target);
-					// else, there is two children
-					else
-						erase_two_children(target, heights);
 				}
 
 				size_type 				erase(const Key& key) {
