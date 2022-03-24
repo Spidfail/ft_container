@@ -101,7 +101,7 @@ int main() {
 		std::cout << std::endl;
 
 	}
-	std::cout << "//////////////////////////RANDOM INSERT [1 - 20]" << std::endl;
+	std::cout << "//////////////////////////RANDOM INSERT" << std::endl;
 	{
 		ft::map<int, std::string>			test;
 		std::map<int, std::string>				test_off;
@@ -116,14 +116,6 @@ int main() {
 		// Test segfault on end() iterator
 		// std::map<int, std::string>::iterator	it_off = test_off.end();
 		// std::cout << (it_off->second) << std::endl;
-		std::cout << std::endl;
-
-		std::cout << "//////////////////////////RANDOM INSERT RANGE [1 - 20]" << std::endl;
-		ft::map<int, std::string>			test2;
-		std::map<int, std::string>				test_off2;
-		test_off2.insert(test_off.begin(), test_off.end());
-		test2.insert(test.begin(), test.end());
-		print_content(test2, false);
 		std::cout << std::endl;
 	}
 
@@ -445,10 +437,6 @@ int main() {
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 			std::cout << std::endl;
 
-			// Create safe iterator, shouldn't desappear
-			ft::map<int, std::string>::iterator		safe_it = test.begin();
-			while (safe_it->first != nb_safe)
-				++safe_it;
 
 			std::random_shuffle(vec_values.begin(), vec_values.end());
 			std::cout << "   SHUFFLED RANGE : ";
@@ -462,6 +450,7 @@ int main() {
 			std::cout << std::endl << std::endl;
 
 			std::cout << " ERASE RANGE, EXCEPT :" << nb_safe << ", with address = " << &(*safe_it) << std::endl;
+
 
 			// TEST
 			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
@@ -494,90 +483,6 @@ int main() {
 			std::cout << "  Official = ";
 			for (std::map<int, std::string>::iterator	it = test_off.begin() ;
 					it != test_off.end() ; ++it) {
-				std::cout << it->first << " ";
-			}
-			std::cout << std::endl;
-		}
-
-		{
-			// Same test 
-			std::cout << std::endl << "//////////// TEST ERASE AND ITERATOR - Random & Print" << std::endl;
-			std::cout << std::endl;
-			ft::map<int, std::string>			test;
-			std::map<int, std::string>			test_off;
-
-			ft::vector<int>						vec_values;
-			std::cout << " RANGE [1-20] = ";
-			for (int i = 1 ; i < 30 ; ++i) {
-				int	new_nb = rand() % 20 + 1;
-				vec_values.push_back(new_nb);
-				std::cout << new_nb << " ";
-			}
-			int	nb_safe = vec_values[rand() % 29];
-			std::cout << std::endl;
-
-			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
-				test.insert(ft::make_pair(*it, "manger des chips"));
-				test_off.insert(std::make_pair(*it, "bidule"));
-				// print_content(test, false);
-			}
-			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
-			std::cout << std::endl;
-
-			// Create safe iterator, shouldn't desappear
-			ft::map<int, std::string>::iterator		safe_it = test.begin();
-			while (safe_it->first != nb_safe)
-				++safe_it;
-
-			std::random_shuffle(vec_values.begin(), vec_values.end());
-			std::cout << "   SHUFFLED RANGE : ";
-			for (ft::map<int, std::string>::iterator it_map = safe_it ;
-					it_map != test.end() ; ++it_map)
-				std::cout << it_map->first << " ";
-			std::cout << " | ";
-			for (ft::map<int, std::string>::iterator it_map = safe_it ;
-					it_map != test.begin() ; --it_map)
-				std::cout << it_map->first << " ";
-			std::cout << std::endl << std::endl;
-
-			std::cout << " ERASE RANGE, EXCEPT :" << nb_safe << ", with address = " << &(*safe_it) << std::endl;
-
-			// TEST
-			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
-				if (*it != nb_safe) {
-					std::cout << "----Erase : " << *it << std::endl;
-					test.erase(*it);
-					test_off.erase(*it);
-				}
-				std::cout << "   IS VALID ? : " << test._is_valid() << std::endl;
-				// Check by printing content
-				std::cout << "   Print value : ";
-				for (ft::map<int, std::string>::iterator it_map = safe_it ;
-						it_map != test.end() ; ++it_map)
-					std::cout << it_map->first << " ";
-				std::cout << " | ";
-				std::cout.flush();
-				for (ft::map<int, std::string>::iterator it_map = safe_it ;
-						it_map != test.begin() ; --it_map)
-					std::cout << it_map->first << " ";
-				std::cout << std::endl;
-				test.print_tree();
-			}
-			std::cout << " ERASE SAFE NUMBER : ";
-			test.erase(nb_safe);
-			test_off.erase(nb_safe);
-			std::cout << std::endl;
-
-			// Print map to check it's final content
-			std::cout << "Check map content : " << std::endl;
-			std::cout << "  Official = ";
-			for (std::map<int, std::string>::iterator	it = test_off.begin() ;
-					it != test_off.end() ; ++it) {
-				std::cout << it->first << " ";
-			}
-			std::cout << "  Custom = ";
-			for (ft::map<int, std::string>::iterator	it = test.begin() ;
-					it != test.end() ; ++it) {
 				std::cout << it->first << " ";
 			}
 			std::cout << std::endl;

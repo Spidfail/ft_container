@@ -590,7 +590,6 @@ friend	void	print_tree();
 				// Update height and balance factor of current 'subtree'.
 				// They are based on children's height.
 				void			update_values(node_pointer subtree) {
-					std::cout << " GET SUBTREE : " << subtree << std::endl;
 					subtree_height		sub_height = get_subtree_height(subtree);
 					subtree->height = std::max(sub_height.first, sub_height.second) + 1;
 					subtree->balance_factor = sub_height.first - sub_height.second;
@@ -623,6 +622,8 @@ friend	void	print_tree();
 			public:
 				void	print_tree()
 				{
+					if (_root == NULL)
+						return;
 					std::cout<<"dans print tree\n";
 					int i = 0;
 					int tour = 0;
@@ -748,7 +749,6 @@ friend	void	print_tree();
 
 				// See also : erase_tree(node_pointer subtree);
 				void				erase_node(const node_pointer &node) {
-					std::cout << " NODE  : " << node << std::endl;
 					_node_alloc.destroy(node);
 					_node_alloc.deallocate(node, 1);
 					--_size;
@@ -985,8 +985,7 @@ friend	void	print_tree();
 				}
 
 				template <class InputIterator>
-					void 				insert (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
-							typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last) {
+					void 				insert (InputIterator first, InputIterator last) {
 						for (; first != last ; ++first)
 							insert(*first);
 					}
@@ -1011,7 +1010,6 @@ friend	void	print_tree();
 						_root = NULL;
 						return NULL;
 					}
-					std::cout << " SUBTREE ??? " << subtree << std::endl;
 					erase_node(subtree);
 					return NULL;
 				}
@@ -1029,8 +1027,7 @@ friend	void	print_tree();
 					erase_node(subtree);
 					// update_values to check balance_factor later.
 					update_values(replacement);
-					balance(replacement);
-					return replacement;
+					return balance(replacement);
 				}
 
 				// Call recursive function to find subtree replacement.
@@ -1093,8 +1090,7 @@ friend	void	print_tree();
 						subtree->successor = find_replacement_erase(replacement, subtree->successor, direction);
 					}
 					update_values(subtree);
-					balance(subtree);
-					return subtree;
+					return balance(subtree);
 				}
 
 				// Recursive. Search the target, redirect to functions depending on the number of children.
@@ -1102,12 +1098,11 @@ friend	void	print_tree();
 				node_pointer			find_node_erase(node_pointer target, node_pointer subtree) {
 					// if the target doesn't exists
 					if (subtree == NULL)
-						return subtree;
+						return NULL;
 					// if the target is reached
 					else if (target == subtree) {
-						if (subtree->count_children() == 2) {
+						if (subtree->count_children() == 2)
 							subtree = erase_two_children(subtree);
-						}
 						else if (subtree->count_children() == 1)
 							subtree = erase_one_child(subtree);
 						else
@@ -1120,14 +1115,15 @@ friend	void	print_tree();
 						subtree->predecessor = find_node_erase(target, subtree->predecessor);
 					if (subtree) {
 						update_values(subtree);
-						balance(subtree);
+						return balance(subtree);
 					}
 					return subtree;
 				}
 
 			public:
+				/////////////////////////////////Erase Public///////////////////////////////////////////////
 				void 					erase(iterator pos) {
-					if (pos.base() == NULL)
+					if (pos.base() == NULL || pos == this->end())
 						return ;
 					_root = find_node_erase(pos.base(), _root);
 				}
@@ -1161,17 +1157,14 @@ friend	void	print_tree();
 				}
 
 				iterator		find(const Key& key) {
-					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
-					if (rtn.second)
-						return rtn.first;
+					if (_root) {
+						search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
+						if (rtn.second)
+							return rtn.first;
+					}
 					return this->end();
 				}
-				const_iterator	find(const Key& key) const {
-					search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
-					if (rtn.second)
-						return rtn.first;
-					return this->end();
-				}
+				const_iterator	find(const Key& key) const { return find(key); }
 
 				pair<iterator, iterator>				equal_range(const key_type &key) {
 					return ft::make_pair(find(key), ++(find(key)));
