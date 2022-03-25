@@ -311,10 +311,10 @@ friend	void	print_tree();
 							IteratorMap()
 								: _position(NULL), _is_out(false), _is_end(false) { }
 
-							IteratorMap(node_pointer source)
+							IteratorMap(const node_pointer &source)
 								: _position(source), _is_out(false), _is_end(false) { }
 
-							IteratorMap(node_pointer source, bool is_end)
+							IteratorMap(const node_pointer &source, bool is_end)
 								: _position(source), _is_out(true), _is_end(is_end) {
 								}
 
@@ -335,12 +335,12 @@ friend	void	print_tree();
 							}
 
 							reference			operator* () const {
-								if (_is_out)
+								if (_is_out || _position == NULL)
 									return *_position->successor->content;
 								return *_position->content;
 							}
 							pointer				operator-> () const {
-								if (_is_out)
+								if (_is_out || _position == NULL)
 									return NULL;
 								return _position->content;
 							}
@@ -619,6 +619,7 @@ friend	void	print_tree();
 				////////////////////////////////////////////////////////////////////////////////////////////
 				////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef DEBUG
 			public:
 				void	print_tree()
 				{
@@ -722,6 +723,8 @@ friend	void	print_tree();
 
 			public:
 				bool _is_valid() { return _is_valid_sub(_root).first; }
+
+#endif /////////////////////////////////////  DEBUG
 
 			private:
 				////////////////////////////////////////////////////////////////////////////////////////////
@@ -1137,9 +1140,14 @@ friend	void	print_tree();
 					return 0;
 				}
 
-				// void 					erase(iterator first, iterator last) {
-				// }
-
+				void 					erase(iterator first, iterator last) {
+					iterator	it_end(this->end());
+					while (first != it_end && first != last) {
+						iterator	it_cpy(first);
+						++first;
+						erase(it_cpy);
+					}
+				}
 
 				void					swap(map &other) {
 					std::swap(this->_comp, other._comp);

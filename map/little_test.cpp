@@ -28,7 +28,6 @@ void	print_reverse_content(Ct map, bool is_print) {
 
 int main() {
 	std::cout << std::boolalpha;
-
 	srand(time(NULL));
 
 	std::cout << "//////////////////////////INSERT////////////////////////////////" << std::endl;
@@ -36,7 +35,7 @@ int main() {
 	{
 		ft::map<int, std::string>			test;
 		test.insert(value_type(3, "caca"));
-		std::cout << "#### First state : "; test.print_tree();
+		std::cout << "#### First state : ";
 		std::cout << "#### Insert 8: ";
 		test.insert(value_type(8, "caca"));
 		print_content(test, false);
@@ -73,11 +72,11 @@ int main() {
 		test.insert(value_type(6, "popo"));
 		print_content(test, false);
 	}
+
 	std::cout << std::endl;
 	{
-		// typedef		ft::map<int, std::string>::iterator				iterator_type;
-		typedef		std::vector<int>::iterator				iterator_vector;
 		std::cout << "//////////////////////////CRASHING INSERT ?" << std::endl;
+		typedef		std::vector<int>::iterator				iterator_vector;
 
 		ft::map<int, std::string>			test;
 		int	array[] = {5, 11, 16, 1, 3, 7, 8, 10};
@@ -540,7 +539,7 @@ int main() {
 				std::cout << it_map->first << " ";
 			std::cout << std::endl << std::endl;
 
-			std::cout << " ERASE RANGE, EXCEPT :" << nb_safe << ", with address = " << &(*safe_it) << std::endl;
+			std::cout << " ERASE, EXCEPT :" << nb_safe << ", with address = " << &(*safe_it) << std::endl;
 
 			// TEST
 			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
@@ -567,19 +566,95 @@ int main() {
 			test.erase(nb_safe);
 			test_off.erase(nb_safe);
 			std::cout << std::endl;
+		}
+		{
+			// Same test 
+			std::cout << std::endl << "//////////// TEST ERASE RANGE AND ITERATOR - Random Range !" << std::endl;
+			std::cout << std::endl;
+			ft::map<int, std::string>			test;
+			std::map<int, std::string>			test_off;
 
-			// Print map to check it's final content
-			std::cout << "Check map content : " << std::endl;
-			std::cout << "  Official = ";
-			for (std::map<int, std::string>::iterator	it = test_off.begin() ;
-					it != test_off.end() ; ++it) {
-				std::cout << it->first << " ";
+			ft::vector<int>						vec_values;
+			std::cout << " RANGE [1-20] = ";
+			for (int i = 1 ; i < 30 ; ++i) {
+				int	new_nb = rand() % 20 + 1;
+				vec_values.push_back(new_nb);
+				std::cout << new_nb << " ";
 			}
-			std::cout << "  Custom = ";
-			for (ft::map<int, std::string>::iterator	it = test.begin() ;
-					it != test.end() ; ++it) {
-				std::cout << it->first << " ";
+			int	nb_safe = vec_values[rand() % 29];
+			std::cout << std::endl;
+
+			// Insert range, print content, check if the tree is balanced, print tree.
+			std::cout << "   RANGE INSERTED : ";
+			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
+				test.insert(ft::make_pair(*it, "manger des chips"));
+				test_off.insert(std::make_pair(*it, "bidule"));
+				// print_content(test, false);
 			}
+			for (ft::map<int, std::string>::iterator it = test.begin() ;
+					it != test.end() ; ++it)
+				std::cout << it->first << " ";
+			std::cout << std::endl << " IS VALID ? : " <<  test._is_valid() << std::endl;
+			test.print_tree();
+			std::cout << std::endl;
+
+			// Create safe iterator, shouldn't desappear
+			ft::map<int, std::string>::iterator		safe_it = test.begin();
+			while (safe_it->first != nb_safe)
+				++safe_it;
+
+
+			std::cout << " ERASE, EXCEPT :" << nb_safe << ", with address = " << &(*safe_it) << std::endl;
+
+			std::cout << "-----Range to erase : ";
+			for (ft::map<int, std::string>::iterator it = test.begin() ; it != safe_it ; ++it)
+				std::cout << it->first << " ";
+			std::cout << std::endl;
+
+			std::cout << "-----Erase the range !" << std::endl;
+			test.erase(test.begin(), safe_it);
+
+			std::cout << "   Print value : ";
+			for (ft::map<int, std::string>::iterator it_map = safe_it ;
+					it_map != test.end() ; ++it_map)
+				std::cout << it_map->first << " ";
+			std::cout << " | ";
+			std::cout.flush();
+			for (ft::map<int, std::string>::iterator it_map = safe_it ;
+					it_map != test.begin() ; --it_map)
+				std::cout << it_map->first << " ";
+			std::cout << std::endl;
+			test.print_tree();
+			std::cout << std::endl;
+
+			std::cout << "-----Range to erase : ";
+			{
+				ft::map<int, std::string>::iterator it = safe_it;
+				++it;
+				for ( ; it != test.end() ; ++it)
+					std::cout << it->first << " ";
+				std::cout << std::endl;
+			}
+
+			std::cout << "-----Erase the range !" << std::endl;
+			test.erase(++(ft::map<int, std::string>::iterator(safe_it)), test.end());
+
+			// Finale print
+			std::cout << "   Print value : ";
+			for (ft::map<int, std::string>::iterator it_map = safe_it ;
+					it_map != test.end() ; ++it_map)
+				std::cout << it_map->first << " ";
+			std::cout << " | ";
+			std::cout.flush();
+			for (ft::map<int, std::string>::iterator it_map = safe_it ;
+					it_map != test.begin() ; --it_map)
+				std::cout << it_map->first << " ";
+			std::cout << std::endl;
+			test.print_tree();
+
+			std::cout << " ERASE SAFE NUMBER ";
+			test.erase(nb_safe);
+			test_off.erase(nb_safe);
 			std::cout << std::endl;
 		}
 
