@@ -1,0 +1,1244 @@
+//////////////////////////INSERT////////////////////////////////
+#### First state : #### Insert 8: dans print tree
+                3
+               0 8
+              00 00
+
+#### Insert 5: dans print tree
+                5
+               3 8
+              00 00
+
+#### Insert 1: dans print tree
+                5
+               3 8
+              10 00
+
+#### Insert 2: dans print tree
+                5
+               2 8
+              13 00
+
+#### Insert 7: dans print tree
+                5
+               2 8
+              13 70
+            0000 0000
+
+#### Insert 9: dans print tree
+                5
+               2 8
+              13 79
+            0000 0000
+
+#### Insert 4: dans print tree
+                5
+               2 8
+              13 79
+            0004 0000
+
+#### Insert 7: dans print tree
+                5
+               2 8
+              13 79
+            0004 0000
+
+#### Insert 6: dans print tree
+                5
+               2 8
+              13 79
+            0004 6000
+
+//////////////////////////CRASHING INSERT ?
+dans print tree
+                5
+               0 0
+ IS VALID ? : true
+dans print tree
+                5
+               0 11
+              00 00
+ IS VALID ? : true
+dans print tree
+                11
+               5 16
+              00 00
+ IS VALID ? : true
+dans print tree
+                11
+               5 16
+              10 00
+ IS VALID ? : true
+dans print tree
+                11
+               3 16
+              15 00
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 716
+            0000 0000
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 716
+            0000 0800
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 816
+            0000 71000
+ IS VALID ? : true
+//////////////////////////INSERT BEGINING
+dans print tree
+                5
+               0 0
+ IS VALID ? : true
+dans print tree
+                5
+               0 11
+              00 00
+ IS VALID ? : true
+dans print tree
+                11
+               5 16
+              00 00
+ IS VALID ? : true
+dans print tree
+                11
+               5 16
+              10 00
+ IS VALID ? : true
+dans print tree
+                11
+               3 16
+              15 00
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 716
+            0000 0000
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 716
+            0000 0800
+ IS VALID ? : true
+dans print tree
+                5
+               3 11
+              10 816
+            0000 71000
+ IS VALID ? : true
+
+//////////////////////////RANDOM INSERT [1 - 20]
+ #### insert 8 : dans print tree
+                8
+               0 0
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                8
+               0 10
+              00 00
+ IS VALID ? : true
+ #### insert 14 : dans print tree
+                10
+               8 14
+              00 00
+ IS VALID ? : true
+ #### insert 19 : dans print tree
+                10
+               8 14
+              00 019
+            0000 0000
+ IS VALID ? : true
+ #### insert 11 : dans print tree
+                10
+               8 14
+              00 1119
+            0000 0000
+ IS VALID ? : true
+ #### insert 13 : dans print tree
+                11
+               10 14
+              80 1319
+            0000 0000
+ IS VALID ? : true
+ #### insert 5 : dans print tree
+                11
+               8 14
+              510 1319
+            0000 0000
+ IS VALID ? : true
+ #### insert 19 : dans print tree
+                11
+               8 14
+              510 1319
+            0000 0000
+ IS VALID ? : true
+ #### insert 4 : dans print tree
+                11
+               8 14
+              510 1319
+            4000 0000
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                11
+               8 14
+              510 1319
+            4000 0000
+ IS VALID ? : true
+ #### insert 1 : dans print tree
+                11
+               8 14
+              410 1319
+            1500 0000
+ IS VALID ? : true
+ #### insert 6 : dans print tree
+                11
+               5 14
+              48 1319
+            10610 0000
+ IS VALID ? : true
+ #### insert 13 : dans print tree
+                11
+               5 14
+              48 1319
+            10610 0000
+ IS VALID ? : true
+ #### insert 3 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 8 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 4 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 8 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 1 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 13 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 4 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 0000
+ IS VALID ? : true
+ #### insert 18 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 00180
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 1 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 00180
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 14 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 00180
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 20 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 001820
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 19 : dans print tree
+                11
+               5 14
+              38 1319
+            14610 001820
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 17 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000000 00000000
+ IS VALID ? : true
+ #### insert 16 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000000 001600000
+ IS VALID ? : true
+ #### insert 18 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000000 001600000
+ IS VALID ? : true
+ #### insert 7 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 13 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 8 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 11 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 14 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 20 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 10 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 20 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        00000700 001600000
+ IS VALID ? : true
+ #### insert 2 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 8 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 13 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 14 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 17 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 6 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 6 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000700 001600000
+ IS VALID ? : true
+ #### insert 9 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000790 001600000
+ IS VALID ? : true
+ #### insert 12 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1317020
+        02000790 1201600000
+ IS VALID ? : true
+ #### insert 15 : dans print tree
+                11
+               5 18
+              38 1419
+            14610 1316020
+        02000790 12015170000
+ IS VALID ? : true
+
+//////////////////////////RANDOM INSERT RANGE [1 - 20]
+dans print tree
+                8
+               4 16
+              26 1218
+            1357 10141719
+        00000000 911131500020
+0000000000000000 0000000000000000
+
+//////////////////////////LOOKUP////////////////////////////////
+//////////////////////////COUNT
+ #### insert 18 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 14 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 11 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 17 :  IS VALID ? : true
+ #### insert 11 :  IS VALID ? : true
+ #### insert 4 :  IS VALID ? : true
+ #### insert 3 :  IS VALID ? : true
+ #### insert 7 :  IS VALID ? : true
+ #### insert 10 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 14 :  IS VALID ? : true
+ #### insert 18 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### count on : 9 = 1 #### count on : 18 = 1 #### count on : 14 = 1 #### count on : 2 = 1 #### count on : 5 = 1 #### count on : 10 = 1 #### count on : 7 = 1 #### count on : 3 = 1 #### count on : 4 = 1 #### count on : 11 = 1 #### count on : 17 = 1 #### count on : 5 = 1 #### count on : 11 = 1 #### count on : 9 = 1 #### count on : 5 = 1 #### count on : 9 = 1 #### count on : 14 = 1 #### count on : 2 = 1 #### count on : 18 = 1
+//////////////////////////FIND
+ #### insert 9 :  IS VALID ? : true
+ #### insert 4 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 4 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 4 :  IS VALID ? : true
+########## find on : 4
+iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 5
+iterators : 
+ Reverse order [ |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 6
+iterators : 
+ Reverse order [ |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 4
+iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 6
+iterators : 
+ Reverse order [ |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 2
+iterators : 
+ Reverse order [] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 9
+iterators : 
+ Reverse order [ |  9 |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  9 |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 4
+iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+########## find on : 9
+iterators : 
+ Reverse order [ |  9 |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+const_iterators : 
+ Reverse order [ |  9 |  6 |  5 |  4] 
+ Ordered [ |  2 |  4 |  5 |  6 |  9]
+
+
+//////////////////////////EQUAL RANGE
+ #### insert 7 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 10 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 10 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 8 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+########## equal range on : 6
+ iterators :  [ | 7]  const_iterators :  [ | 7] 
+########## equal range on : 8
+ iterators :  [ | 10]  const_iterators :  [ | 10] 
+########## equal range on : 2
+ iterators :  [ | 5]  const_iterators :  [ | 5] 
+########## equal range on : 10
+ iterators :  [ |  END ]  const_iterators :  [] 
+########## equal range on : 5
+ iterators :  [ | 6]  const_iterators :  [ | 6] 
+########## equal range on : 6
+ iterators :  [ | 7]  const_iterators :  [ | 7] 
+########## equal range on : 10
+ iterators :  [ |  END ]  const_iterators :  [] 
+########## equal range on : 6
+ iterators :  [ | 7]  const_iterators :  [ | 7] 
+########## equal range on : 7
+ iterators :  [ | 8]  const_iterators :  [ | 8] 
+//////////////////////////Upper Bound
+ #### insert 6 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 4 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 3 :  IS VALID ? : true
+ #### insert 3 :  IS VALID ? : true
+########## Upper Bound : 3
+ iterators :  [ | 4 | 5 | 6 | 9] 
+ const_iterators :  [ | 4 | 5 | 6 | 9] 
+
+########## Upper Bound : 3
+ iterators :  [ | 4 | 5 | 6 | 9] 
+ const_iterators :  [ | 4 | 5 | 6 | 9] 
+
+########## Upper Bound : 6
+ iterators :  [ | 9] 
+ const_iterators :  [ | 9] 
+
+########## Upper Bound : 4
+ iterators :  [ | 5 | 6 | 9] 
+ const_iterators :  [ | 5 | 6 | 9] 
+
+########## Upper Bound : 9
+ iterators :  [] 
+ const_iterators :  [ | 9] 
+
+########## Upper Bound : 9
+ iterators :  [] 
+ const_iterators :  [ | 9] 
+
+########## Upper Bound : 2
+ iterators :  [ | 3 | 4 | 5 | 6 | 9] 
+ const_iterators :  [ | 3 | 4 | 5 | 6 | 9] 
+
+########## Upper Bound : 5
+ iterators :  [ | 6 | 9] 
+ const_iterators :  [ | 6 | 9] 
+
+########## Upper Bound : 6
+ iterators :  [ | 9] 
+ const_iterators :  [ | 9] 
+
+//////////////////////////Lower Bound
+ #### insert 7 :  IS VALID ? : true
+ #### insert 7 :  IS VALID ? : true
+ #### insert 8 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 8 :  IS VALID ? : true
+ #### insert 2 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+########## Upper Bound : 9
+ iterators :  [ | 9] 
+ const_iterators :  [ | 9] 
+
+########## Upper Bound : 2
+ iterators :  [ | 2 | 5 | 7 | 8 | 9] 
+ const_iterators :  [ | 2 | 5 | 7 | 8 | 9] 
+
+########## Upper Bound : 8
+ iterators :  [ | 8 | 9] 
+ const_iterators :  [ | 8 | 9] 
+
+########## Upper Bound : 2
+ iterators :  [ | 2 | 5 | 7 | 8 | 9] 
+ const_iterators :  [ | 2 | 5 | 7 | 8 | 9] 
+
+########## Upper Bound : 5
+ iterators :  [ | 5 | 7 | 8 | 9] 
+ const_iterators :  [ | 5 | 7 | 8 | 9] 
+
+########## Upper Bound : 9
+ iterators :  [ | 9] 
+ const_iterators :  [ | 9] 
+
+########## Upper Bound : 8
+ iterators :  [ | 8 | 9] 
+ const_iterators :  [ | 8 | 9] 
+
+########## Upper Bound : 7
+ iterators :  [ | 7 | 8 | 9] 
+ const_iterators :  [ | 7 | 8 | 9] 
+
+########## Upper Bound : 7
+ iterators :  [ | 7 | 8 | 9] 
+ const_iterators :  [ | 7 | 8 | 9] 
+
+//////////////////////////ERASE/////////////////////////////////
+////////////// TEST WITH DEFINE TREE : SHUFFLED RANGE
+ #### insert 18 :  IS VALID ? : true
+ #### insert 19 :  IS VALID ? : true
+ #### insert 18 :  IS VALID ? : true
+ #### insert 18 :  IS VALID ? : true
+ #### insert 15 :  IS VALID ? : true
+ #### insert 5 :  IS VALID ? : true
+ #### insert 10 :  IS VALID ? : true
+ #### insert 12 :  IS VALID ? : true
+ #### insert 6 :  IS VALID ? : true
+ #### insert 16 :  IS VALID ? : true
+ #### insert 16 :  IS VALID ? : true
+ #### insert 19 :  IS VALID ? : true
+ #### insert 3 :  IS VALID ? : true
+ #### insert 20 :  IS VALID ? : true
+ #### insert 9 :  IS VALID ? : true
+ #### insert 13 :  IS VALID ? : true
+ #### insert 1 :  IS VALID ? : true
+ #### insert 18 :  IS VALID ? : true
+ #### insert 15 :  IS VALID ? : true
+18 19 18 18 15 5 10 12 6 16 16 19 3 20 9 13 1 18 15 
+ ## Erase : 18
+dans print tree
+                10
+               6 15
+              39 1219
+            1500 0131620
+        00000000 00000000
+ IS VALID ? true
+
+ ## Erase : 19
+dans print tree
+                10
+               6 15
+              39 1220
+            1500 013160
+        00000000 00000000
+ IS VALID ? true
+
+ ## Erase : 18
+dans print tree
+                10
+               6 15
+              39 1220
+            1500 013160
+        00000000 00000000
+ IS VALID ? true
+
+ ## Erase : 18
+dans print tree
+                10
+               6 15
+              39 1220
+            1500 013160
+        00000000 00000000
+ IS VALID ? true
+
+ ## Erase : 15
+dans print tree
+                10
+               6 16
+              39 1220
+            1500 01300
+ IS VALID ? true
+
+ ## Erase : 5
+dans print tree
+                10
+               6 16
+              39 1220
+            1000 01300
+ IS VALID ? true
+
+ ## Erase : 10
+dans print tree
+                12
+               6 16
+              39 1320
+            1000 0000
+ IS VALID ? true
+
+ ## Erase : 12
+dans print tree
+                9
+               3 16
+              16 1320
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 6
+dans print tree
+                9
+               3 16
+              10 1320
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 16
+dans print tree
+                9
+               3 20
+              10 130
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 16
+dans print tree
+                9
+               3 20
+              10 130
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 19
+dans print tree
+                9
+               3 20
+              10 130
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 3
+dans print tree
+                9
+               1 20
+              00 130
+            0000 0000
+ IS VALID ? true
+
+ ## Erase : 20
+dans print tree
+                9
+               1 13
+              00 00
+ IS VALID ? true
+
+ ## Erase : 9
+dans print tree
+                13
+               1 0
+              00 00
+ IS VALID ? true
+
+ ## Erase : 13
+dans print tree
+                1
+               0 0
+ IS VALID ? true
+
+ ## Erase : 1
+ IS VALID ? true
+
+ ## Erase : 18
+ IS VALID ? true
+
+ ## Erase : 15
+ IS VALID ? true
+
+
+////////////////////////////////////////////////////////////
+////////////// TEST WITH DEFINE TREE : SAFE ITERATOR
+
+///////////// Tree building
+dans print tree
+                8
+               0 0
+ IS VALID ? : true
+dans print tree
+                8
+               2 0
+              00 00
+ IS VALID ? : true
+dans print tree
+                8
+               2 10
+              00 00
+ IS VALID ? : true
+dans print tree
+                8
+               2 10
+              00 016
+            0000 0000
+ IS VALID ? : true
+dans print tree
+                8
+               2 10
+              05 016
+            0000 0000
+ IS VALID ? : true
+dans print tree
+                8
+               2 15
+              05 1016
+            0000 0000
+ IS VALID ? : true
+dans print tree
+                8
+               2 15
+              05 1016
+            0000 00017
+        00000000 00000000
+ IS VALID ? : true
+dans print tree
+                8
+               2 15
+              15 1016
+            0000 00017
+        00000000 00000000
+ IS VALID ? : true
+dans print tree
+                8
+               2 15
+              15 1016
+            0006 00017
+        00000000 00000000
+ IS VALID ? : true
+dans print tree
+                8
+               2 15
+              15 1016
+            0006 90017
+        00000000 00000000
+ IS VALID ? : true
+
+//////////// TEST ERASE AND ITERATOR - no print
+
+ ERASE RANGE, EXCEPT :5
+ ERASE 8 -- IS VALID ? : true
+ ERASE 2 -- IS VALID ? : true
+ ERASE 10 -- IS VALID ? : true
+ ERASE 16 -- IS VALID ? : true
+ ERASE 5 -- IS VALID ? : true
+ ERASE 15 -- IS VALID ? : true
+ ERASE 17 -- IS VALID ? : true
+ ERASE 1 -- IS VALID ? : true
+ ERASE 6 -- IS VALID ? : true
+ ERASE 9 -- IS VALID ? : true
+Check map content : 
+  Custom = 5 
+
+//////////// TEST ERASE AND ITERATOR - Print
+
+ RANGE = 8 2 10 16 5 15 17 1 6 9 
+ IS VALID ? : true
+
+   SHUFFLED RANGE : 6 8 9 10 15 16 17  | 6 5 2 
+
+ ERASE RANGE, EXCEPT :6
+----Erase : 8
+   IS VALID ? : true
+   Print value : 6 9 10 15 16 17  | 6 5 2 
+----Erase : 2
+   IS VALID ? : true
+   Print value : 6 9 10 15 16 17  | 6 5 
+----Erase : 10
+   IS VALID ? : true
+   Print value : 6 9 15 16 17  | 6 5 
+----Erase : 16
+   IS VALID ? : true
+   Print value : 6 9 15 17  | 6 5 
+----Erase : 5
+   IS VALID ? : true
+   Print value : 6 9 15 17  | 6 
+----Erase : 15
+   IS VALID ? : true
+   Print value : 6 9 17  | 6 
+----Erase : 17
+   IS VALID ? : true
+   Print value : 6 9  | 6 
+----Erase : 1
+   IS VALID ? : true
+   Print value : 6 9  | 
+   IS VALID ? : true
+   Print value : 6 9  | 
+----Erase : 9
+   IS VALID ? : true
+   Print value : 6  | 
+
+Check map content : 
+  Custom = 6 
+
+//////////// TEST ERASE AND ITERATOR - Random & Print
+
+ RANGE [1-20] = 16 9 14 11 7 3 3 6 3 13 8 2 16 13 12 2 11 12 19 18 17 11 1 20 16 7 13 19 16 
+ IS VALID ? : true
+
+   SHUFFLED RANGE : 2 3 6 7 8 9 11 12 13 14 16 17 18 19 20  | 2 
+
+ ERASE RANGE, EXCEPT :2
+----Erase : 16
+   IS VALID ? : true
+   Print value : 2 3 6 7 8 9 11 12 13 14 17 18 19 20  | 2 
+dans print tree
+                9
+               6 14
+              27 1218
+            1308 11131719
+        00000000 000000020
+0000000000000000 0000000000000000
+----Erase : 9
+   IS VALID ? : true
+   Print value : 2 3 6 7 8 11 12 13 14 17 18 19 20  | 2 
+dans print tree
+                11
+               6 14
+              27 1218
+            1308 0131719
+        00000000 000000020
+0000000000000000 0000000000000000
+----Erase : 14
+   IS VALID ? : true
+   Print value : 2 3 6 7 8 11 12 13 17 18 19 20  | 2 
+dans print tree
+                11
+               6 17
+              27 1219
+            1308 0131820
+        00000000 00000000
+----Erase : 11
+   IS VALID ? : true
+   Print value : 2 3 6 7 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               6 17
+              27 1319
+            1308 001820
+        00000000 00000000
+----Erase : 7
+   IS VALID ? : true
+   Print value : 2 3 6 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               6 17
+              28 1319
+            1300 001820
+        00000000 00000000
+----Erase : 3
+   IS VALID ? : true
+   Print value : 2 6 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               6 17
+              28 1319
+            1000 001820
+        00000000 00000000
+----Erase : 3
+   IS VALID ? : true
+   Print value : 2 6 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               6 17
+              28 1319
+            1000 001820
+        00000000 00000000
+----Erase : 6
+   IS VALID ? : true
+   Print value : 2 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               2 17
+              18 1319
+            0000 001820
+        00000000 00000000
+----Erase : 3
+   IS VALID ? : true
+   Print value : 2 8 12 13 17 18 19 20  | 2 
+dans print tree
+                12
+               2 17
+              18 1319
+            0000 001820
+        00000000 00000000
+----Erase : 13
+   IS VALID ? : true
+   Print value : 2 8 12 17 18 19 20  | 2 
+dans print tree
+                12
+               2 19
+              18 1720
+            0000 01800
+----Erase : 8
+   IS VALID ? : true
+   Print value : 2 12 17 18 19 20  | 2 
+dans print tree
+                12
+               2 19
+              10 1720
+            0000 01800
+   IS VALID ? : true
+   Print value : 2 12 17 18 19 20  | 2 
+dans print tree
+                12
+               2 19
+              10 1720
+            0000 01800
+----Erase : 16
+   IS VALID ? : true
+   Print value : 2 12 17 18 19 20  | 2 
+dans print tree
+                12
+               2 19
+              10 1720
+            0000 01800
+----Erase : 13
+   IS VALID ? : true
+   Print value : 2 12 17 18 19 20  | 2 
+dans print tree
+                12
+               2 19
+              10 1720
+            0000 01800
+----Erase : 12
+   IS VALID ? : true
+   Print value : 2 17 18 19 20  | 2 
+dans print tree
+                17
+               2 19
+              10 1820
+            0000 0000
+   IS VALID ? : true
+   Print value : 2 17 18 19 20  | 2 
+dans print tree
+                17
+               2 19
+              10 1820
+            0000 0000
+----Erase : 11
+   IS VALID ? : true
+   Print value : 2 17 18 19 20  | 2 
+dans print tree
+                17
+               2 19
+              10 1820
+            0000 0000
+----Erase : 12
+   IS VALID ? : true
+   Print value : 2 17 18 19 20  | 2 
+dans print tree
+                17
+               2 19
+              10 1820
+            0000 0000
+----Erase : 19
+   IS VALID ? : true
+   Print value : 2 17 18 20  | 2 
+dans print tree
+                17
+               2 20
+              10 180
+            0000 0000
+----Erase : 18
+   IS VALID ? : true
+   Print value : 2 17 20  | 2 
+dans print tree
+                17
+               2 20
+              10 00
+----Erase : 17
+   IS VALID ? : true
+   Print value : 2 20  | 2 
+dans print tree
+                2
+               1 20
+              00 00
+----Erase : 11
+   IS VALID ? : true
+   Print value : 2 20  | 2 
+dans print tree
+                2
+               1 20
+              00 00
+----Erase : 1
+   IS VALID ? : true
+   Print value : 2 20  | 
+dans print tree
+                2
+               0 20
+              00 00
+----Erase : 20
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+----Erase : 16
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+----Erase : 7
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+----Erase : 13
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+----Erase : 19
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+----Erase : 16
+   IS VALID ? : true
+   Print value : 2  | 
+dans print tree
+                2
+               0 0
+ ERASE SAFE NUMBER : 
+
+//////////// TEST ERASE RANGE AND ITERATOR - Random Range !
+
+ RANGE [1-20] = 15 4 10 1 6 7 4 7 14 11 19 15 1 5 7 15 7 15 4 19 5 11 11 20 4 8 6 18 13 
+   RANGE INSERTED : 1 4 5 6 7 8 10 11 13 14 15 18 19 20 
+ IS VALID ? : true
+dans print tree
+                10
+               6 15
+              47 1319
+            1508 11141820
+        00000000 00000000
+
+ ERASE RANGE, EXCEPT :11
+-----Range to erase : 1 4 5 6 7 8 10 
+-----Erase the range !
+   Print value : 11 13 14 15 18 19 20  | 
+dans print tree
+                15
+               13 19
+              1114 1820
+            0000 0000
+
+-----Range to erase : 13 14 15 18 19 20 
+-----Erase the range !
+   Print value : 11  | 
+dans print tree
+                11
+               0 0
+ ERASE SAFE NUMBER 

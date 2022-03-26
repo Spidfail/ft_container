@@ -331,6 +331,10 @@ friend	void	print_tree();
 								return *this;
 							}
 							operator IteratorMap<const value_type>() const {
+								if (_is_end && _is_out)
+									return (IteratorMap<const value_type>(_position, true));
+								else if (_is_end)
+									return (IteratorMap<const value_type>(_position, false));
 								return (IteratorMap<const value_type>(_position));
 							}
 
@@ -476,10 +480,10 @@ friend	void	print_tree();
 				/////////////////////////////////////Insert Utils///////////////////////////////////////////
 
 				// Private typedef
-				typedef		pair<node_pointer,bool>		search_return;
-				typedef		pair<iterator,bool>			insert_return;
+				typedef		ft::pair<node_pointer,bool>		search_return;
+				typedef		ft::pair<iterator,bool>			insert_return;
 				// .first : predecessor,  .second : successor
-				typedef		pair<ssize_t, ssize_t>		subtree_height;
+				typedef		ft::pair<ssize_t, ssize_t>		subtree_height;
 
 				node_pointer	rotation_right(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
@@ -729,10 +733,10 @@ friend	void	print_tree();
 			private:
 				////////////////////////////////////////////////////////////////////////////////////////////
 				////////////////////////////Map Utils///////////////////////////////////////////////////////
-				pair<bool, int> _is_valid_sub(node_pointer node) {
+				ft::pair<bool, int> _is_valid_sub(node_pointer node) {
 					if (node == NULL) return make_pair(true, 0);
-					pair<bool, int> left = _is_valid_sub(node->predecessor);
-					pair<bool, int> right = _is_valid_sub(node->successor);
+					ft::pair<bool, int> left = _is_valid_sub(node->predecessor);
+					ft::pair<bool, int> right = _is_valid_sub(node->successor);
 					int height = std::max(left.second, right.second) + 1;
 					return make_pair(left.first && right.first && std::abs(left.second - right.second) < 2, height);
 				}
@@ -972,7 +976,7 @@ friend	void	print_tree();
 					_size = 0;
 				}
 
-				pair<iterator,bool>		insert(const value_type& val) {
+				ft::pair<iterator,bool>		insert(const value_type& val) {
 					if (_root == NULL) {
 						_root = create_node(val, NULL);
 						_size = 1;
@@ -997,7 +1001,7 @@ friend	void	print_tree();
 				/////////////////////////////////Erase Utils////////////////////////////////////////////////
 
 				// Return NULL if there is no replacement.
-				node_pointer			disconnect_and_substitute_erase(node_pointer &subtree, node_pointer &replacement) {
+				node_pointer			disconnect_and_substitute_erase(node_pointer subtree, node_pointer replacement) {
 					if (replacement) {
 						replacement->parent = subtree->parent;
 						update_values(replacement);
@@ -1076,14 +1080,17 @@ friend	void	print_tree();
 				// Find the node, disconnect the node, replace it if it must.
 				// Recursively update values and rotate if it must.
 				// Return NULL if there is one child to recurse on.
-				node_pointer			find_replacement_erase(node_pointer &replacement,
-						node_pointer subtree, bool direction) {
+				node_pointer			find_replacement_erase(node_pointer &replacement, node_pointer subtree, bool direction) {
 					if (direction == PREDECESSOR) {
 						if (subtree->predecessor == NULL) {
 							replacement = subtree;
+							if (replacement->successor && replacement->successor->get_key() == 13)
+								std::cerr << " BEFOR SUBTITUTION : " << subtree->successor->get_key() << std::endl;
 							return disconnect_and_substitute_erase(replacement, replacement->successor);
 						}
 						subtree->predecessor = find_replacement_erase(replacement, subtree->predecessor, direction);
+						if (subtree->predecessor && subtree->predecessor->get_key() == 13)
+								std::cerr << " AFTER SUBTITUTION : " << subtree->predecessor->get_key() << std::endl;
 					}
 					else {
 						if (subtree->successor == NULL) {
@@ -1172,12 +1179,21 @@ friend	void	print_tree();
 					}
 					return this->end();
 				}
-				const_iterator	find(const Key& key) const { return find(key); }
 
-				pair<iterator, iterator>				equal_range(const key_type &key) {
+				const_iterator	find(const Key& key) const { 
+					if (_root) {
+						search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
+						if (rtn.second)
+							return rtn.first;
+					}
+					return this->end();
+				}
+
+
+				ft::pair<iterator, iterator>				equal_range(const key_type &key) {
 					return ft::make_pair(find(key), ++(find(key)));
 				}
-				pair<const_iterator, const_iterator>	equal_range(const key_type &key) const {
+				ft::pair<const_iterator, const_iterator>	equal_range(const key_type &key) const {
 					return ft::make_pair(find(key), ++(find(key)));
 				}
 
