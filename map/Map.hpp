@@ -104,8 +104,10 @@ friend	void	print_tree();
 							return *this;
 						}
 						~Node() {
-							alloc.destroy(content);
-							alloc.deallocate(content, 1);
+							if (content) {
+								alloc.destroy(content);
+								alloc.deallocate(content, 1);
+							}
 							content = NULL;
 							parent = NULL;
 							predecessor = NULL;
@@ -211,7 +213,7 @@ friend	void	print_tree();
 				typedef		node_type				&	node_reference;
 				typedef		const node_type			&	const_node_reference;
 
-				node_pointer	find_begin() {
+				node_pointer	find_begin() const {
 					if (!_root)
 						return NULL;
 					node_pointer rtn = _root;
@@ -219,7 +221,7 @@ friend	void	print_tree();
 						rtn = rtn->predecessor;
 					return rtn;
 				}
-				node_pointer	find_last() {
+				node_pointer	find_last() const {
 					if (!_root)
 						return NULL;
 					node_pointer rtn = _root;
@@ -276,7 +278,6 @@ friend	void	print_tree();
 							typedef		typename	iterator_traits_type::iterator_category		iterator_category;
 
 						private:
-
 							node_pointer	_position;
 							bool			_is_out;
 							bool			_is_end;
@@ -324,13 +325,13 @@ friend	void	print_tree();
 
 							//////////////////////////////////Operators////////////////////////////////////////////
 
-							IteratorMap							&operator= (const IteratorMap &source) {
+							IteratorMap			&operator= (const IteratorMap &source) {
 								this->_position = source._position;
 								this->_is_out = source._is_out;
 								this->_is_end = source._is_end;
 								return *this;
 							}
-							operator IteratorMap<const value_type>() const {
+							operator	IteratorMap<const value_type>() const {
 								if (_is_end && _is_out)
 									return (IteratorMap<const value_type>(_position, true));
 								else if (_is_end)
@@ -365,9 +366,11 @@ friend	void	print_tree();
 										_position = find_begin(_position);
 										_is_end = false;
 										_is_out = false;
+										return *this;
 									}
 								}
-								else if (_position->successor) {
+								if (_position->successor) {
+									_is_out = false;
 									_position = find_min(_position->successor);
 								}
 								else {
@@ -375,8 +378,10 @@ friend	void	print_tree();
 									while (tmp->parent && !(*tmp > *_position)) {
 										tmp = tmp->parent;
 									}
-									if (*tmp > *_position)
+									if (*tmp > *_position) {
+										_is_out = false;
 										_position = tmp;
+									}
 									else {
 										_is_out = true;
 										_is_end = true;
@@ -398,9 +403,11 @@ friend	void	print_tree();
 										_position = find_last(_position);
 										_is_end = false;
 										_is_out = false;
+										return *this;
 									}
 								}
-								else if (_position->predecessor) {
+								if (_position->predecessor) {
+									_is_out = false;
 									_position = find_max(_position->predecessor);
 								}
 								else {
@@ -408,8 +415,10 @@ friend	void	print_tree();
 									while (tmp->parent && !(*tmp < *_position)) {
 										tmp = tmp->parent;
 									}
-									if (*tmp < *_position)
+									if (*tmp < *_position) {
+										_is_out = false;
 										_position = tmp;
+									}
 									else {
 										_is_out = true;
 										_is_end = false;
@@ -439,11 +448,11 @@ friend	void	print_tree();
 				/////////////////////////////////Comparison Operators Iterators/////////////////////////////
 				template<class Type>
 					friend bool		operator== (const IteratorMap<Type> &lhs, const IteratorMap<Type> &rhs) {
-						return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
+						return  lhs._is_end == rhs._is_end && lhs._is_out == rhs._is_out && lhs.base() == rhs.base();
 					}
 				template<class Type1, class Type2>
 					friend bool		operator== (const IteratorMap<Type1> &lhs, const IteratorMap<Type2> &rhs) {
-						return lhs.base() == rhs.base() && lhs._is_out == rhs._is_out && lhs._is_end == rhs._is_end;
+						return  lhs._is_end == rhs._is_end && lhs._is_out == rhs._is_out && lhs.base() == rhs.base();
 					}
 
 				template<class Type>
@@ -470,11 +479,14 @@ friend	void	print_tree();
 
 
 			private:
+				////////////////////////////////////////////////////////////////////////////////////////////
+				/////////////////////////////////////Private Variable///////////////////////////////////////
 				allocator_type	_alloc;
 				allocator_node	_node_alloc;
 				value_compare	_comp;
 				node_pointer	_root;
 				size_type		_size;
+				size_type		_max_size;
 
 				////////////////////////////////////////////////////////////////////////////////////////////
 				/////////////////////////////////////Insert Utils///////////////////////////////////////////
@@ -488,10 +500,6 @@ friend	void	print_tree();
 				node_pointer	rotation_right(node_pointer subtree) {
 					node_pointer	b = subtree->successor;
 
-					// LOGS
-					// std::cout<<"--------------rotation right :"
-						// << " a[" << subtree->get_key() << "]"
-						// << " b[" << b->get_key() << "]" << std::endl;
 					subtree->successor = b->predecessor;
 					if (subtree->successor)
 						subtree->successor->parent = subtree;
@@ -506,10 +514,6 @@ friend	void	print_tree();
 				node_pointer	rotation_left(node_pointer subtree) {
 					node_pointer	b = subtree->predecessor;
 
-					// LOGS
-					// std::cout<<"--------------rotation left :"
-						// << " a[" << subtree->get_key() << "]"
-						// << " b[" << b->get_key() << "]" << std::endl;
 					subtree->predecessor = b->successor;
 					if (subtree->predecessor)
 						subtree->predecessor->parent = subtree;
@@ -525,11 +529,6 @@ friend	void	print_tree();
 					node_pointer	b = subtree->successor;
 					node_pointer	c = b->predecessor;
 
-					// LOGS
-					// std::cout<<"--------------rotation right-left : "
-						// << " a[" << subtree->get_key() << "]"
-						// << " b[" << b->get_key() << "]"
-						// << " c[" << c->get_key() << "]" << std::endl;
 					subtree->successor = c->predecessor;
 					if (subtree->successor)
 						subtree->successor->parent = subtree;
@@ -552,11 +551,6 @@ friend	void	print_tree();
 					node_pointer	b = subtree->predecessor;
 					node_pointer	c = b->successor;
 
-					// LOGS
-					// std::cout<<"--------------rotation left-right :"
-						// << " a[" << subtree->get_key() << "]"
-						// << " b[" << b->get_key() << "]"
-						// << " c[" << c->get_key() << "]" << std::endl;
 					subtree->predecessor = c->successor;
 					if (subtree->predecessor)
 						subtree->predecessor->parent = subtree;
@@ -867,6 +861,10 @@ friend	void	print_tree();
 					return PREDECESSOR;
 				}
 
+				size_type			calculate_max_size() {
+					return std::numeric_limits<size_type>::max() / sizeof(Node<key_type,mapped_type>);
+				}
+
 			public:
 				/////////////////////////////////Constructors///////////////////////////////////////////////
 				//
@@ -877,10 +875,12 @@ friend	void	print_tree();
 				// size_type		_size;
 				//
 				map() :
-					_alloc(allocator_type()), _node_alloc(allocator_node()), _comp(key_compare()), _root(NULL), _size(0) { }
+					_alloc(allocator_type()), _node_alloc(allocator_node()), _comp(key_compare()),
+					_root(NULL), _size(0), _max_size(calculate_max_size()) { }
 
 				explicit map(const Compare& comp, const allocator_type& alloc = allocator_type()) :
-					_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL), _size(0) { }
+					_alloc(alloc), _node_alloc(allocator_node()), _comp(comp),
+					_root(NULL), _size(0), _max_size(calculate_max_size()) { }
 
 				map(const map &source)
 					: _root(NULL), _size(0) { *this = source; }
@@ -889,7 +889,8 @@ friend	void	print_tree();
 					map(InputIt first, InputIt last,
 							const Compare& comp = Compare(),
 							const Alloc& alloc = Alloc()) : 
-						_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL), _size(0) {
+						_alloc(alloc), _node_alloc(allocator_node()), _comp(comp), _root(NULL),
+						_size(0), _max_size(calculate_max_size()) {
 							insert(first, last);
 					}
 
@@ -968,7 +969,9 @@ friend	void	print_tree();
 				allocator_type			get_allocator() { return _alloc; }
 				bool					empty() const { return !_root; }
 				size_type				size() const { return _size; }
-				size_type				max_size() const { return std::numeric_limits<size_type>::max(); }
+				size_type				max_size() const {
+					return _max_size; 
+				}
 
 				/////////////////////////////////Modifiers//////////////////////////////////////////////////
 				void					clear() {
@@ -979,11 +982,13 @@ friend	void	print_tree();
 				ft::pair<iterator,bool>		insert(const value_type& val) {
 					if (_root == NULL) {
 						_root = create_node(val, NULL);
-						_size = 1;
+						++_size;
 						return insert_return(iterator(_root), true);
 					}
 					insert_return	return_value(iterator(), false);
 					_root = insert_recurse(val, return_value, _root, NULL);
+					if (return_value.second)
+						++_size;
 					return return_value;
 				}
 
@@ -1045,6 +1050,7 @@ friend	void	print_tree();
 					subtree_height	heights = get_subtree_height(subtree);
 					// Recursive on subtree, return a node_pointer to keep travelled subtrees balanced
 					if (heights.first <= heights.second) {
+						// Case if there is no child to recurse on
 						if (subtree->successor->predecessor == NULL) {
 							replacement = subtree->successor;
 							replacement->parent = subtree->parent;
@@ -1057,6 +1063,7 @@ friend	void	print_tree();
 						subtree->successor = find_replacement_erase(replacement, subtree->successor, PREDECESSOR);
 					}
 					else {
+						// Case if there is no child to recurse on
 						if (subtree->predecessor->successor == NULL) {
 							replacement = subtree->predecessor;
 							replacement->parent = subtree->parent;
@@ -1070,7 +1077,6 @@ friend	void	print_tree();
 					}
 					// Set and place replacement node and erase subree
 					replacement->assign_pointers(subtree);
-					// replace_parent_child(subtree, replacement);
 					replacement->ensure_relations();
 					erase_node(subtree);
 					// values and balance factor are checked in main function, not here.
@@ -1180,15 +1186,7 @@ friend	void	print_tree();
 					return this->end();
 				}
 
-				const_iterator	find(const Key& key) const { 
-					if (_root) {
-						search_return rtn = search_operation(ft::make_pair(key, mapped_type()), _root);
-						if (rtn.second)
-							return rtn.first;
-					}
-					return this->end();
-				}
-
+				const_iterator	find(const Key& key) const { return find(key); }
 
 				ft::pair<iterator, iterator>				equal_range(const key_type &key) {
 					return ft::make_pair(find(key), ++(find(key)));
@@ -1203,6 +1201,50 @@ friend	void	print_tree();
 				iterator 		upper_bound( const Key& key ) { return ++find(key); }
 				const_iterator	upper_bound( const Key& key ) const { return ++find(key); }
 		};
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			if (lhs.empty() && rhs.empty())
+				return true;
+			if (lhs.size() == rhs.size())
+				return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+			return false;
+		}
+
+	template< class Key, class T, class Compare, class Alloc >
+		bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			return !(lhs == rhs);
+		}
+
+	template <class Key, class T, class Compare, class Alloc>
+		bool operator<  ( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			if ((lhs.empty() && rhs.empty()) || (!lhs.empty() && rhs.empty()))
+				return false;
+			else if (lhs.empty() && !rhs.empty())
+				return true;
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		}
+
+	template <class Key, class T, class Compare, class Alloc>
+		bool operator<=  ( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			return lhs < rhs || lhs == rhs;
+		}
+
+	template <class Key, class T, class Compare, class Alloc>
+		bool operator>  ( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			return lhs != rhs && !(lhs < rhs);
+		}
+
+	template <class Key, class T, class Compare, class Alloc>
+		bool operator>=  ( const ft::map<Key,T,Compare,Alloc>& lhs,
+				const ft::map<Key,T,Compare,Alloc>& rhs ) {
+			return !(lhs < rhs);
+		}
 
 	template <class Key, class T, class Compare, class Alloc>
 		class ft::map<Key, T, Compare, Alloc>::value_compare : std::binary_function<value_type, value_type, bool> {
@@ -1233,6 +1275,8 @@ friend	void	print_tree();
 				}
 		};
 
+
 }
+
 
 #endif

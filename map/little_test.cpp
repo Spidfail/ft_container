@@ -4,6 +4,7 @@
 #include <ctime>
 #include <random>
 #include <stack>
+#include <map>
 
 #if COMP == 0
 # include "Map.hpp"
@@ -49,39 +50,39 @@ int main() {
 		std::cout << "#### First state : ";
 		std::cout << "#### Insert 8: ";
 		test.insert(value_type(8, "caca"));
-		print_content(test, false);
+		print_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 5: ";
 		test.insert(value_type(5, "pipi"));
-		print_reverse_content(test, false);
+		print_reverse_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 1: ";
 		test.insert(value_type(1, "crotte"));
-		print_reverse_content(test, false);
+		print_reverse_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 2: ";
 		test.insert(value_type(2, "crotte"));
-		print_reverse_content(test, false);
+		print_reverse_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 7: ";
 		test.insert(value_type(7, "zigouigoui"));
-		print_reverse_content(test, false);
+		print_reverse_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 9: ";
 		test.insert(value_type(9, "popo"));
-		print_content(test, false);
+		print_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 4: ";
 		test.insert(value_type(4, "popo"));
-		print_content(test, false);
+		print_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 7: ";
 		test.insert(value_type(7, "popo"));
-		print_content(test, false);
+		print_content(test, true);
 		std::cout << std::endl;
 		std::cout << "#### Insert 6: ";
 		test.insert(value_type(6, "popo"));
-		print_content(test, false);
+		print_content(test, true);
 	}
 
 	std::cout << std::endl;
@@ -96,7 +97,7 @@ int main() {
 
 		for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
 			test.insert(test.begin(), value_type(*it, "lol"));
-			print_content(test, false);
+			print_content(test, true);
 #ifdef DEBUG
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 #endif
@@ -106,7 +107,7 @@ int main() {
 			ft::map<int, std::string>			test2;
 			for (iterator_vector it = vec_values.begin() ; it != vec_values.end() ; ++it) {
 				test2.insert(value_type(*it, "lol"));
-				print_content(test2, false);
+				print_content(test2, true);
 #ifdef DEBUG
 				std::cout << " IS VALID ? : " <<  test2._is_valid() << std::endl;
 #endif
@@ -122,7 +123,7 @@ int main() {
 			int	new_nb = rand() % 20 + 1;
 			std::cout << " #### insert " << new_nb << " : ";
 			test[new_nb] = "mdr";
-			print_content(test, false);
+			print_content(test, true);
 #ifdef DEBUG
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 #endif
@@ -132,7 +133,7 @@ int main() {
 		std::cout << "//////////////////////////RANDOM INSERT RANGE [1 - 20]" << std::endl;
 		ft::map<int, std::string>			test2;
 		test2.insert(test.begin(), test.end());
-		print_content(test2, false);
+		print_content(test2, true);
 		std::cout << std::endl;
 	}
 
@@ -371,7 +372,7 @@ int main() {
 			std::cout << "///////////// Tree building" << std::endl;
 			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
 				test.insert(ft::make_pair(*it, "manger des chips"));
-				print_content(test, false);
+				print_content(test, true);
 #ifdef DEBUG
 				std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
 #endif
@@ -498,7 +499,7 @@ int main() {
 
 			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
 				test.insert(ft::make_pair(*it, "manger des chips"));
-				// print_content(test, false);
+				// print_content(test, true);
 			}
 #ifdef DEBUG
 			std::cout << " IS VALID ? : " <<  test._is_valid() << std::endl;
@@ -571,7 +572,7 @@ int main() {
 			std::cout << "   RANGE INSERTED : ";
 			for (ft::vector<int>::iterator it = vec_values.begin() ; it != vec_values.end() ; ++it) {
 				test.insert(ft::make_pair(*it, "manger des chips"));
-				// print_content(test, false);
+				// print_content(test, true);
 			}
 			for (ft::map<int, std::string>::iterator it = test.begin() ;
 					it != test.end() ; ++it)
@@ -644,7 +645,5 @@ int main() {
 			test.erase(nb_safe);
 			std::cout << std::endl;
 		}
-
 	}
-
 }
