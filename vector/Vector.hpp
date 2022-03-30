@@ -74,7 +74,6 @@ namespace ft {
 				vector( size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type() ) :
 					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc) {
-
 						if (n < 0 || n > (std::numeric_limits<size_type>::max() / sizeof(value_type)))
 							throw std::length_error("vector");
 						this->_start = this->_alloc.allocate(n);
@@ -89,7 +88,6 @@ namespace ft {
 							const allocator_type& alloc = allocator_type()) :
 						_start(NULL), _last(NULL), _end(NULL), _size(0),
 						_capacity(0), _alloc(alloc) {
-
 							const size_type		new_size = last - first;
 							const pointer		new_content = this->_alloc.allocate(new_size);
 							for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
@@ -341,7 +339,7 @@ namespace ft {
 			private:
 				//////////////////////////////Private Member Methods////////////////////////////////////////
 				//
-				void			_copy( const pointer start, const pointer end, pointer target ) const {
+				void			_copy( const pointer start, const pointer end, pointer target ) {
 					for (size_type i = 0 ; start + i != end ; i++)
 						target[i] = start[i];
 				}
@@ -381,7 +379,7 @@ namespace ft {
 
 				void			_destroy_all() {
 					if (_size > 0)
-						for (pointer temp = _start ; temp != _last ; temp++)
+						for (pointer temp = _start ; temp != _end ; ++temp)
 							_alloc.destroy(temp);
 				}
 
