@@ -22,12 +22,12 @@
 #include <cstddef>
 #include <cassert>
 
-#include "../EnableIf.hpp"
-#include "../IsIntegral.hpp"
-#include "../CompareUtils.hpp"
+#include "EnableIf.hpp"
+#include "IsIntegral.hpp"
+#include "CompareUtils.hpp"
 
 #include "IteratorVector.hpp"
-#include "../ReverseIteratorVector.hpp"
+#include "ReverseIterator.hpp"
 
 namespace ft {
 
@@ -76,9 +76,11 @@ namespace ft {
 					_start(NULL), _last(NULL), _end(NULL), _size(0), _capacity(0), _alloc(alloc) {
 						if (n < 0 || n > (std::numeric_limits<size_type>::max() / sizeof(value_type)))
 							throw std::length_error("vector");
-						this->_start = this->_alloc.allocate(n);
-						for (size_type i = 0 ; i < n ; i++)
-							this->_alloc.construct(this->_start + i, val);
+						if (n != 0) {
+							this->_start = this->_alloc.allocate(n);
+							for (size_type i = 0 ; i < n ; i++)
+								this->_alloc.construct(this->_start + i, val);
+						}
 						_set_members(_start, n, n);
 					}
 
@@ -88,10 +90,13 @@ namespace ft {
 							const allocator_type& alloc = allocator_type()) :
 						_start(NULL), _last(NULL), _end(NULL), _size(0),
 						_capacity(0), _alloc(alloc) {
-							const size_type		new_size = last - first;
-							const pointer		new_content = this->_alloc.allocate(new_size);
-							for (size_type i = 0 ; first != last && i < new_size ; i++, first++)
-								_alloc.construct(new_content + i, *first);
+							size_type		new_size = last - first;
+							pointer			new_content = NULL;
+							if (new_size != 0) {
+								new_content = this->_alloc.allocate(new_size);
+								for (size_type i = 0 ; first != last && i < new_size ; ++i, ++first)
+									_alloc.construct(new_content + i, *first);
+							}
 							_set_members(new_content, new_size, new_size);
 						}
 
@@ -101,7 +106,9 @@ namespace ft {
 				//// MEMBERS OPERATORS
 
 				vector			&operator=( const vector<value_type> &source ) {
-					const pointer		temp = _alloc.allocate(source.size());
+					pointer		temp = NULL;
+					if (source.size() > 0)
+						temp = _alloc.allocate(source.size());
 					_erase_all();
 					_copy(source._start, source._start + source.size(), temp);
 					_set_members(temp, source.size(), source.size());
@@ -344,7 +351,7 @@ namespace ft {
 						target[i] = start[i];
 				}
 
-				void			_set_members( const pointer pointer, size_type size, size_type capacity ) {
+				void			_set_members(pointer pointer, size_type size, size_type capacity) {
 					this->_size = size;
 					this->_capacity = capacity;
 					this->_start = pointer;

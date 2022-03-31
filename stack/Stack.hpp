@@ -2,7 +2,7 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 
-# include "../vector/Vector.hpp"
+# include "Vector.hpp"
 
 namespace ft {
 
@@ -14,24 +14,24 @@ namespace ft {
 			typedef		typename	container_type::value_type	value_type;
 			typedef		typename	container_type::size_type	size_type;
 
-		private:
-			container_type	_container;	
+		protected:
+			container_type	c;	
 
 		public:
 			explicit stack (const container_type& container = container_type())
-				: _container(container) { }
+				: c(container) { }
 			stack(const stack &source) { *this = source; }
 			~stack() { }
 			
-			stack	&operator= (const stack &source) { this->_container = source._container; }
+			stack	&operator= (const stack &source) { this->c = source.c; }
 
-			bool				empty() const { return _container.empty(); }
-			size_type			size() const { return _container.size(); }
-			void				push(const value_type &value) { return _container.push_back(value); }
-			void				pop() { return _container.pop_back(); }
+			bool				empty() const { return c.empty(); }
+			size_type			size() const { return c.size(); }
+			void				push(const value_type &value) { return c.push_back(value); }
+			void				pop() { return c.pop_back(); }
 
-			value_type&			top() { return _container.back(); }
-			const value_type&	top() const { return _container.back(); }
+			value_type&			top() { return c.back(); }
+			const value_type&	top() const { return c.back(); }
 
 			friend bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs);
 			friend bool operator!= (const stack<T,Container>& lhs, const stack<T,Container>& rhs);

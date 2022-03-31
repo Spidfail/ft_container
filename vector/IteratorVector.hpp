@@ -13,8 +13,8 @@
 #ifndef ITERATORVECTOR_HPP
 # define ITERATORVECTOR_HPP
 
-# include "../IteratorTraits.hpp"
-# include "../Iterator.hpp"
+# include "IteratorTraits.hpp"
+# include "Iterator.hpp"
 
 namespace ft {
 
