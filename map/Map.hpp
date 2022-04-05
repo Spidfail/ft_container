@@ -600,7 +600,7 @@ namespace ft {
 						return wrapper.first.base();
 					}
 					// Recurse if there is a leaf
-					if (val == *subtree->content) {
+					if (val.first == subtree->content->first) {
 						wrapper.first = iterator(subtree);
 						wrapper.second = false;
 						return subtree;
@@ -844,6 +844,7 @@ namespace ft {
 						succ_height = subtree->successor->height;
 					return ft::make_pair(pred_height, succ_height);
 				}
+
 
 				/////////////////////////////////Search Tools/////////////////////////////////////////////////////
 
