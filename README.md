@@ -28,15 +28,15 @@ Reimplementation of STL containers such as vector, stack and map. 42 School proj
 
 ## Original purpose
 
-`ft_container` was a 'basic' replication of features based on standard c++ library. It follows the guidlines of _cplusplus.com_ and _cppreference.com_ and when it diverged I choosed to implement the behavior of school's Macintosh. The main goal was to reproduce exactly the school's version and implementation of the containers.
+`ft_container` was a 'basic' replication of features based on **standard c++ library**. It follows the guidlines of _cplusplus.com_ and _cppreference.com_ and when it diverged I choosed to implement the behavior of school's Macintosh. The main goal was to reproduce exactly the school's version and implementation of the containers.
 
-The tests from this repository or by using those from my `gunner_tester` are comparing the output of my code with the one for the local std. Those were reviewed by other studentds.
+The tests from this repository or by using those from my `gunner_tester` are comparing the output of my code with the one for the local std. Those were reviewed by other students.
 
 ## Constraints
 
-The code must be readable and easy to understand.
+The code must be **readable** and **easy to understand**.
 
-C++ code must have been written in **std 98** version for pedagogical reasons. All classes must be in **'Orthodox Canonical'** form when it's possible. Only `new` and `delete` are allowed, no `malloc()` and `free()`. `printf` is also forbidden.
+The code must be written in **standard c++ 98** version for pedagogical reasons. All classes must be in **'Orthodox Canonical'** form whenever it's possible. Only `new` and `delete` are allowed, no `malloc()` and `free()`. `printf` is also forbidden.
 
 It must compile with those flags : `-Wall -Wextra -Werror -std=c++98`.
 
@@ -62,7 +62,7 @@ Each container should be used with the same templates than the official; each co
 
 ## Features and choices
 
-For the `std::map` I choosed A.V.L. as binary tree system. It's efficient enough and an interesting challenge as it is in a recursive form. Otherwise iterator's map is in a iterative mode to avoid overflow problems.
+For the `std::map` I choosed **A.V.L.** as *binary tree* system. It's efficient enough and an interesting challenge as it is in a recursive form. Otherwise iterator's map is in a iterative mode to avoid overflow problems.
 
 `const` and `non-const` values must be comparable as requires in the subject. It's implementation define in the standard C++ 98.
 
