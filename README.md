@@ -26,6 +26,22 @@ Reimplementation of STL containers such as vector, stack and map. 42 School proj
 	<!-- <img src="https://img.shields.io/github/watchers/Spidfail/ft_container?style=social" alt="User followers"/> -->
 </p>
 
+## Build
+
+Launch basic tests :	`make`   
+Run basic tests :		`make basic_run`   
+   
+Compile gunner tests :	`make -C ./gunner_tester`   
+Run gunner tests :		`make run -C ./gunner_tester`   
+   
+Clean object files :	`make clean [-C ./gunner_tester]`   
+Clean all files (obj and binary : `make fclean [-C ./gunner_tester]`   
+Recompile :				`make re [-C ./gunner_tester]`   
+
+
+The test will provide output files in respective directories. For basic tests two binaries will be produced: `ft_container` and `std_container`. The user can use my little script to compare outputs.
+
+
 ## Original purpose
 
 `ft_container` was a 'basic' replication of features based on **standard c++ library**. It follows the guidlines of _cplusplus.com_ and _cppreference.com_ and when it diverged I choosed to implement the behavior of school's Macintosh. The main goal was to reproduce exactly the school's version and implementation of the containers.
