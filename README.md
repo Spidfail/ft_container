@@ -3,7 +3,7 @@
 Reimplementation of STL containers such as vector, stack and map. 42 School project.
 
 <p align="center">
-	<img src="ressources/grade.png" alt="Container Grade" width="280" height="300"/>
+	<img src=".sources/grade.png" alt="Container Grade" width="280" height="300"/>
 </p>
 
 <p align="center">
